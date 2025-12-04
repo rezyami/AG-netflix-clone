@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Component - Netflix Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'netflix-red': '#e50914',
+                        'netflix-black': '#141414',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Arial', 'Helvetica', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #141414;
+            color: #ffffff;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+        }
+
+        :focus-visible {
+            outline: 3px solid white;
+            outline-offset: 2px;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body class="p-8">
+    <div class="max-w-4xl mx-auto space-y-12">
+        <div>
+            <h1 class="text-4xl font-bold mb-2">Button Component</h1>
+            <p class="text-gray-400">Reusable button styles with different variants and sizes</p>
+        </div>
+
+        <!-- Primary Buttons -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-semibold">Primary Variant</h2>
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Small -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-white/90 h-8 px-3 text-sm">
+                    Small Button
+                </button>
+
+                <!-- Medium -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-white/90 h-10 px-4 py-2">
+                    Medium Button
+                </button>
+
+                <!-- Large -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-white/90 h-12 px-6 text-lg">
+                    Large Button
+                </button>
+
+                <!-- With Icon -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-white/90 h-10 px-4 py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="mr-2 h-5 w-5">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    Play
+                </button>
+            </div>
+        </section>
+
+        <!-- Secondary Buttons -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-semibold">Secondary Variant</h2>
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Small -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-gray-500/70 text-white hover:bg-gray-500/50 h-8 px-3 text-sm">
+                    Small Button
+                </button>
+
+                <!-- Medium -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-gray-500/70 text-white hover:bg-gray-500/50 h-10 px-4 py-2">
+                    Medium Button
+                </button>
+
+                <!-- Large -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-gray-500/70 text-white hover:bg-gray-500/50 h-12 px-6 text-lg">
+                    Large Button
+                </button>
+
+                <!-- With Icon -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-gray-500/70 text-white hover:bg-gray-500/50 h-10 px-4 py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="mr-2 h-5 w-5">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 16v-4"></path>
+                        <path d="M12 8h.01"></path>
+                    </svg>
+                    More Info
+                </button>
+            </div>
+        </section>
+
+        <!-- Ghost Buttons -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-semibold">Ghost Variant</h2>
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Small -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 hover:bg-white/10 text-white h-8 px-3 text-sm">
+                    Small Button
+                </button>
+
+                <!-- Medium -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 hover:bg-white/10 text-white h-10 px-4 py-2">
+                    Medium Button
+                </button>
+
+                <!-- Large -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 hover:bg-white/10 text-white h-12 px-6 text-lg">
+                    Large Button
+                </button>
+
+                <!-- With Icon -->
+                <button
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 hover:bg-white/10 text-white h-10 px-4 py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="mr-2 h-5 w-5">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                    Next
+                </button>
+            </div>
+        </section>
+
+        <!-- Disabled State -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-semibold">Disabled State</h2>
+            <div class="flex flex-wrap items-center gap-4">
+                <button disabled
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-white text-black hover:bg-white/90 h-10 px-4 py-2">
+                    Disabled Primary
+                </button>
+
+                <button disabled
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 bg-gray-500/70 text-white hover:bg-gray-500/50 h-10 px-4 py-2">
+                    Disabled Secondary
+                </button>
+
+                <button disabled
+                    class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white disabled:pointer-events-none disabled:opacity-50 hover:bg-white/10 text-white h-10 px-4 py-2">
+                    Disabled Ghost
+                </button>
+            </div>
+        </section>
+
+        <!-- Usage Example -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-semibold">Usage Example</h2>
+            <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+                <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Primary Button with Icon --&gt;
+&lt;button class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white bg-white text-black hover:bg-white/90 h-10 px-4 py-2"&gt;
+    &lt;svg class="mr-2 h-5 w-5"&gt;...&lt;/svg&gt;
+    Button Text
+&lt;/button&gt;
+
+&lt;!-- Secondary Button --&gt;
+&lt;button class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white bg-gray-500/70 text-white hover:bg-gray-500/50 h-10 px-4 py-2"&gt;
+    Button Text
+&lt;/button&gt;
+
+&lt;!-- Ghost Button --&gt;
+&lt;button class="inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white hover:bg-white/10 text-white h-10 px-4 py-2"&gt;
+    Button Text
+&lt;/button&gt;</code></pre>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

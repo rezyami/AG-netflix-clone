@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Component - Netflix Clone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'netflix-red': '#e50914',
+                        'netflix-black': '#141414',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Arial', 'Helvetica', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #141414;
+            color: #ffffff;
+            font-family: 'Inter', Arial, Helvetica, sans-serif;
+        }
+
+        :focus-visible {
+            outline: 3px solid white;
+            outline-offset: 2px;
+            z-index: 50;
+        }
+    </style>
+</head>
+
+<body class="p-8">
+    <div class="max-w-4xl mx-auto space-y-12">
+        <div>
+            <h1 class="text-4xl font-bold mb-2">Search Component</h1>
+            <p class="text-gray-400">Search input with icon and focus states</p>
+        </div>
+
+        <!-- Search Variants -->
+        <section class="space-y-8">
+            <!-- Default Search -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-semibold">Default Search</h2>
+                <div class="relative max-w-md">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-gray-400">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                    </div>
+                    <input type="text" placeholder="Search for movies, TV shows..."
+                        class="w-full bg-gray-800/50 border border-gray-700 rounded-md py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all" />
+                </div>
+            </div>
+
+            <!-- Search with Clear Button -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-semibold">Search with Clear Button</h2>
+                <div class="relative max-w-md">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-gray-400">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                    </div>
+                    <input type="text" id="searchInput" placeholder="Search for movies, TV shows..."
+                        class="w-full bg-gray-800/50 border border-gray-700 rounded-md py-3 pl-10 pr-10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all" />
+                    <button onclick="clearSearch()"
+                        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-white transition-colors"
+                        aria-label="Clear search">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Compact Search -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-semibold">Compact Search</h2>
+                <div class="relative max-w-sm">
+                    <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="text-gray-400">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.3-4.3"></path>
+                        </svg>
+                    </div>
+                    <input type="text" placeholder="Search..."
+                        class="w-full bg-gray-800/50 border border-gray-700 rounded-md py-2 pl-9 pr-4 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all" />
+                </div>
+            </div>
+
+            <!-- Expandable Search -->
+            <div class="space-y-4">
+                <h2 class="text-2xl font-semibold">Expandable Search</h2>
+                <div class="flex justify-end">
+                    <div id="expandableSearch" class="relative overflow-hidden transition-all duration-300"
+                        style="width: 40px;">
+                        <button onclick="toggleExpandableSearch()"
+                            class="absolute inset-y-0 left-0 flex items-center pl-2 z-10" aria-label="Toggle search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="text-white">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.3-4.3"></path>
+                            </svg>
+                        </button>
+                        <input type="text" id="expandableInput" placeholder="Search..."
+                            class="w-full bg-gray-800/50 border border-gray-700 rounded-md py-2 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all"
+                            style="width: 300px;" />
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usage Example -->
+        <section class="space-y-4">
+            <h2 class="text-2xl font-semibold">Usage Example</h2>
+            <div class="bg-gray-800/50 rounded-lg p-6 border border-gray-700">
+                <pre class="text-sm text-gray-300 overflow-x-auto"><code>&lt;!-- Basic Search Input --&gt;
+&lt;div class="relative max-w-md"&gt;
+    &lt;div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"&gt;
+        &lt;svg class="text-gray-400" width="20" height="20"&gt;
+            &lt;!-- Search icon --&gt;
+        &lt;/svg&gt;
+    &lt;/div&gt;
+    &lt;input 
+        type="text" 
+        placeholder="Search for movies, TV shows..."
+        class="w-full bg-gray-800/50 border border-gray-700 rounded-md py-3 pl-10 pr-4 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent transition-all"
+    /&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+        }
+
+        function toggleExpandableSearch() {
+            const container = document.getElementById('expandableSearch');
+            const input = document.getElementById('expandableInput');
+
+            if (container.style.width === '40px') {
+                container.style.width = '300px';
+                setTimeout(() => input.focus(), 300);
+            } else {
+                container.style.width = '40px';
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+
+</html>
