@@ -15,6 +15,7 @@ interface HomeClientProps {
     horrorMovies: MediaItem[];
     romanceMovies: MediaItem[];
     documentaries: MediaItem[];
+    m3uRows: { title: string; movies: MediaItem[] }[];
 }
 
 export default function HomeClient({
@@ -25,6 +26,7 @@ export default function HomeClient({
     horrorMovies,
     romanceMovies,
     documentaries,
+    m3uRows,
 }: HomeClientProps) {
     const [selectedMovie, setSelectedMovie] = useState<MediaItem>(trendingMovies[0]);
     const [myListMovies, setMyListMovies] = useState<MediaItem[]>([]);
@@ -55,6 +57,17 @@ export default function HomeClient({
                             onMovieClick={setSelectedMovie}
                         />
                     )}
+
+                    {/* M3U Categories */}
+                    {m3uRows?.map((row) => (
+                        <MovieRow
+                            key={row.title}
+                            title={row.title}
+                            movies={row.movies}
+                            onMovieClick={setSelectedMovie}
+                        />
+                    )) || []}
+
                     <MovieRow
                         title="Trending Now"
                         movies={trendingMovies}

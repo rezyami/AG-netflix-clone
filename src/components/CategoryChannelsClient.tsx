@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 
 import LiveChannelPlayer from '@/components/LiveChannelPlayer';
 import { M3UEntry } from '@/lib/m3u';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Play, Search } from 'lucide-react';
 
 interface CategoryChannelsClientProps {
     category: string;
@@ -32,43 +32,46 @@ export default function CategoryChannelsClient({ category, channels }: CategoryC
 
     return (
         <>
-            <div className="min-h-screen bg-[#000000] text-white font-sans">
+            <div className="min-h-screen bg-[#141414] text-white font-sans">
                 <Navbar />
 
                 <main className="pt-24 pb-20 h-screen flex flex-col">
                     {/* Header Bar */}
-                    <div className="bg-gradient-to-b from-[#2b5d9b] to-[#1a3a6c] px-4 py-2 flex items-center justify-between border-b border-[#4a7ec0] shadow-md mx-4 rounded-t-lg">
+                    <div className="bg-zinc-900 px-6 py-4 flex items-center justify-between border-b border-zinc-800 mx-4 rounded-t-md">
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => router.back()}
-                                className="flex items-center gap-1 text-white hover:text-yellow-300 transition-colors"
+                                className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
                             >
                                 <ArrowLeft className="h-5 w-5" />
-                                <span className="font-bold text-shadow-sm">BACK</span>
+                                <span className="font-medium text-sm">Back</span>
                             </button>
-                            <div className="h-6 w-px bg-[#4a7ec0]"></div>
-                            <h1 className="text-xl font-bold text-white uppercase tracking-wide text-shadow-sm">
+                            <div className="h-6 w-px bg-zinc-700"></div>
+                            <h1 className="text-xl font-bold text-white tracking-tight">
                                 {category}
                             </h1>
                         </div>
-                        <div className="text-sm font-medium text-gray-200">
-                            {filteredChannels.length} RECORDS
+                        <div className="text-sm font-medium text-gray-500">
+                            {filteredChannels.length} Channels
                         </div>
                     </div>
 
-                    {/* Search Bar (Styled to fit) */}
-                    <div className="bg-[#112a4d] px-4 py-2 mx-4 border-x border-[#4a7ec0]">
-                        <input
-                            type="text"
-                            placeholder="SEARCH CHANNELS..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-[#0a1a30] text-white px-3 py-1 rounded border border-[#2b5d9b] focus:border-yellow-400 focus:outline-none text-sm uppercase"
-                        />
+                    {/* Search Bar */}
+                    <div className="bg-zinc-900 px-6 py-3 mx-4 border-x border-zinc-800">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
+                            <input
+                                type="text"
+                                placeholder="Search channels..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full bg-black text-white pl-10 pr-4 py-2 rounded border border-zinc-700 focus:border-white focus:outline-none text-sm transition-colors placeholder-gray-600"
+                            />
+                        </div>
                     </div>
 
                     {/* Channels List */}
-                    <div className="flex-1 overflow-y-auto mx-4 border-x border-b border-[#4a7ec0] bg-[#0a1a30] custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto mx-4 border-x border-b border-zinc-800 bg-[#141414] custom-scrollbar">
                         {filteredChannels.length > 0 ? (
                             <div className="flex flex-col">
                                 {filteredChannels.map((channel, index) => {
@@ -78,70 +81,71 @@ export default function CategoryChannelsClient({ category, channels }: CategoryC
                                             key={`${channel.url}-${index}`}
                                             onClick={() => handleChannelClick(channel)}
                                             className={`
-                                                flex items-center gap-2 px-2 py-1 cursor-pointer border-b border-[#2b5d9b]/50 select-none
+                                                group flex items-center gap-4 px-6 py-3 cursor-pointer border-b border-zinc-800 transition-colors
                                                 ${isSelected
-                                                    ? 'bg-gradient-to-b from-[#ffffff] to-[#b0c4de] text-black'
-                                                    : 'bg-gradient-to-b from-[#1e4b83] to-[#102a4d] hover:from-[#2b5d9b] hover:to-[#1a3a6c] text-white'}
+                                                    ? 'bg-zinc-800'
+                                                    : 'hover:bg-zinc-900'}
                                             `}
                                         >
                                             {/* Index */}
                                             <div className={`
-                                                w-10 h-6 flex items-center justify-center text-sm font-bold rounded shadow-inner border
-                                                ${isSelected ? 'bg-[#d0e0f0] border-[#a0b0c0] text-black' : 'bg-[#e0e0e0] border-[#b0b0b0] text-black'}
+                                                w-8 text-center text-sm font-medium
+                                                ${isSelected ? 'text-white' : 'text-gray-600 group-hover:text-gray-400'}
                                             `}>
                                                 {index + 1}
                                             </div>
 
                                             {/* Logo/Icon Placeholder */}
-                                            <div className="w-8 h-6 bg-black/20 rounded flex items-center justify-center overflow-hidden border border-white/10">
+                                            <div className="w-12 h-8 bg-zinc-800 rounded flex items-center justify-center overflow-hidden border border-zinc-700 relative">
                                                 {channel.logo ? (
-                                                    <img src={channel.logo} alt="" className="w-full h-full object-contain" />
+                                                    <img src={channel.logo} alt="" className="w-full h-full object-contain p-1" />
                                                 ) : (
-                                                    <div className="text-[10px] opacity-50">TV</div>
+                                                    <div className="text-[10px] text-gray-600 font-bold">TV</div>
                                                 )}
-                                            </div>
-
-                                            {/* Icons */}
-                                            <div className="flex items-center gap-1 text-yellow-400">
-                                                <span className="text-xs">★</span> {/* Star */}
-                                            </div>
-                                            <div className="flex items-center gap-1 text-gray-400">
-                                                <span className="text-xs">🕒</span> {/* Clock */}
+                                                {/* Play overlay on hover */}
+                                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                    <Play className="h-4 w-4 text-white fill-white" />
+                                                </div>
                                             </div>
 
                                             {/* Name */}
-                                            <div className="flex-1 font-semibold text-sm truncate px-2 uppercase shadow-black drop-shadow-md">
-                                                {channel.title}
+                                            <div className="flex-1 min-w-0">
+                                                <div className={`font-medium text-sm truncate ${isSelected ? 'text-white' : 'text-gray-300 group-hover:text-white'}`}>
+                                                    {channel.title}
+                                                </div>
+                                                <div className="flex items-center gap-2 mt-0.5">
+                                                    {channel.title.includes('HD') && (
+                                                        <span className="text-[10px] font-bold px-1 rounded border border-gray-600 text-gray-400">
+                                                            HD
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
 
-                                            {/* Type/Quality Badge */}
-                                            <div className="text-[10px] font-bold px-1 rounded bg-white/10 border border-white/20">
-                                                {channel.title.includes('HD') ? 'HD' : 'SD'}
-                                            </div>
+                                            {/* Action Icon (Chevron or similar, optional) */}
+                                            {isSelected && (
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#E50914]"></div>
+                                            )}
                                         </div>
                                     );
                                 })}
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-                                <div className="text-4xl mb-2">🔍</div>
-                                <p>NO CHANNELS FOUND</p>
+                            <div className="flex flex-col items-center justify-center py-20 text-gray-500">
+                                <Search className="h-12 w-12 mb-4 opacity-20" />
+                                <p>No channels found</p>
                             </div>
                         )}
                     </div>
 
                     {/* Footer / Status Bar */}
-                    <div className="mx-4 mt-1 bg-gradient-to-b from-[#e0e0e0] to-[#b0b0b0] px-4 py-1 rounded-b-lg flex items-center gap-4 border-t border-white/50 shadow-lg">
-                        <button className="flex items-center gap-1 px-3 py-1 bg-gradient-to-b from-[#ff4444] to-[#cc0000] text-white text-xs font-bold rounded shadow border border-[#aa0000] active:translate-y-px">
-                            <div className="w-2 h-2 rounded-full bg-red-900/50"></div>
-                            VIEW
+                    <div className="mx-4 mt-0 bg-zinc-900 px-6 py-3 rounded-b-md flex items-center gap-4 border-t border-zinc-800">
+                        <button className="flex items-center gap-2 px-4 py-1.5 bg-[#E50914] hover:bg-[#b20710] text-white text-xs font-bold rounded transition-colors">
+                            <Play className="h-3 w-3 fill-white" />
+                            PLAY
                         </button>
-                        <button className="flex items-center gap-1 px-3 py-1 bg-gradient-to-b from-[#44ff44] to-[#00cc00] text-white text-xs font-bold rounded shadow border border-[#00aa00] active:translate-y-px">
-                            <div className="w-2 h-2 rounded-full bg-green-900/50"></div>
-                            SORT
-                        </button>
-                        <div className="flex-1 text-right text-xs font-bold text-gray-700 shadow-white drop-shadow-sm">
-                            PAGE 1 FROM 1. FOUND {filteredChannels.length} RECORDS.
+                        <div className="flex-1 text-right text-xs font-medium text-gray-500">
+                            {filteredChannels.length} Channels Available
                         </div>
                     </div>
                 </main>
@@ -157,3 +161,4 @@ export default function CategoryChannelsClient({ category, channels }: CategoryC
         </>
     );
 }
+

@@ -35,6 +35,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'www.themoviedb.org',
       },
+      {
+        protocol: 'https',
+        hostname: 'matawinie.cooptel.ca',
+      },
+      {
+        protocol: 'http',
+        hostname: 'test.thesmartiptv.com',
+      },
     ],
   },
 };

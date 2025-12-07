@@ -24,6 +24,10 @@ export default function MovieCard({ movie, className, onMovieClick }: MovieCardP
 
     if (!imagePath) return null;
 
+    const imageUrl = imagePath.startsWith('http')
+        ? imagePath
+        : `https://image.tmdb.org/t/p/w500${imagePath}`;
+
     const handleClick = (e: React.MouseEvent) => {
         if (onMovieClick) {
             e.preventDefault();
@@ -46,7 +50,7 @@ export default function MovieCard({ movie, className, onMovieClick }: MovieCardP
             )}
         >
             <Image
-                src={`https://image.tmdb.org/t/p/w500${imagePath}`}
+                src={imageUrl}
                 alt={title || "Movie Poster"}
                 fill
                 className="rounded-sm object-cover transition-all"
