@@ -70,7 +70,7 @@ function normalizeTitle(title: string): string {
 }
 
 export function findStream(movieTitle: string): M3UEntry | undefined {
-    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plusP.m3u');
     const entries = parseM3U(m3uPath);
     const normalizedMovieTitle = normalizeTitle(movieTitle);
 
@@ -91,7 +91,7 @@ function isLiveTVChannel(entry: M3UEntry): boolean {
 
 // Get all unique channel categories from M3U
 export function getAllChannelCategories(): string[] {
-    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plusP.m3u');
     const entries = parseM3U(m3uPath);
 
     const categories = new Set<string>();
@@ -106,7 +106,7 @@ export function getAllChannelCategories(): string[] {
 
 // Get all channels for a specific category
 export function getChannelsByCategory(category: string): M3UEntry[] {
-    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plusP.m3u');
     const entries = parseM3U(m3uPath);
 
     return entries.filter(entry =>
@@ -117,7 +117,7 @@ export function getChannelsByCategory(category: string): M3UEntry[] {
 
 // Get category statistics
 export function getCategoryStats(): { category: string; count: number }[] {
-    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plusP.m3u');
     const entries = parseM3U(m3uPath);
 
     const categoryMap = new Map<string, number>();
@@ -144,7 +144,7 @@ function isVODOrSeries(entry: M3UEntry): boolean {
 
 // Get all unique VOD/Series categories from M3U
 export function getVODAndSeriesCategories(): string[] {
-    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plusP.m3u');
     const entries = parseM3U(m3uPath);
 
     const categories = new Set<string>();
@@ -159,7 +159,7 @@ export function getVODAndSeriesCategories(): string[] {
 
 // Get all VOD/Series items for a specific category
 export function getVODAndSeriesByCategory(category: string): M3UEntry[] {
-    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    const m3uPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plusP.m3u');
     const entries = parseM3U(m3uPath);
 
     return entries.filter(entry =>

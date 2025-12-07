@@ -42,5 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 # m3u files
-src/m3u/tv_channels_F021502_plus.m3u
-*.m3u
+src/m3u/tv_channels_F021502_plusP.m3u
