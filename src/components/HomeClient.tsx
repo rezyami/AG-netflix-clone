@@ -8,27 +8,18 @@ import { MediaItem } from "@/types/tmdb";
 import { getMyList } from "@/lib/myList";
 
 interface HomeClientProps {
-    trendingMovies: MediaItem[];
-    topRatedMovies: MediaItem[];
-    actionMovies: MediaItem[];
-    comedyMovies: MediaItem[];
-    horrorMovies: MediaItem[];
-    romanceMovies: MediaItem[];
-    documentaries: MediaItem[];
-    m3uRows: { title: string; movies: MediaItem[] }[];
+    heroMovie: MediaItem;
+    rows: {
+        title: string;
+        movies: MediaItem[];
+    }[];
 }
 
 export default function HomeClient({
-    trendingMovies,
-    topRatedMovies,
-    actionMovies,
-    comedyMovies,
-    horrorMovies,
-    romanceMovies,
-    documentaries,
-    m3uRows,
+    heroMovie,
+    rows,
 }: HomeClientProps) {
-    const [selectedMovie, setSelectedMovie] = useState<MediaItem>(trendingMovies[0]);
+    const [selectedMovie, setSelectedMovie] = useState<MediaItem>(heroMovie);
     const [myListMovies, setMyListMovies] = useState<MediaItem[]>([]);
 
     useEffect(() => {
@@ -58,51 +49,14 @@ export default function HomeClient({
                         />
                     )}
 
-                    {/* M3U Categories */}
-                    {m3uRows?.map((row) => (
+                    {rows.map((row) => (
                         <MovieRow
                             key={row.title}
                             title={row.title}
                             movies={row.movies}
                             onMovieClick={setSelectedMovie}
                         />
-                    )) || []}
-
-                    <MovieRow
-                        title="Trending Now"
-                        movies={trendingMovies}
-                        onMovieClick={setSelectedMovie}
-                    />
-                    <MovieRow
-                        title="Top Rated"
-                        movies={topRatedMovies}
-                        onMovieClick={setSelectedMovie}
-                    />
-                    <MovieRow
-                        title="Action Thrillers"
-                        movies={actionMovies}
-                        onMovieClick={setSelectedMovie}
-                    />
-                    <MovieRow
-                        title="Comedies"
-                        movies={comedyMovies}
-                        onMovieClick={setSelectedMovie}
-                    />
-                    <MovieRow
-                        title="Scary Movies"
-                        movies={horrorMovies}
-                        onMovieClick={setSelectedMovie}
-                    />
-                    <MovieRow
-                        title="Romance Movies"
-                        movies={romanceMovies}
-                        onMovieClick={setSelectedMovie}
-                    />
-                    <MovieRow
-                        title="Documentaries"
-                        movies={documentaries}
-                        onMovieClick={setSelectedMovie}
-                    />
+                    ))}
                 </section>
             </main>
         </div>

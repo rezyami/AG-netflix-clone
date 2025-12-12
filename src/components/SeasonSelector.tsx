@@ -23,6 +23,13 @@ export default function SeasonSelector({ tvId, seasons, showName }: SeasonSelect
 
     useEffect(() => {
         const fetchEpisodes = async () => {
+            // Check if active season already has episodes (populated from M3U)
+            const currentSeason = seasons.find(s => s.season_number === activeSeason);
+            if (currentSeason && (currentSeason as any).episodes && (currentSeason as any).episodes.length > 0) {
+                setEpisodes((currentSeason as any).episodes);
+                return;
+            }
+
             setLoading(true);
             try {
                 const seasonData = await getSeason(tvId, activeSeason);
@@ -36,7 +43,7 @@ export default function SeasonSelector({ tvId, seasons, showName }: SeasonSelect
         };
 
         fetchEpisodes();
-    }, [tvId, activeSeason]);
+    }, [tvId, activeSeason, seasons]);
 
     if (!seasons || seasons.length === 0) {
         return null;

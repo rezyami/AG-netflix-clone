@@ -93,4 +93,19 @@ export const tmdb = {
         const res = await fetchTMDB<{ genres: Genre[] }>(`/genre/${mediaType}/list`);
         return res.genres;
     },
+    getUpcomingMovies: async () => {
+        const data = await fetchTMDB<PaginatedResponse<MediaItem>>("/movie/upcoming");
+        return {
+            ...data,
+            results: data.results.map((item) => ({ ...item, media_type: "movie" } as MediaItem)),
+        };
+    },
+
+    getOnTheAirTV: async () => {
+        const data = await fetchTMDB<PaginatedResponse<MediaItem>>("/tv/on_the_air");
+        return {
+            ...data,
+            results: data.results.map((item) => ({ ...item, media_type: "tv" } as MediaItem)),
+        };
+    },
 };

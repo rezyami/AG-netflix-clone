@@ -3,7 +3,8 @@ import MovieRow from "@/components/MovieRow";
 import CastList from "@/components/CastList";
 import { tmdb } from "@/lib/tmdb";
 import Image from "next/image";
-import { findStream } from "@/lib/m3u";
+import { findStream, getM3UEntryById } from "@/lib/m3u";
+import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 import MovieControls from "@/components/MovieControls";
 
 interface PageProps {
@@ -12,8 +13,29 @@ interface PageProps {
 
 export default async function MovieDetailsPage({ params }: PageProps) {
     const { id } = await params;
-    const movie = await tmdb.getDetails("movie", parseInt(id));
-    const streamEntry = findStream(movie.title);
+    let movie: any;
+    let streamEntry: any;
+
+    try {
+        const numericId = parseInt(id);
+        if (isNaN(numericId)) throw new Error("Invalid ID");
+        movie = await tmdb.getDetails("movie", numericId);
+        streamEntry = await findStream(movie.title);
+    } catch (error) {
+        // Fallback to M3U ID lookup
+        console.log(`TMDB lookup failed for ID ${id}, trying M3U lookup...`);
+        const m3uEntry = await getM3UEntryById(parseInt(id));
+        if (m3uEntry) {
+            movie = mapM3UToMediaItem(m3uEntry);
+            streamEntry = m3uEntry;
+            // Ensure runtime exists (optional)
+            if (!movie.runtime) movie.runtime = 0;
+            // Ensure release_date exists
+            if (!movie.release_date) movie.release_date = new Date().toISOString();
+        } else {
+            throw error; // Rethrow if not found
+        }
+    }
 
     return (
         <div className="min-h-screen bg-[#141414]">

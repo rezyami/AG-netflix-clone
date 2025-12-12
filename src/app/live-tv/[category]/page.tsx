@@ -8,7 +8,7 @@ interface PageProps {
 export default async function CategoryChannelsPage({ params }: PageProps) {
     const { category } = await params;
     const decodedCategory = decodeURIComponent(category);
-    const channels = getChannelsByCategory(decodedCategory);
+    const channels = await getChannelsByCategory(decodedCategory);
 
     return <CategoryChannelsClient category={decodedCategory} channels={channels} />;
 }

@@ -2,7 +2,7 @@ import { M3UEntry } from "./m3u";
 import { MediaItem } from "@/types/tmdb";
 
 // Helper to generate a deterministic ID from a string
-function generateId(str: string): number {
+export function generateId(str: string): number {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
         const char = str.charCodeAt(i);
@@ -12,17 +12,33 @@ function generateId(str: string): number {
     return Math.abs(hash);
 }
 
+// Helper to fix malformed URLs commonly found in M3U files
+function normalizeUrl(url: string | undefined): string | null {
+    if (!url) return null;
+
+    // Fix missing slash after port (e.g., http://host:portimages/...)
+    // This regex looks for :digits followed immediately by "images" or other common paths without a slash
+    let fixedUrl = url.replace(/(:[0-9]+)(images\/)/, '$1/$2');
+
+    // Ensure it starts with http/https
+    if (!fixedUrl.startsWith('http')) {
+        return null;
+    }
+
+    return fixedUrl;
+}
+
 export function mapM3UToMediaItem(entry: M3UEntry): MediaItem {
     // Determine media type based on group or title
     const isTV = entry.group?.toUpperCase().includes('SERIES') || entry.group?.toUpperCase().includes('SRS');
 
     return {
-        id: generateId(entry.title),
+        id: generateId(entry.title + entry.url),
         title: entry.title,
         original_title: entry.rawTitle,
         overview: `Category: ${entry.group}`,
-        poster_path: entry.logo || null,
-        backdrop_path: entry.logo || null, // Use logo as backdrop if available
+        poster_path: normalizeUrl(entry.logo),
+        backdrop_path: normalizeUrl(entry.logo), // Use logo as backdrop if available
         release_date: new Date().toISOString(), // Placeholder
         vote_average: 0,
         vote_count: 0,
