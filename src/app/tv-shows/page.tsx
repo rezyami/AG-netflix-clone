@@ -40,12 +40,14 @@ export default async function TVShowsPage() {
             });
             return {
                 title: category,
-                movies
+                movies,
+                categoryLink: `/tv-shows/category/${encodeURIComponent(category)}`
             };
         }));
 
         return {
             language: group.language,
+            // @ts-ignore
             rows: rows.filter(row => row.movies.length > 0)
         };
     }));

@@ -11,6 +11,7 @@ interface TVShowsClientProps {
         rows: {
             title: string;
             movies: MediaItem[];
+            categoryLink?: string;
         }[];
     }[];
 }
@@ -47,6 +48,7 @@ export default function TVShowsClient({ groupedSeries }: TVShowsClientProps) {
                                         key={row.title}
                                         title={row.title}
                                         movies={row.movies}
+                                        categoryLink={row.categoryLink}
                                         onMovieClick={handleMovieClick}
                                     />
                                 ))}

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MediaItem } from "@/types/tmdb";
@@ -10,9 +11,10 @@ interface MovieRowProps {
     title: string;
     movies: MediaItem[];
     onMovieClick?: (movie: MediaItem) => void;
+    categoryLink?: string;
 }
 
-export default function MovieRow({ title, movies, onMovieClick }: MovieRowProps) {
+export default function MovieRow({ title, movies, onMovieClick, categoryLink }: MovieRowProps) {
     const rowRef = useRef<HTMLDivElement>(null);
     const [isMoved, setIsMoved] = useState(false);
 
@@ -28,10 +30,21 @@ export default function MovieRow({ title, movies, onMovieClick }: MovieRowProps)
     };
 
     return (
-        <div className="h-40 space-y-0.5 md:space-y-2 px-4 md:px-12 mb-8">
-            <h2 className="w-56 cursor-pointer text-sm font-semibold text-[#e5e5e5] transition duration-200 hover:text-white md:text-2xl">
-                {title}
-            </h2>
+        <div className="h-80 space-y-0.5 md:space-y-2 px-4 md:px-12 mb-8">
+            <div className="flex items-center justify-between group/header mb-2 md:mb-4">
+                <h2 className="cursor-pointer text-sm font-semibold text-[#e5e5e5] transition duration-200 hover:text-white md:text-2xl">
+                    {title}
+                </h2>
+                {categoryLink && (
+                    <Link
+                        href={categoryLink}
+                        className="text-xs font-semibold text-gray-400 hover:text-white transition duration-200 opacity-0 group-hover/header:opacity-100 flex items-center gap-1"
+                    >
+                        Show All
+                        <ChevronRight className="h-4 w-4" />
+                    </Link>
+                )}
+            </div>
 
             <div className="group relative md:-ml-2">
                 <ChevronLeft

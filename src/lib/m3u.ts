@@ -142,6 +142,16 @@ export async function findStream(movieTitle: string): Promise<M3UEntry | undefin
     return entries.find(entry => entry.title.includes(normalizedMovieTitle) || normalizedMovieTitle.includes(entry.title));
 }
 
+export async function searchM3U(query: string): Promise<M3UEntry[]> {
+    const m3uPath = await ensureM3UFile();
+    const entries = parseM3U(m3uPath);
+    const normalizedQuery = normalizeTitle(query);
+
+    if (!normalizedQuery) return [];
+
+    return entries.filter(entry => entry.title.includes(normalizedQuery));
+}
+
 // Helper to check if a group name indicates VOD or Series
 function isVODGroup(groupName: string): boolean {
     const group = groupName.toUpperCase();
@@ -237,6 +247,55 @@ export async function getVODAndSeriesByCategory(category: string): Promise<M3UEn
     return cachedGroupIndex?.get(category) || [];
 }
 
+// Get grouped Movies
+export async function getGroupedMovies(): Promise<{ language: string; categories: string[] }[]> {
+    await ensureDataLoaded();
+    const grouped = new Map<string, Set<string>>();
+
+    if (cachedCategoriesVOD) {
+        for (const cat of cachedCategoriesVOD) {
+            // Logic similar to Series but for VOD
+            // Check if it's NOT a series category if possible, or just include all VOD?
+            // The prompt implies "all pages that contains movie card", and simple "movies" route.
+            // Usually VOD | LANGUAGE matches Movies. "SRS" matches Series.
+            // Let's assume non-SRS VOD categories are movies.
+            const isSeries = cat.toUpperCase().includes('SRS') || cat.toUpperCase().includes('SERIES');
+
+            if (!isSeries && cat.startsWith('VOD |')) {
+                // Extract language from "VOD | LANGUAGE [- OPTIONAL]"
+                const parts = cat.split('|');
+                if (parts.length >= 2) {
+                    let language = parts[1].trim();
+
+                    // Normalize language key: split by '-' or '[', take first part
+                    language = language.split('-')[0].trim();
+                    language = language.split('[')[0].trim();
+
+                    // Same normalizations
+                    if (language === 'EN') language = 'ENGLISH';
+                    if (language === 'FR') language = 'FRENCH';
+                    if (language === 'DE') language = 'GERMAN';
+                    if (language === 'ES') language = 'SPANISH';
+                    if (language === 'IT') language = 'ITALIAN';
+
+                    if (!grouped.has(language)) {
+                        grouped.set(language, new Set());
+                    }
+                    grouped.get(language)!.add(cat);
+                }
+            }
+        }
+    }
+
+    // Convert to array and sort
+    const result = Array.from(grouped.entries()).map(([language, categories]) => ({
+        language,
+        categories: Array.from(categories).sort()
+    }));
+
+    return result.sort((a, b) => a.language.localeCompare(b.language));
+}
+
 // Get grouped TV Series
 export async function getGroupedTVSeries(): Promise<{ language: string; categories: string[] }[]> {
     await ensureDataLoaded();
@@ -330,6 +389,55 @@ export function parseSeriesInfo(title: string): SeriesInfo | null {
         };
     }
     return null;
+}
+
+// Search M3U returning grouped Series/Movies
+export async function searchM3USeries(query: string): Promise<(M3UEntry | M3USeries)[]> {
+    const m3uPath = await ensureM3UFile();
+    const entries = parseM3U(m3uPath);
+    const normalizedQuery = normalizeTitle(query);
+
+    if (!normalizedQuery) return [];
+
+    // First find matching entries
+    const matchingEntries = entries.filter(entry => entry.title.toLowerCase().includes(normalizedQuery.toLowerCase()));
+
+    // Now group them if they belong to a series
+    const seriesMap = new Map<string, M3USeries>();
+    const uniqueItems: (M3UEntry | M3USeries)[] = [];
+
+    // We only care about VOD/Series groups for this special "One Card" logic usually?
+    // Or do we group everything? The prompt says "for serie show one card".
+
+    // Logic: If entry has series info, group it. Else add as item.
+    // BUT checking isVODGroup might be needed to avoid grouping Live TV channels that look like series?
+    // Let's assume matches in VOD groups are what we want to group.
+
+    matchingEntries.forEach(entry => {
+        const isSeriesGroup = entry.group && isVODGroup(entry.group); // Only group if it's considered VOD content
+        const info = isSeriesGroup ? parseSeriesInfo(entry.title) : null;
+
+        if (info) {
+            const seriesName = info.name;
+            if (!seriesMap.has(seriesName)) {
+                const seriesId = generateId(seriesName + "_SERIES_GROUP");
+                const series: M3USeries = {
+                    id: seriesId,
+                    title: seriesName,
+                    poster: entry.logo,
+                    group: entry.group,
+                    episodes: []
+                };
+                seriesMap.set(seriesName, series);
+                uniqueItems.push(series);
+            }
+            seriesMap.get(seriesName)!.episodes.push(entry);
+        } else {
+            uniqueItems.push(entry);
+        }
+    });
+
+    return uniqueItems;
 }
 
 // Get unique series for a category

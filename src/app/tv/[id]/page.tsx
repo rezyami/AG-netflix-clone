@@ -57,6 +57,7 @@ export default async function TVDetailsPage({ params }: PageProps) {
                     const seasonNum = info.season;
                     if (!seasonsMap.has(seasonNum)) {
                         seasonsMap.set(seasonNum, {
+                            id: generateId(`${m3uSeries.title}_S${seasonNum}`),
                             season_number: seasonNum,
                             name: `Season ${seasonNum}`,
                             episode_count: 0,

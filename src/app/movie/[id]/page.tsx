@@ -3,7 +3,7 @@ import MovieRow from "@/components/MovieRow";
 import CastList from "@/components/CastList";
 import { tmdb } from "@/lib/tmdb";
 import Image from "next/image";
-import { findStream, getM3UEntryById } from "@/lib/m3u";
+import { findStream, getM3UEntryById, getVODAndSeriesCategories } from "@/lib/m3u";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 import MovieControls from "@/components/MovieControls";
 
@@ -11,30 +11,66 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+
 export default async function MovieDetailsPage({ params }: PageProps) {
     const { id } = await params;
     let movie: any;
     let streamEntry: any;
+    const m3uCategories = await getVODAndSeriesCategories();
+    const isM3UParams = m3uCategories.length > 0;
 
-    try {
-        const numericId = parseInt(id);
-        if (isNaN(numericId)) throw new Error("Invalid ID");
-        movie = await tmdb.getDetails("movie", numericId);
-        streamEntry = await findStream(movie.title);
-    } catch (error) {
-        // Fallback to M3U ID lookup
-        console.log(`TMDB lookup failed for ID ${id}, trying M3U lookup...`);
+    const fetchM3U = async () => {
         const m3uEntry = await getM3UEntryById(parseInt(id));
         if (m3uEntry) {
             movie = mapM3UToMediaItem(m3uEntry);
             streamEntry = m3uEntry;
-            // Ensure runtime exists (optional)
             if (!movie.runtime) movie.runtime = 0;
-            // Ensure release_date exists
             if (!movie.release_date) movie.release_date = new Date().toISOString();
-        } else {
-            throw error; // Rethrow if not found
+            // M3U entries don't have credits or similar movies by default
+            if (!movie.credits) movie.credits = { cast: [], crew: [] };
+            if (!movie.similar) movie.similar = { results: [] };
+            return true;
         }
+        return false;
+    };
+
+    const fetchTMDB = async () => {
+        try {
+            const numericId = parseInt(id);
+            if (isNaN(numericId)) return false;
+            movie = await tmdb.getDetails("movie", numericId);
+            streamEntry = await findStream(movie.title);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    if (isM3UParams) {
+        // Try M3U first
+        if (!(await fetchM3U())) {
+            // Fallback to TMDB if M3U lookup fails (though unlikely if ID came from M3U list)
+            // or maybe explicit "Don't show TMDB" if we are strictly M3U?
+            // But let's allow fallback if it's a legacy link
+            await fetchTMDB();
+        }
+    } else {
+        // Validation/Standard TMDB
+        if (!(await fetchTMDB())) {
+            // Fallback for M3U if TMDB fails
+            await fetchM3U();
+        }
+    }
+
+    if (!movie) {
+        // Handle not found
+        return (
+            <div className="min-h-screen bg-[#141414] text-white pt-24 px-4 text-center">
+                <Navbar />
+                <h1 className="text-2xl mb-4">Content Not Found</h1>
+                <p>The requested content could not be found.</p>
+            </div>
+        );
     }
 
     return (
