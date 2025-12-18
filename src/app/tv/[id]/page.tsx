@@ -7,6 +7,7 @@ import MovieControls from "@/components/MovieControls";
 import MovieRow from "@/components/MovieRow";
 import { findStream, getM3UEntryById, getM3USeriesById, parseSeriesInfo } from "@/lib/m3u";
 import { mapM3UToMediaItem, generateId } from "@/lib/m3uMapper";
+import TraktActions from "@/components/TraktActions";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -127,7 +128,7 @@ export default async function TVDetailsPage({ params }: PageProps) {
                 </div>
 
                 <div className="absolute bottom-0 left-0 w-full px-4 pb-12 md:px-12">
-                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 uppercase">
                         {show.name}
                     </h1>
 
@@ -145,6 +146,15 @@ export default async function TVDetailsPage({ params }: PageProps) {
                     </p>
 
                     <MovieControls streamUrl={streamEntry?.url} mediaItem={show} />
+
+                    <div className="mt-4">
+                        <TraktActions
+                            mediaType="tv"
+                            title={show.name}
+                            year={show.first_air_date ? new Date(show.first_air_date).getFullYear() : undefined}
+                            tmdbId={parseInt(id)}
+                        />
+                    </div>
                 </div>
             </div>
 

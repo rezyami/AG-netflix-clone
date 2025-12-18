@@ -6,6 +6,7 @@ import Image from "next/image";
 import { findStream, getM3UEntryById, getVODAndSeriesCategories } from "@/lib/m3u";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 import MovieControls from "@/components/MovieControls";
+import TraktActions from "@/components/TraktActions";
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -91,7 +92,7 @@ export default async function MovieDetailsPage({ params }: PageProps) {
                 </div>
 
                 <div className="absolute bottom-0 left-0 w-full px-4 pb-12 md:px-12">
-                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+                    <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 uppercase">
                         {movie.title}
                     </h1>
 
@@ -106,6 +107,15 @@ export default async function MovieDetailsPage({ params }: PageProps) {
                     </p>
 
                     <MovieControls streamUrl={streamEntry?.url} mediaItem={movie} />
+
+                    <div className="mt-4">
+                        <TraktActions
+                            mediaType="movie"
+                            title={movie.title}
+                            year={movie.release_date ? new Date(movie.release_date).getFullYear() : undefined}
+                            tmdbId={parseInt(id)}
+                        />
+                    </div>
                 </div>
             </div>
 

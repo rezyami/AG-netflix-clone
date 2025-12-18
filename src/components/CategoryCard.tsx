@@ -1,6 +1,7 @@
 'use client';
 
 import { Tv } from 'lucide-react';
+import { Focusable } from "./tv/Focusable";
 
 interface CategoryCardProps {
     category: string;
@@ -10,9 +11,10 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category, channelCount, onClick }: CategoryCardProps) {
     return (
-        <div
-            onClick={onClick}
-            className="group relative cursor-pointer rounded-lg overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-red-600/30 border border-gray-700 hover:border-red-600"
+        <Focusable
+            focusKey={`category-${category}`}
+            onPress={onClick}
+            className="group relative cursor-pointer rounded-lg overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 p-6 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-red-600/30 border border-gray-700 hover:border-red-600 focus:scale-105 focus:border-red-600 focus:ring-4 focus:ring-red-600/30"
         >
             {/* Icon */}
             <div className="mb-4 flex items-center justify-center">
@@ -45,6 +47,6 @@ export default function CategoryCard({ category, channelCount, onClick }: Catego
                     <path d="M9 5l7 7-7 7" />
                 </svg>
             </div>
-        </div>
+        </Focusable>
     );
 }

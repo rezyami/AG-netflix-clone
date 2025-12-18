@@ -13,26 +13,36 @@ import {
   Settings,
   LogOut
 } from "lucide-react";
+import { useFocusContext } from "@/components/tv/FocusContext";
+import { Focusable } from "@/components/tv/Focusable";
 
 export const AppSidebarMenu: React.FC = () => {
-  const [focused, setFocused] = useState(false);
+  const [focused, setFocused] = useState(false); // Visual expansion state
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
+  const { focusedId } = useFocusContext();
 
+  useEffect(() => {
+    if (focusedId?.startsWith("sidebar-")) {
+      setFocused(true);
+    } else {
+      setFocused(false);
+    }
+  }, [focusedId]);
+
+  // Keep mouse interaction logic for hybrid support
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        setFocused(false);
-        setActiveIdx(null);
+        // Only collapse if not focused via keyboard? 
+        // For now, let context win if keyboard is used.
+        if (!focusedId?.startsWith("sidebar-")) {
+          setFocused(false);
+        }
       }
     };
-    if (focused) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [focused]);
+    // ... logic remains similar but simpler
+  }, [focusedId]);
 
   return (
     <SidebarMenu
@@ -180,6 +190,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   href,
   onIconClick
 }) => {
+  const router = useRouter();
   const baseClasses = "flex items-center px-3 py-2 rounded transition-all duration-500 font-semibold";
   const stateClasses = active ? "text-white" : "text-gray-300";
   const cursorClass = "cursor-pointer";
@@ -196,6 +207,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
           transform: focused ? "translateX(0)" : "translateX(-2.5rem)",
           transitionDelay: focused ? `${delay ?? 0}s` : "0s",
           display: "inline-block",
+          whiteSpace: 'nowrap'
         }}
       >
         {label}
@@ -203,20 +215,22 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
     </>
   );
 
-  if (href) {
-    return (
-      <li className={`${baseClasses} ${stateClasses} ${cursorClass}`}>
-        <Link href={href} className="flex items-center w-full" onClick={onIconClick}>
-          {itemContent}
-        </Link>
-      </li>
-    );
-  }
+  const handlePress = () => {
+    onIconClick?.();
+    if (href) router.push(href);
+  };
 
   return (
-    <div className={`${baseClasses} ${stateClasses} ${cursorClass}`} onClick={onIconClick}>
-      {itemContent}
-    </div>
+    <Focusable
+      focusKey={`sidebar-item-${label}`}
+      onPress={handlePress}
+      className={`${baseClasses} ${stateClasses} ${cursorClass} outline-none focus:bg-gray-800`}
+      focusedClassName="bg-gray-800 ring-2 ring-white"
+    >
+      <div className="flex items-center w-full">
+        {itemContent}
+      </div>
+    </Focusable>
   );
 };
 

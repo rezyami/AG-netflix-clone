@@ -100,7 +100,7 @@ export default function Hero({ movie }: HeroProps) {
 
             {/* Content */}
             <div className="absolute bottom-[30%] left-4 md:left-16 max-w-xl space-y-6 z-10">
-                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl tracking-tight">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl tracking-tight uppercase">
                     {title}
                 </h1>
                 <p className="text-base md:text-lg text-white drop-shadow-md line-clamp-3 font-medium text-shadow">

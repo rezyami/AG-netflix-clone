@@ -64,6 +64,7 @@ export default function MovieRow({ title, movies, onMovieClick, categoryLink }: 
                             key={movie.id}
                             movie={movie}
                             onMovieClick={onMovieClick}
+                            focusKey={`row-${title.replace(/\s+/g, '-').toLowerCase()}-item-${movie.id}`}
                         />
                     ))}
                 </div>

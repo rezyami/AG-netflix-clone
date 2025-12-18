@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { M3UEntry } from '@/lib/m3u';
 import { Play } from 'lucide-react';
 import { useState } from 'react';
+import { Focusable } from "./tv/Focusable";
 
 interface LiveChannelCardProps {
     channel: M3UEntry;
@@ -14,9 +15,10 @@ export default function LiveChannelCard({ channel, onClick }: LiveChannelCardPro
     const [imageError, setImageError] = useState(false);
 
     return (
-        <div
-            onClick={() => onClick(channel)}
-            className="group relative cursor-pointer rounded-lg overflow-hidden bg-gray-800 transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-red-600"
+        <Focusable
+            focusKey={`channel-${channel.url}-${channel.rawTitle}`}
+            onPress={() => onClick(channel)}
+            className="group relative cursor-pointer rounded-lg overflow-hidden bg-gray-800 transition-transform duration-300 hover:scale-105 hover:ring-2 hover:ring-red-600 focus:scale-105 focus:ring-4 focus:ring-red-600"
         >
             {/* Channel Logo */}
             <div className="relative aspect-video bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center">
@@ -50,6 +52,6 @@ export default function LiveChannelCard({ channel, onClick }: LiveChannelCardPro
                     {channel.rawTitle}
                 </h3>
             </div>
-        </div>
+        </Focusable>
     );
 }
