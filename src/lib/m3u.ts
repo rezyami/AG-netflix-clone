@@ -362,7 +362,9 @@ export async function getM3UEntryById(id: number): Promise<M3UEntry | undefined>
 
 // Series Info Interface
 export interface SeriesInfo {
-    name: string;
+    language?: string; // e.g., "CH", "FR", "EN"
+    name: string; // Full name with language prefix (e.g., "CH - Taiwan Crime Stories")
+    cleanTitle: string; // Title without language, season, episode (e.g., "Taiwan Crime Stories")
     season: number;
     episode: number;
 }

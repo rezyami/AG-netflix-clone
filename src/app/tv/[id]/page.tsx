@@ -2,7 +2,7 @@ import Navbar from "@/components/Navbar";
 import CastList from "@/components/CastList";
 import { tmdb } from "@/lib/tmdb";
 import Image from "next/image";
-import SeasonSelector from "@/components/SeasonSelector";
+import SeasonSelectorWrapper from "@/components/SeasonSelectorWrapper";
 import MovieControls from "@/components/MovieControls";
 import MovieRow from "@/components/MovieRow";
 import { findStream, getM3UEntryById, getM3USeriesById, parseSeriesInfo } from "@/lib/m3u";
@@ -35,10 +35,20 @@ export default async function TVDetailsPage({ params }: PageProps) {
             // It is a series with aggregated episodes
             console.log(`Found M3U Series: ${m3uSeries.title} with ${m3uSeries.episodes.length} episodes`);
 
+            // Parse first episode to get clean title for TMDB lookup
+            let cleanShowTitle = m3uSeries.title;
+            if (m3uSeries.episodes.length > 0) {
+                const firstEpisodeInfo = parseSeriesInfo(m3uSeries.episodes[0].title);
+                if (firstEpisodeInfo) {
+                    cleanShowTitle = firstEpisodeInfo.cleanTitle; // Use clean title without language
+                    console.log(`Using clean title for TMDB: ${cleanShowTitle}`);
+                }
+            }
+
             show = {
                 id: m3uSeries.id,
                 name: m3uSeries.title,
-                original_name: m3uSeries.title,
+                original_name: cleanShowTitle, // Use clean title for TMDB searches
                 overview: `Series from M3U - ${m3uSeries.episodes.length} Episodes available.`,
                 poster_path: m3uSeries.poster, // Use logo
                 backdrop_path: m3uSeries.poster,
@@ -164,7 +174,12 @@ export default async function TVDetailsPage({ params }: PageProps) {
                 {regularSeasons.length > 0 && (
                     <div className="mb-12">
                         <h2 className="text-2xl font-bold text-white mb-4">Episodes</h2>
-                        <SeasonSelector tvId={parseInt(id)} seasons={regularSeasons} showName={show.name} />
+                        <SeasonSelectorWrapper
+                            tvId={parseInt(id)}
+                            seasons={regularSeasons}
+                            showName={show.name}
+                            showYear={show.first_air_date ? new Date(show.first_air_date).getFullYear() : undefined}
+                        />
                     </div>
                 )}
 

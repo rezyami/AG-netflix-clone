@@ -302,4 +302,25 @@ export const trakt = {
             accessToken,
         });
     },
+
+    /**
+     * Get playback progress for in-progress movies and episodes
+     */
+    getPlaybackProgress: async (accessToken: string): Promise<any[]> => {
+        return fetchTrakt("/sync/playback", {
+            accessToken,
+        });
+    },
+
+    /**
+     * Get all watched episodes for a specific show
+     */
+    getShowWatchedEpisodes: async (
+        showTraktId: number,
+        accessToken: string
+    ): Promise<any> => {
+        return fetchTrakt(`/shows/${showTraktId}/progress/watched`, {
+            accessToken,
+        });
+    },
 };

@@ -67,6 +67,18 @@ export default function MovieCard({ movie, className, onMovieClick, focusKey }: 
                 className="rounded-sm object-cover transition-all"
                 sizes="(max-width: 768px) 120px, 180px"
             />
+
+            {/* Title overlay - always visible */}
+            {!isPerson && (
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded-sm pointer-events-none">
+                    <div className="absolute bottom-0 left-0 right-0 pb-1 px-2">
+                        <h3 className="text-xs md:text-sm font-semibold text-white line-clamp-1">
+                            {title}
+                        </h3>
+                    </div>
+                </div>
+            )}
+
             {/* Focus Ring is handled by Focusable focusedClassName default if not overridden, or custom: */}
             <div className="absolute inset-0 rounded-sm ring-2 ring-transparent group-focus-visible:ring-white" />
         </Focusable>

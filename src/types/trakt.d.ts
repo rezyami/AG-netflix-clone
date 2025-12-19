@@ -92,3 +92,13 @@ export interface TraktUserSettings {
         time_24hr: boolean;
     };
 }
+
+export interface TraktPlaybackProgress {
+    id: number;
+    progress: number;
+    paused_at: string;
+    type: "movie" | "episode";
+    movie?: TraktMovie;
+    episode?: TraktEpisode;
+    show?: TraktShow;
+}
