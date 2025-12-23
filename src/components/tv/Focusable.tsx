@@ -10,6 +10,7 @@ interface FocusableProps {
     className?: string;
     focusedClassName?: string;
     onPress?: () => void;
+    onFocus?: () => void;
     as?: any; // Allow customizing the render tag
 }
 
@@ -19,11 +20,13 @@ export function Focusable({
     className,
     focusedClassName = "ring-4 ring-white scale-105 z-10",
     onPress,
+    onFocus,
     as: Component = "div"
 }: FocusableProps) {
     const { ref, isFocused, focus } = useFocus({
         focusKey,
-        onEnter: onPress
+        onEnter: onPress,
+        onFocus
     });
 
     return (

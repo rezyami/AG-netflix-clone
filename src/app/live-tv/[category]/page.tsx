@@ -1,5 +1,5 @@
-import CategoryChannelsClient from '@/components/CategoryChannelsClient';
-import { getChannelsByCategory } from '@/lib/m3u';
+import LiveTVMaster from '@/components/live-tv/LiveTVMaster';
+import { getCategoryStats } from '@/lib/m3u';
 
 interface PageProps {
     params: Promise<{ category: string }>;
@@ -8,7 +8,7 @@ interface PageProps {
 export default async function CategoryChannelsPage({ params }: PageProps) {
     const { category } = await params;
     const decodedCategory = decodeURIComponent(category);
-    const channels = await getChannelsByCategory(decodedCategory);
+    const categories = await getCategoryStats();
 
-    return <CategoryChannelsClient category={decodedCategory} channels={channels} />;
+    return <LiveTVMaster categories={categories} initialCategory={decodedCategory} />;
 }

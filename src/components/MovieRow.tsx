@@ -11,10 +11,11 @@ interface MovieRowProps {
     title: string;
     movies: MediaItem[];
     onMovieClick?: (movie: MediaItem) => void;
+    onMovieFocus?: (movie: MediaItem) => void;
     categoryLink?: string;
 }
 
-export default function MovieRow({ title, movies, onMovieClick, categoryLink }: MovieRowProps) {
+export default function MovieRow({ title, movies, onMovieClick, onMovieFocus, categoryLink }: MovieRowProps) {
     const rowRef = useRef<HTMLDivElement>(null);
     const [isMoved, setIsMoved] = useState(false);
 
@@ -64,6 +65,7 @@ export default function MovieRow({ title, movies, onMovieClick, categoryLink }: 
                             key={movie.id}
                             movie={movie}
                             onMovieClick={onMovieClick}
+                            onMovieFocus={onMovieFocus}
                             focusKey={`row-${title.replace(/\s+/g, '-').toLowerCase()}-item-${movie.id}`}
                         />
                     ))}

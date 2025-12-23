@@ -10,10 +10,11 @@ interface MovieCardProps {
     movie: MediaItem;
     className?: string;
     onMovieClick?: (movie: MediaItem) => void;
+    onMovieFocus?: (movie: MediaItem) => void;
     focusKey?: string;
 }
 
-export default function MovieCard({ movie, className, onMovieClick, focusKey }: MovieCardProps) {
+export default function MovieCard({ movie, className, onMovieClick, onMovieFocus, focusKey }: MovieCardProps) {
     const router = useRouter();
     const isPerson = movie.media_type === "person";
 
@@ -55,6 +56,7 @@ export default function MovieCard({ movie, className, onMovieClick, focusKey }: 
         <Focusable
             focusKey={focusKey || `movie-card-${movie.id}`}
             onPress={() => handleClick()}
+            onFocus={() => onMovieFocus?.(movie)}
             className={cn(
                 "group relative h-40 min-w-[120px] cursor-pointer transition-transform duration-200 ease-out md:h-64 md:min-w-[180px] hover:z-50 hover:scale-110 focus:z-50 focus:scale-110 focus:outline-none",
                 className
