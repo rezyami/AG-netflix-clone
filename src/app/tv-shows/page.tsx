@@ -2,6 +2,8 @@ import { getGroupedTVSeries, getUniqueSeriesByCategory } from "@/lib/m3u";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 import TVShowsClient from "@/components/TVShowsClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function TVShowsPage() {
     const groupedData = await getGroupedTVSeries();
 

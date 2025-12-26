@@ -25,14 +25,26 @@ let cachedEntries: M3UEntry[] | null = null;
 
 const CACHE_FILE_PATH = process.env.VERCEL ? path.join('/tmp', 'playlist.m3u') : path.join(process.cwd(), 'src', 'm3u', 'playlist.m3u');
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+const FETCH_TIMEOUT_MS = 30000; // 30 seconds
 
-export async function ensureM3UFile(): Promise<string> {
+let fetchPromise: Promise<void> | null = null;
+
+export async function ensureM3UFile(): Promise<string | null> {
     const m3uUrl = process.env.IPTV_M3U_URL;
 
-    // Ensure directory exists
+    if (!m3uUrl) {
+        console.warn("⚠️ IPTV_M3U_URL is not set. M3U features will be disabled.");
+        return null;
+    }
+
+    // Ensure directory exists (only locally or in /tmp)
     const dir = path.dirname(CACHE_FILE_PATH);
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+        try {
+            fs.mkdirSync(dir, { recursive: true });
+        } catch (e) {
+            console.error(`Error creating directory ${dir}:`, e);
+        }
     }
 
     let shouldFetch = false;
@@ -47,46 +59,62 @@ export async function ensureM3UFile(): Promise<string> {
         }
     }
 
-    if (shouldFetch && m3uUrl) {
-        console.log('Fetching M3U from URL...');
-        try {
-            const response = await fetch(m3uUrl);
-            if (!response.ok) throw new Error(`Failed to fetch M3U: ${response.statusText}`);
-            const text = await response.text();
-            fs.writeFileSync(CACHE_FILE_PATH, text);
-            console.log('M3U file cached successfully.');
-            // Clear cache after update
-            cachedEntries = null;
-            cachedGroupIndex = null;
-            cachedCategoriesVOD = null;
-            cachedCategoriesLive = null;
-        } catch (error) {
-            if (fs.existsSync(CACHE_FILE_PATH)) {
-                console.warn(`Warning: Could not fetch new M3U (${error instanceof Error ? error.message : "Unknown error"}). Using existing cache.`);
-            } else {
-                console.error('Error fetching M3U and no cache available:', error);
+    if (shouldFetch) {
+        // Prevent multiple concurrent fetches in the same worker/process
+        if (fetchPromise) {
+            console.log('⏳ Waiting for existing M3U fetch to complete...');
+            await fetchPromise;
+        } else {
+            fetchPromise = (async () => {
+                console.log(`📡 Fetching M3U from ${m3uUrl}...`);
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
-                // Determine fallback logic - maybe the original local file
-                const fallbackPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
-                if (fs.existsSync(fallbackPath)) {
-                    console.log('Using fallback local file.');
-                    return fallbackPath;
+                    const response = await fetch(m3uUrl, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        console.error(`❌ Failed to fetch M3U: ${response.status} ${response.statusText}`);
+                    } else {
+                        const text = await response.text();
+                        fs.writeFileSync(CACHE_FILE_PATH, text);
+                        console.log('✅ M3U file cached successfully.');
+                        // Clear cache after update
+                        cachedEntries = null;
+                        cachedGroupIndex = null;
+                        cachedCategoriesVOD = null;
+                        cachedCategoriesLive = null;
+                    }
+                } catch (error) {
+                    const message = error instanceof Error && error.name === 'AbortError'
+                        ? 'Fetch timed out'
+                        : (error instanceof Error ? error.message : "Unknown error");
+                    console.error('❌ Error fetching M3U:', message);
+                } finally {
+                    fetchPromise = null;
                 }
-                throw new Error('No M3U file available and fetch failed.');
-            }
-        }
-    } else if (shouldFetch && !m3uUrl) {
-        console.warn("IPTV_M3U_URL not set. Using local file if exists.");
-        const fallbackPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
-        if (fs.existsSync(fallbackPath)) {
-            return fallbackPath;
+            })();
+            await fetchPromise;
         }
     }
 
-    return fs.existsSync(CACHE_FILE_PATH) ? CACHE_FILE_PATH : path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    if (fs.existsSync(CACHE_FILE_PATH)) {
+        return CACHE_FILE_PATH;
+    }
+
+    // Try fallback local file only if it actually exists (it's often gitignored)
+    const fallbackPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    if (fs.existsSync(fallbackPath)) {
+        console.log('Using fallback local file.');
+        return fallbackPath;
+    }
+
+    return null;
 }
 
-export function parseM3U(filePath: string): M3UEntry[] {
+export function parseM3U(filePath: string | null): M3UEntry[] {
+    if (!filePath) return [];
     if (cachedEntries) return cachedEntries;
 
     try {
@@ -149,6 +177,7 @@ function normalizeTitle(title: string): string {
 
 export async function findStream(movieTitle: string): Promise<M3UEntry | undefined> {
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return undefined;
     const entries = parseM3U(m3uPath);
     const normalizedMovieTitle = normalizeTitle(movieTitle);
 
@@ -162,6 +191,7 @@ export async function findStream(movieTitle: string): Promise<M3UEntry | undefin
 
 export async function searchM3U(query: string): Promise<M3UEntry[]> {
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return [];
     const entries = parseM3U(m3uPath);
     const normalizedQuery = normalizeTitle(query);
 
@@ -191,6 +221,12 @@ async function ensureDataLoaded() {
     if (cachedGroupIndex) return;
 
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) {
+        cachedGroupIndex = new Map();
+        cachedCategoriesVOD = [];
+        cachedCategoriesLive = [];
+        return;
+    }
     const entries = parseM3U(m3uPath);
 
     cachedGroupIndex = new Map();
@@ -459,6 +495,7 @@ export async function getGroupedTVSeries(): Promise<{ language: string; categori
 export async function getM3UEntryById(id: number): Promise<M3UEntry | undefined> {
     await ensureDataLoaded();
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return undefined;
     const entries = parseM3U(m3uPath);
 
     const entry = entries.find(entry => generateId(entry.title + entry.url) === id);
@@ -502,6 +539,7 @@ export function parseSeriesInfo(title: string): SeriesInfo | null {
 
 export async function searchM3USeries(query: string): Promise<(M3UEntry | M3USeries)[]> {
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return [];
     const entries = parseM3U(m3uPath);
     const normalizedQuery = normalizeTitle(query);
 
@@ -571,6 +609,7 @@ export async function getUniqueSeriesByCategory(category: string): Promise<(M3UE
 export async function getM3USeriesById(id: number): Promise<M3USeries | undefined> {
     await ensureDataLoaded();
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return undefined;
     const entries = parseM3U(m3uPath);
 
     let targetSeriesName: string | null = null;

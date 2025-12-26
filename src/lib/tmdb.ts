@@ -1,12 +1,17 @@
 import { MediaDetails, MediaItem, PaginatedResponse, Genre } from "@/types/tmdb";
 
-const BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL || "https://api.themoviedb.org/3";
 const API_KEY = process.env.TMDB_API_KEY;
 const ACCESS_TOKEN = process.env.TMDB_READ_ACCESS_TOKEN;
 
 async function fetchTMDB<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
     if (!BASE_URL) throw new Error("TMDB_BASE_URL is not defined");
-    if (!API_KEY && !ACCESS_TOKEN) throw new Error("TMDB API Key or Access Token is missing");
+
+    // During build, some vars might be missing. We allow it to fail silently or log a warning
+    // to prevent build crashes if these are purely for runtime.
+    if (!API_KEY && !ACCESS_TOKEN) {
+        console.warn("⚠️ TMDB API Key or Access Token is missing. TMDB requests may fail.");
+    }
 
     const url = new URL(`${BASE_URL}${endpoint}`);
 

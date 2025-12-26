@@ -3,6 +3,8 @@ import NewPopularClient from "@/components/NewPopularClient";
 import { getVODAndSeriesCategories, getVODAndSeriesByCategory } from "@/lib/m3u";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 
+export const dynamic = "force-dynamic";
+
 export default async function NewPopularPage() {
     // Check if M3U content is available
     const m3uCategories = await getVODAndSeriesCategories();

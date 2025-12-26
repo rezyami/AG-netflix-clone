@@ -2,6 +2,8 @@ import { getGroupedMovies, getVODAndSeriesByCategory } from "@/lib/m3u";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 import MoviesClient from "@/components/MoviesClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function MoviesPage() {
     const groupedData = await getGroupedMovies();
 
