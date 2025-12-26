@@ -23,7 +23,7 @@ export interface M3UEntry {
 
 let cachedEntries: M3UEntry[] | null = null;
 
-const CACHE_FILE_PATH = path.join(process.cwd(), 'src', 'm3u', 'playlist.m3u');
+const CACHE_FILE_PATH = process.env.VERCEL ? path.join('/tmp', 'playlist.m3u') : path.join(process.cwd(), 'src', 'm3u', 'playlist.m3u');
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 export async function ensureM3UFile(): Promise<string> {

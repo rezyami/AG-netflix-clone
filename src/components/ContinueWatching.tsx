@@ -84,7 +84,7 @@ export default function ContinueWatching() {
                             try {
                                 const mediaType = isMovie ? "movie" : "tv";
                                 const tmdbResponse = await fetch(
-                                    `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY || "14e893e97ac3ae3e72bc8a4b529bf133"}`
+                                    `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`
                                 );
 
                                 if (tmdbResponse.ok) {
