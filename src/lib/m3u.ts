@@ -33,7 +33,8 @@ export async function ensureM3UFile(): Promise<string | null> {
     const m3uUrl = process.env.IPTV_M3U_URL;
 
     if (!m3uUrl) {
-        console.warn("⚠️ IPTV_M3U_URL is not set. M3U features will be disabled.");
+        console.warn("⚠️ IPTV_M3U_URL is not set in environment variables. M3U features will be disabled.");
+        console.warn("Please add IPTV_M3U_URL to your Vercel project settings or .env file.");
         return null;
     }
 

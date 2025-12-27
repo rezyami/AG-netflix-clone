@@ -76,8 +76,16 @@ export default function LiveChannelPlayer({ channel, onClose, onNext, onPrev }: 
         const video = videoRef.current;
         if (!video) return;
 
-        const url = channel.url;
+        let url = channel.url;
         setError(null);
+
+        // Use proxy for non-https URLs to avoid Mixed Content blocks on Vercel
+        const useProxy = !url.startsWith('https://') && typeof window !== 'undefined';
+        const effectiveUrl = useProxy ? `/api/proxy?url=${encodeURIComponent(url)}` : url;
+
+        if (useProxy) {
+            console.log("Using stream proxy for insecure URL:", url);
+        }
 
         const cleanup = () => {
             if (hlsRef.current) {
@@ -96,7 +104,7 @@ export default function LiveChannelPlayer({ channel, onClose, onNext, onPrev }: 
 
         const tryNative = () => {
             console.log("Attempting Native playback...");
-            video.src = url;
+            video.src = effectiveUrl;
             video.play().catch(e => {
                 if (e.name === 'AbortError') return;
                 console.error("Native playback failed:", e);
@@ -121,7 +129,7 @@ export default function LiveChannelPlayer({ channel, onClose, onNext, onPrev }: 
 
                         const player = mpegts.createPlayer({
                             type: 'mpegts',
-                            url: url,
+                            url: effectiveUrl,
                             isLive: true,
                             cors: true,
                         });
@@ -166,7 +174,7 @@ export default function LiveChannelPlayer({ channel, onClose, onNext, onPrev }: 
             if (Hls.isSupported()) {
                 const hls = new Hls();
                 hlsRef.current = hls;
-                hls.loadSource(url);
+                hls.loadSource(effectiveUrl);
                 hls.attachMedia(video);
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
                     video.play().catch(e => {
@@ -189,7 +197,7 @@ export default function LiveChannelPlayer({ channel, onClose, onNext, onPrev }: 
                 });
             } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                 // Native HLS support (Safari)
-                video.src = url;
+                video.src = effectiveUrl;
                 video.play().catch(e => {
                     if (e.name === 'AbortError') return;
                     console.error("Native HLS play error:", e);

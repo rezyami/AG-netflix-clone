@@ -67,6 +67,14 @@ export default function VideoPlayer({ src, onClose, onNext, onPrev }: VideoPlaye
         setError(null);
         setStatus("Loading...");
 
+        // Use proxy for non-https URLs to avoid Mixed Content blocks on Vercel
+        const useProxy = !src.startsWith('https://') && typeof window !== 'undefined';
+        const effectiveUrl = useProxy ? `/api/proxy?url=${encodeURIComponent(src)}` : src;
+
+        if (useProxy) {
+            console.log("Using stream proxy for insecure URL:", src);
+        }
+
         // Cleanup previous instances
         const cleanup = () => {
             if (hlsRef.current) {
@@ -77,9 +85,6 @@ export default function VideoPlayer({ src, onClose, onNext, onPrev }: VideoPlaye
                 mpegtsRef.current.destroy();
                 mpegtsRef.current = null;
             }
-            // Detach native error listeners if possible? 
-            // We can't easily remove anonymous listeners, but we can recreate the element or ignore old events.
-            // For now, react's effect cleanup is enough for refs.
             video.removeAttribute('src');
             video.load();
         };
@@ -98,7 +103,7 @@ export default function VideoPlayer({ src, onClose, onNext, onPrev }: VideoPlaye
                 });
                 hlsRef.current = hls;
 
-                hls.loadSource(src);
+                hls.loadSource(effectiveUrl);
                 hls.attachMedia(video);
 
                 hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -146,7 +151,7 @@ export default function VideoPlayer({ src, onClose, onNext, onPrev }: VideoPlaye
 
                         const player = mpegts.createPlayer({
                             type: 'mpegts',
-                            url: src,
+                            url: effectiveUrl,
                             isLive: true,
                             cors: true, // Try to request with CORS
                         });
@@ -204,7 +209,7 @@ export default function VideoPlayer({ src, onClose, onNext, onPrev }: VideoPlaye
         const tryNative = () => {
             console.log("Switching to Native player...");
             setStatus("Trying Native Player...");
-            video.src = src;
+            video.src = effectiveUrl;
 
             const playPromise = video.play();
             if (playPromise !== undefined) {
