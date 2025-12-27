@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 
+import { Focusable } from "./tv/Focusable";
 import LiveChannelPlayer from '@/components/LiveChannelPlayer';
 import { M3UEntry } from '@/lib/m3u';
 import { ArrowLeft, Play, Search } from 'lucide-react';
@@ -77,15 +78,15 @@ export default function CategoryChannelsClient({ category, channels }: CategoryC
                                 {filteredChannels.map((channel, index) => {
                                     const isSelected = selectedChannel?.url === channel.url;
                                     return (
-                                        <div
+                                        <Focusable
                                             key={`${channel.url}-${index}`}
-                                            onClick={() => handleChannelClick(channel)}
+                                            focusKey={`channel-list-${index}`}
+                                            onPress={() => handleChannelClick(channel)}
                                             className={`
-                                                group flex items-center gap-4 px-6 py-3 cursor-pointer border-b border-zinc-800 transition-colors
-                                                ${isSelected
-                                                    ? 'bg-zinc-800'
-                                                    : 'hover:bg-zinc-900'}
+                                                group flex items-center gap-4 px-6 py-3 cursor-pointer border-b border-zinc-800 transition-colors outline-none
+                                                ${isSelected ? 'bg-zinc-800' : ''}
                                             `}
+                                            focusedClassName="bg-zinc-800 ring-2 ring-inset ring-white z-10"
                                         >
                                             {/* Index */}
                                             <div className={`
@@ -126,7 +127,7 @@ export default function CategoryChannelsClient({ category, channels }: CategoryC
                                             {isSelected && (
                                                 <div className="w-1.5 h-1.5 rounded-full bg-[#E50914]"></div>
                                             )}
-                                        </div>
+                                        </Focusable>
                                     );
                                 })}
                             </div>
@@ -156,6 +157,18 @@ export default function CategoryChannelsClient({ category, channels }: CategoryC
                 <LiveChannelPlayer
                     channel={selectedChannel}
                     onClose={handleClosePlayer}
+                    onNext={() => {
+                        const idx = filteredChannels.findIndex(c => c.url === selectedChannel.url);
+                        if (idx !== -1 && idx < filteredChannels.length - 1) {
+                            setSelectedChannel(filteredChannels[idx + 1]);
+                        }
+                    }}
+                    onPrev={() => {
+                        const idx = filteredChannels.findIndex(c => c.url === selectedChannel.url);
+                        if (idx > 0) {
+                            setSelectedChannel(filteredChannels[idx - 1]);
+                        }
+                    }}
                 />
             )}
         </>

@@ -14,9 +14,10 @@ interface SeasonSelectorProps {
     tvId: number;
     seasons: Season[];
     showName: string;
+    showTraktId?: number | null;
 }
 
-export default function SeasonSelector({ tvId, seasons, showName }: SeasonSelectorProps) {
+export default function SeasonSelector({ tvId, seasons, showName, showTraktId }: SeasonSelectorProps) {
     const [activeSeason, setActiveSeason] = useState(seasons[0]?.season_number || 1);
     const [episodes, setEpisodes] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
@@ -71,7 +72,12 @@ export default function SeasonSelector({ tvId, seasons, showName }: SeasonSelect
             {loading ? (
                 <div className="text-gray-400 text-center py-8">Loading episodes...</div>
             ) : (
-                <EpisodeList episodes={episodes} seasonNumber={activeSeason} showName={showName} />
+                <EpisodeList
+                    episodes={episodes}
+                    seasonNumber={activeSeason}
+                    showName={showName}
+                    showTraktId={showTraktId ?? undefined}
+                />
             )}
         </div>
     );

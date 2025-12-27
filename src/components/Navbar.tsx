@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { AppSidebarMenu } from "../../static/SidebarMenu";
+import TraktAuthButton from "./TraktAuthButton";
 
 export default function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false);
@@ -33,10 +34,11 @@ export default function Navbar() {
                     isScrolled ? "bg-black/90" : "bg-gradient-to-b from-black/80 to-transparent"
                 )}
             >
-                <div className="flex items-center justify-center md:justify-start md:ml-20">
+                <div className="flex items-center justify-between md:ml-20">
                     <Link href="/" className="text-2xl font-bold text-[var(--color-netflix-red)]">
                         NETFLIX
                     </Link>
+                    <TraktAuthButton />
                 </div>
             </nav>
         </>

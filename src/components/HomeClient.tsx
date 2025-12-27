@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import MovieRow from "@/components/MovieRow";
+import ContinueWatching from "@/components/ContinueWatching";
 import { MediaItem } from "@/types/tmdb";
 import { getMyList } from "@/lib/myList";
 
@@ -41,6 +42,8 @@ export default function HomeClient({
             <main id="main-content" className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
                 <Hero movie={selectedMovie} />
                 <section className="md:space-y-24">
+                    <ContinueWatching />
+
                     {myListMovies.length > 0 && (
                         <MovieRow
                             title="My List"

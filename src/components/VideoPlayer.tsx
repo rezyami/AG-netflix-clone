@@ -8,15 +8,56 @@ import Hls from 'hls.js';
 interface VideoPlayerProps {
     src: string;
     onClose: () => void;
+    onNext?: () => void;
+    onPrev?: () => void;
 }
 
-export default function VideoPlayer({ src, onClose }: VideoPlayerProps) {
+export default function VideoPlayer({ src, onClose, onNext, onPrev }: VideoPlayerProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const hlsRef = useRef<Hls | null>(null);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mpegtsRef = useRef<any | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [status, setStatus] = useState<string>("Initializing...");
+
+    // Handle Remote Control / Keyboard
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            e.stopPropagation(); // Stop global focus nav
+
+            const video = videoRef.current;
+            if (!video) return;
+
+            switch (e.key) {
+                case "Enter":
+                case " ":
+                    if (video.paused) video.play();
+                    else video.pause();
+                    break;
+                case "ArrowLeft":
+                    if (onPrev) onPrev();
+                    else video.currentTime -= 10;
+                    break;
+                case "ArrowRight":
+                    if (onNext) onNext();
+                    else video.currentTime += 10;
+                    break;
+                case "ArrowUp":
+                    if (onPrev) onPrev();
+                    break;
+                case "ArrowDown":
+                    if (onNext) onNext();
+                    break;
+                case "Escape":
+                case "Backspace":
+                    onClose();
+                    break;
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown); // Use capture to ensure we get it first? Or just normal
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [onNext, onPrev, onClose]);
 
     useEffect(() => {
         const video = videoRef.current;

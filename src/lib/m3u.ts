@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { generateId } from "@/lib/m3uMapper";
 
 export interface M3UEntry {
     title: string;
@@ -7,20 +8,43 @@ export interface M3UEntry {
     group?: string;
     url: string;
     rawTitle: string;
+    epgId?: string;
+    currentProgram?: {
+        title: string;
+        description: string;
+        start: string;
+        end: string;
+        progress: number;
+    };
+    nextProgram?: {
+        title: string;
+    };
 }
 
 let cachedEntries: M3UEntry[] | null = null;
 
-const CACHE_FILE_PATH = path.join(process.cwd(), 'src', 'm3u', 'playlist.m3u');
+const CACHE_FILE_PATH = process.env.VERCEL ? path.join('/tmp', 'playlist.m3u') : path.join(process.cwd(), 'src', 'm3u', 'playlist.m3u');
 const CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+const FETCH_TIMEOUT_MS = 30000; // 30 seconds
 
-export async function ensureM3UFile(): Promise<string> {
+let fetchPromise: Promise<void> | null = null;
+
+export async function ensureM3UFile(): Promise<string | null> {
     const m3uUrl = process.env.IPTV_M3U_URL;
 
-    // Ensure directory exists
+    if (!m3uUrl) {
+        console.warn("⚠️ IPTV_M3U_URL is not set. M3U features will be disabled.");
+        return null;
+    }
+
+    // Ensure directory exists (only locally or in /tmp)
     const dir = path.dirname(CACHE_FILE_PATH);
     if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
+        try {
+            fs.mkdirSync(dir, { recursive: true });
+        } catch (e) {
+            console.error(`Error creating directory ${dir}:`, e);
+        }
     }
 
     let shouldFetch = false;
@@ -35,43 +59,62 @@ export async function ensureM3UFile(): Promise<string> {
         }
     }
 
-    if (shouldFetch && m3uUrl) {
-        console.log('Fetching M3U from URL...');
-        try {
-            const response = await fetch(m3uUrl);
-            if (!response.ok) throw new Error(`Failed to fetch M3U: ${response.statusText}`);
-            const text = await response.text();
-            fs.writeFileSync(CACHE_FILE_PATH, text);
-            console.log('M3U file cached successfully.');
-            // Clear cache after update
-            cachedEntries = null;
-            cachedGroupIndex = null;
-            cachedCategoriesVOD = null;
-            cachedCategoriesLive = null;
-        } catch (error) {
-            console.error('Error fetching M3U, falling back to existing cache if available:', error);
-            if (!fs.existsSync(CACHE_FILE_PATH)) {
-                // Determine fallback logic - maybe the original local file
-                const fallbackPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
-                if (fs.existsSync(fallbackPath)) {
-                    console.log('Using fallback local file.');
-                    return fallbackPath;
+    if (shouldFetch) {
+        // Prevent multiple concurrent fetches in the same worker/process
+        if (fetchPromise) {
+            console.log('⏳ Waiting for existing M3U fetch to complete...');
+            await fetchPromise;
+        } else {
+            fetchPromise = (async () => {
+                console.log(`📡 Fetching M3U from ${m3uUrl}...`);
+                try {
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+                    const response = await fetch(m3uUrl, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+
+                    if (!response.ok) {
+                        console.error(`❌ Failed to fetch M3U: ${response.status} ${response.statusText}`);
+                    } else {
+                        const text = await response.text();
+                        fs.writeFileSync(CACHE_FILE_PATH, text);
+                        console.log('✅ M3U file cached successfully.');
+                        // Clear cache after update
+                        cachedEntries = null;
+                        cachedGroupIndex = null;
+                        cachedCategoriesVOD = null;
+                        cachedCategoriesLive = null;
+                    }
+                } catch (error) {
+                    const message = error instanceof Error && error.name === 'AbortError'
+                        ? 'Fetch timed out'
+                        : (error instanceof Error ? error.message : "Unknown error");
+                    console.error('❌ Error fetching M3U:', message);
+                } finally {
+                    fetchPromise = null;
                 }
-                throw new Error('No M3U file available and fetch failed.');
-            }
-        }
-    } else if (shouldFetch && !m3uUrl) {
-        console.warn("IPTV_M3U_URL not set. Using local file if exists.");
-        const fallbackPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
-        if (fs.existsSync(fallbackPath)) {
-            return fallbackPath;
+            })();
+            await fetchPromise;
         }
     }
 
-    return fs.existsSync(CACHE_FILE_PATH) ? CACHE_FILE_PATH : path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    if (fs.existsSync(CACHE_FILE_PATH)) {
+        return CACHE_FILE_PATH;
+    }
+
+    // Try fallback local file only if it actually exists (it's often gitignored)
+    const fallbackPath = path.join(process.cwd(), 'src', 'm3u', 'tv_channels_F021502_plus.m3u');
+    if (fs.existsSync(fallbackPath)) {
+        console.log('Using fallback local file.');
+        return fallbackPath;
+    }
+
+    return null;
 }
 
-export function parseM3U(filePath: string): M3UEntry[] {
+export function parseM3U(filePath: string | null): M3UEntry[] {
+    if (!filePath) return [];
     if (cachedEntries) return cachedEntries;
 
     try {
@@ -87,10 +130,12 @@ export function parseM3U(filePath: string): M3UEntry[] {
                 const titleMatch = metadata.match(/,(.+)$/);
                 const logoMatch = metadata.match(/tvg-logo="([^"]+)"/);
                 const groupMatch = metadata.match(/group-title="([^"]+)"/);
+                const epgIdMatch = metadata.match(/tvg-id="([^"]+)"/);
 
                 const rawTitle = titleMatch ? titleMatch[1].trim() : 'Unknown';
                 const logo = logoMatch ? logoMatch[1] : undefined;
                 const group = groupMatch ? groupMatch[1] : undefined;
+                const epgId = epgIdMatch ? epgIdMatch[1] : undefined;
 
                 // Get URL from next line
                 let url = '';
@@ -104,6 +149,7 @@ export function parseM3U(filePath: string): M3UEntry[] {
                         rawTitle,
                         logo,
                         group,
+                        epgId,
                         url
                     });
                 }
@@ -124,13 +170,14 @@ function normalizeTitle(title: string): string {
         .replace(/^(ear|ar|fr|en)\s*-\s*/i, '') // Remove prefixes like "EAR - ", "AR - "
         .replace(/\s*-\s*\d{4}.*$/, '') // Remove year and anything after (e.g. " - 2019")
         .replace(/\[.*?\]/g, '') // Remove brackets content like "[مدبلج مصري]"
-        .replace(/[^\w\s]/g, '') // Remove special chars
+        .replace(/[^\p{L}\p{N}\s]/gu, '') // Remove special chars but keep Unicode letters and numbers
         .replace(/\s+/g, ' ') // Collapse spaces
         .trim();
 }
 
 export async function findStream(movieTitle: string): Promise<M3UEntry | undefined> {
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return undefined;
     const entries = parseM3U(m3uPath);
     const normalizedMovieTitle = normalizeTitle(movieTitle);
 
@@ -144,6 +191,7 @@ export async function findStream(movieTitle: string): Promise<M3UEntry | undefin
 
 export async function searchM3U(query: string): Promise<M3UEntry[]> {
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return [];
     const entries = parseM3U(m3uPath);
     const normalizedQuery = normalizeTitle(query);
 
@@ -173,6 +221,12 @@ async function ensureDataLoaded() {
     if (cachedGroupIndex) return;
 
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) {
+        cachedGroupIndex = new Map();
+        cachedCategoriesVOD = [];
+        cachedCategoriesLive = [];
+        return;
+    }
     const entries = parseM3U(m3uPath);
 
     cachedGroupIndex = new Map();
@@ -208,7 +262,36 @@ export async function getAllChannelCategories(): Promise<string[]> {
 // Get all channels for a specific category
 export async function getChannelsByCategory(category: string): Promise<M3UEntry[]> {
     await ensureDataLoaded();
-    return cachedGroupIndex?.get(category) || [];
+    const channels = cachedGroupIndex?.get(category) || [];
+    return channels.map(enhanceWithMockEPG);
+}
+
+function enhanceWithMockEPG(entry: M3UEntry): M3UEntry {
+    // Determine mock programs based on title to keep it consistent-ish
+    const hash = generateId(entry.title);
+    const programs = [
+        { title: "Match en direct : Juventus Vs Ac Milan", desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." },
+        { title: "Journal Télévisé", desc: "Les dernières actualités nationales et internationales." },
+        { title: "Film: Inception", desc: "Un voleur qui subtilise des secrets d'entreprise à travers l'utilisation de la technologie de partage de rêves." },
+        { title: "Documentaire: Planète Terre", desc: "Une exploration des paysages les plus spectaculaires de notre planète." }
+    ];
+
+    const currentIdx = hash % programs.length;
+    const nextIdx = (hash + 1) % programs.length;
+
+    return {
+        ...entry,
+        currentProgram: {
+            title: programs[currentIdx].title,
+            description: programs[currentIdx].desc,
+            start: "20:00",
+            end: "22:00",
+            progress: 45 // 45% progress
+        },
+        nextProgram: {
+            title: programs[nextIdx].title
+        }
+    };
 }
 
 // Get category statistics
@@ -228,13 +311,12 @@ export async function getCategoryStats(): Promise<{ category: string; count: num
     return stats.sort((a, b) => a.category.localeCompare(b.category));
 }
 
-// Helper to check if a channel is VOD or Series (Legacy helper, kept if needed by other files, but implementation updated to use new string helper)
+// Helper to check if a channel is VOD or Series
 function isVODOrSeries(entry: M3UEntry): boolean {
     if (!entry.group) return false;
     return isVODGroup(entry.group);
 }
 
-// Get all unique VOD/Series categories from M3U
 // Get all unique VOD/Series categories from M3U
 export async function getVODAndSeriesCategories(): Promise<string[]> {
     await ensureDataLoaded();
@@ -247,6 +329,81 @@ export async function getVODAndSeriesByCategory(category: string): Promise<M3UEn
     return cachedGroupIndex?.get(category) || [];
 }
 
+// === LANGUAGE / FLAGS LOGIC ===
+
+const LANGUAGE_FLAGS: Record<string, string> = {
+    'AR': '🇸🇦', 'ARABIC': '🇸🇦',
+    'FR': '🇫🇷', 'FRENCH': '🇫🇷',
+    'EN': '🇺🇸', 'ENGLISH': '🇺🇸',
+    'DE': '🇩🇪', 'GERMAN': '🇩🇪',
+    'ES': '🇪🇸', 'SPANISH': '🇪🇸',
+    'IT': '🇮🇹', 'ITALIAN': '🇮🇹', 'ITALY': '🇮🇹',
+    'TR': '🇹🇷', 'TURKISH': '🇹🇷',
+    'RU': '🇷🇺', 'RUSSIAN': '🇷🇺',
+    'PT': '🇵🇹', 'PORTUGUESE': '🇵🇹',
+    'NL': '🇳🇱', 'DUTCH': '🇳🇱',
+    'PL': '🇵🇱', 'POLISH': '🇵🇱',
+    'CH': '🇨🇳', 'CHINESE': '🇨🇳',
+    'UK': '🇬🇧',
+    'US': '🇺🇸',
+    'CA': '🇨🇦',
+    'IN': '🇮🇳', 'HINDI': '🇮🇳', 'INDIA': '🇮🇳',
+    'LATINO': '🇲🇽',
+    'EXYU': '🇧🇦',
+    'ALB': '🇦🇱', 'ALBANIA': '🇦🇱',
+    'BG': '🇧🇬', 'BULGARIAN': '🇧🇬',
+    'RO': '🇷🇴', 'ROMANIAN': '🇷🇴',
+    'MK': '🇲🇰', 'MACEDONIAN': '🇲🇰',
+    'GR': '🇬🇷', 'GREEK': '🇬🇷',
+    'ID': '🇮🇩', 'INDONESIA': '🇮🇩',
+    'JP': '🇯🇵', 'JAPAN': '🇯🇵', 'JAPANESE': '🇯🇵',
+    'KO': '🇰🇷', 'KOREA': '🇰🇷', 'KOREAN': '🇰🇷',
+    'VN': '🇻🇳', 'VIETNAM': '🇻🇳', 'VIETNAMESE': '🇻🇳',
+    'TH': '🇹🇭', 'THAILAND': '🇹🇭', 'THAI': '🇹🇭',
+    'MY': '🇲🇾', 'MALAYSIA': '🇲🇾', 'MALAY': '🇲🇾',
+    'IR': '🇮🇷', 'IRAN': '🇮🇷', 'PERSIAN': '🇮🇷', 'FA': '🇮🇷', 'FARSI': '🇮🇷', 'PR': '🇮🇷',
+    'SE': '🇸🇪', 'SWEDEN': '🇸🇪', 'SWEDISH': '🇸🇪',
+    'SC': '❄️', 'SCANDINAVIA': '❄️', 'SCANDINAVIAN': '❄️',
+};
+
+function getFlaggedLanguage(lang: string): string {
+    const key = lang.toUpperCase().trim();
+    if (LANGUAGE_FLAGS[key]) {
+        return `${LANGUAGE_FLAGS[key]} ${key}`;
+    }
+    return lang;
+}
+
+const SPACE_SEPARATOR_BLOCKLIST = new Set(['IT', 'IN', 'US', 'AT', 'TO', 'IS', 'ON', 'AN', 'WE', 'MY', 'HE', 'ME', 'AS', 'BY', 'OF', 'OR', 'SO', 'UP', 'ID', 'SE']);
+
+function replaceLanguageWrapper(text: string): string {
+    // 1. Check for standard "CODE - " or "CODE | " (Strong signal)
+    let match = text.match(/^([A-Z]{2,10})\s*[-|]\s*(.+)/i);
+    if (match) {
+        const langCode = match[1].toUpperCase();
+        const rest = match[2];
+        const flag = LANGUAGE_FLAGS[langCode];
+        if (flag) {
+            return `${flag} ${rest}`;
+        }
+    }
+
+    // 2. Check for "CODE " (Weak signal, space only)
+    // We only allow this for known flags that are NOT common words in the blocklist
+    match = text.match(/^([A-Z]{2,10})\s+(.+)/i);
+    if (match) {
+        const langCode = match[1].toUpperCase();
+        const rest = match[2]; // The rest of the title
+
+        // Check if valid flag and not blocked
+        if (LANGUAGE_FLAGS[langCode] && !SPACE_SEPARATOR_BLOCKLIST.has(langCode)) {
+            return `${LANGUAGE_FLAGS[langCode]} ${rest}`;
+        }
+    }
+
+    return text;
+}
+
 // Get grouped Movies
 export async function getGroupedMovies(): Promise<{ language: string; categories: string[] }[]> {
     await ensureDataLoaded();
@@ -254,40 +411,38 @@ export async function getGroupedMovies(): Promise<{ language: string; categories
 
     if (cachedCategoriesVOD) {
         for (const cat of cachedCategoriesVOD) {
-            // Logic similar to Series but for VOD
-            // Check if it's NOT a series category if possible, or just include all VOD?
-            // The prompt implies "all pages that contains movie card", and simple "movies" route.
-            // Usually VOD | LANGUAGE matches Movies. "SRS" matches Series.
-            // Let's assume non-SRS VOD categories are movies.
             const isSeries = cat.toUpperCase().includes('SRS') || cat.toUpperCase().includes('SERIES');
 
             if (!isSeries && cat.startsWith('VOD |')) {
-                // Extract language from "VOD | LANGUAGE [- OPTIONAL]"
                 const parts = cat.split('|');
                 if (parts.length >= 2) {
                     let language = parts[1].trim();
+                    // Normalize key for grouping logic
+                    // Take first part if dash implies sub-spec
+                    let langKey = language.split('-')[0].trim();
+                    langKey = langKey.split('[')[0].trim();
 
-                    // Normalize language key: split by '-' or '[', take first part
-                    language = language.split('-')[0].trim();
-                    language = language.split('[')[0].trim();
+                    // Standardize keys to map common ones (EN -> ENGLISH) so they group together
+                    // BUT for display we want to flagify. 
 
-                    // Same normalizations
-                    if (language === 'EN') language = 'ENGLISH';
-                    if (language === 'FR') language = 'FRENCH';
-                    if (language === 'DE') language = 'GERMAN';
-                    if (language === 'ES') language = 'SPANISH';
-                    if (language === 'IT') language = 'ITALIAN';
+                    let normalized = langKey.toUpperCase();
+                    if (normalized === 'EN') normalized = 'ENGLISH';
+                    if (normalized === 'FR') normalized = 'FRENCH';
+                    if (normalized === 'DE') normalized = 'GERMAN';
+                    if (normalized === 'ES') normalized = 'SPANISH';
+                    if (normalized === 'IT') normalized = 'ITALIAN';
 
-                    if (!grouped.has(language)) {
-                        grouped.set(language, new Set());
+                    const displayLang = getFlaggedLanguage(normalized);
+
+                    if (!grouped.has(displayLang)) {
+                        grouped.set(displayLang, new Set());
                     }
-                    grouped.get(language)!.add(cat);
+                    grouped.get(displayLang)!.add(cat);
                 }
             }
         }
     }
 
-    // Convert to array and sort
     const result = Array.from(grouped.entries()).map(([language, categories]) => ({
         language,
         categories: Array.from(categories).sort()
@@ -304,33 +459,30 @@ export async function getGroupedTVSeries(): Promise<{ language: string; categori
     if (cachedCategoriesVOD) {
         for (const cat of cachedCategoriesVOD) {
             if (cat.startsWith('SRS |')) {
-                // Extract language from "SRS | LANGUAGE [- OPTIONAL]"
-                // e.g., "SRS | ENGLISH" or "SRS | ENGLISH - KIDS"
                 const parts = cat.split('|');
                 if (parts.length >= 2) {
-                    let language = parts[1].trim();
+                    let langKey = parts[1].trim();
+                    langKey = langKey.split('-')[0].trim();
+                    langKey = langKey.split('[')[0].trim();
 
-                    // Normalize language key: split by '-' or '[', take first part
-                    language = language.split('-')[0].trim();
-                    language = language.split('[')[0].trim();
+                    let normalized = langKey.toUpperCase();
+                    if (normalized === 'EN') normalized = 'ENGLISH';
+                    if (normalized === 'FR') normalized = 'FRENCH';
+                    if (normalized === 'DE') normalized = 'GERMAN';
+                    if (normalized === 'ES') normalized = 'SPANISH';
+                    if (normalized === 'IT') normalized = 'ITALIAN';
 
-                    // Some manual normalizations if needed
-                    if (language === 'EN') language = 'ENGLISH';
-                    if (language === 'FR') language = 'FRENCH';
-                    if (language === 'DE') language = 'GERMAN';
-                    if (language === 'ES') language = 'SPANISH';
-                    if (language === 'IT') language = 'ITALIAN';
+                    const displayLang = getFlaggedLanguage(normalized);
 
-                    if (!grouped.has(language)) {
-                        grouped.set(language, new Set());
+                    if (!grouped.has(displayLang)) {
+                        grouped.set(displayLang, new Set());
                     }
-                    grouped.get(language)!.add(cat);
+                    grouped.get(displayLang)!.add(cat);
                 }
             }
         }
     }
 
-    // Convert to array and sort
     const result = Array.from(grouped.entries()).map(([language, categories]) => ({
         language,
         categories: Array.from(categories).sort()
@@ -339,51 +491,45 @@ export async function getGroupedTVSeries(): Promise<{ language: string; categori
     return result.sort((a, b) => a.language.localeCompare(b.language));
 }
 
-import { generateId } from "@/lib/m3uMapper";
-
 // Get M3U Entry by ID (synthetic)
 export async function getM3UEntryById(id: number): Promise<M3UEntry | undefined> {
     await ensureDataLoaded();
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return undefined;
     const entries = parseM3U(m3uPath);
 
-    // Check if it's a series ID first
-    // This is a bit inefficient without an index, but we iterate to find a matching series representative
-    // We need to iterate all entries, parse them, group them, and check if the group ID matches.
-    // Optimization: We can check simple entry ID first.
     const entry = entries.find(entry => generateId(entry.title + entry.url) === id);
     if (entry) return entry;
-
-    // If not a simple entry, it might be a series group ID. 
-    // We need to find the series mapping.
-    // For now, let's implement getM3USeriesById separately to keep this clean
+    // Series support needed for ID search?
     return undefined;
 }
 
-// Series Info Interface
 export interface SeriesInfo {
+    language?: string;
     name: string;
+    cleanTitle: string;
     season: number;
     episode: number;
 }
 
 export interface M3USeries {
-    id: number; // Generated ID for the series
+    id: number;
     title: string;
     poster?: string;
     group?: string;
     episodes: M3UEntry[];
 }
 
-// Helper to parse series info from title
 export function parseSeriesInfo(title: string): SeriesInfo | null {
-    // Regex for "Title Sxx Exx" or "Title Sxx Exx"
-    // Also handles "Title Sxx - Exx" or similar variations
-    // Example: "FR - L’EXORCISTE S02 E01" -> Name: "FR - L’EXORCISTE", S: 2, E: 1
     const match = title.match(/(.+?)\s+S(\d+)\s*[-_]?\s*E(\d+)/i);
     if (match) {
+        let name = match[1].trim();
+        // Flagify the series name
+        name = replaceLanguageWrapper(name);
+
         return {
-            name: match[1].trim(),
+            name: name,
+            cleanTitle: name, // Approximation
             season: parseInt(match[2]),
             episode: parseInt(match[3])
         };
@@ -391,30 +537,20 @@ export function parseSeriesInfo(title: string): SeriesInfo | null {
     return null;
 }
 
-// Search M3U returning grouped Series/Movies
 export async function searchM3USeries(query: string): Promise<(M3UEntry | M3USeries)[]> {
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return [];
     const entries = parseM3U(m3uPath);
     const normalizedQuery = normalizeTitle(query);
 
     if (!normalizedQuery) return [];
 
-    // First find matching entries
     const matchingEntries = entries.filter(entry => entry.title.toLowerCase().includes(normalizedQuery.toLowerCase()));
-
-    // Now group them if they belong to a series
     const seriesMap = new Map<string, M3USeries>();
     const uniqueItems: (M3UEntry | M3USeries)[] = [];
 
-    // We only care about VOD/Series groups for this special "One Card" logic usually?
-    // Or do we group everything? The prompt says "for serie show one card".
-
-    // Logic: If entry has series info, group it. Else add as item.
-    // BUT checking isVODGroup might be needed to avoid grouping Live TV channels that look like series?
-    // Let's assume matches in VOD groups are what we want to group.
-
     matchingEntries.forEach(entry => {
-        const isSeriesGroup = entry.group && isVODGroup(entry.group); // Only group if it's considered VOD content
+        const isSeriesGroup = entry.group && isVODGroup(entry.group);
         const info = isSeriesGroup ? parseSeriesInfo(entry.title) : null;
 
         if (info) {
@@ -440,7 +576,6 @@ export async function searchM3USeries(query: string): Promise<(M3UEntry | M3USer
     return uniqueItems;
 }
 
-// Get unique series for a category
 export async function getUniqueSeriesByCategory(category: string): Promise<(M3UEntry | M3USeries)[]> {
     const entries = await getChannelsByCategory(category);
     const seriesMap = new Map<string, M3USeries>();
@@ -451,7 +586,6 @@ export async function getUniqueSeriesByCategory(category: string): Promise<(M3UE
         if (info) {
             const seriesName = info.name;
             if (!seriesMap.has(seriesName)) {
-                // Create new series entry
                 const seriesId = generateId(seriesName + "_SERIES_GROUP");
                 const series: M3USeries = {
                     id: seriesId,
@@ -465,7 +599,6 @@ export async function getUniqueSeriesByCategory(category: string): Promise<(M3UE
             }
             seriesMap.get(seriesName)!.episodes.push(entry);
         } else {
-            // Not a recognized series format, add as single item
             uniqueItems.push(entry);
         }
     });
@@ -473,58 +606,20 @@ export async function getUniqueSeriesByCategory(category: string): Promise<(M3UE
     return uniqueItems;
 }
 
-// Get M3U Series by ID
 export async function getM3USeriesById(id: number): Promise<M3USeries | undefined> {
     await ensureDataLoaded();
     const m3uPath = await ensureM3UFile();
+    if (!m3uPath) return undefined;
     const entries = parseM3U(m3uPath);
-
-    // We have to iterate all entries to reconstruct the series grouping
-    // This is slow for large playlists, but we filter by SRS groups to optimize slightly if possible.
-    // Better: Iterate all entries, find if any series generates this ID.
-
-    const seriesMap = new Map<string, M3USeries>();
-
-    for (const entry of entries) {
-        if (entry.group && isVODGroup(entry.group)) {
-            const info = parseSeriesInfo(entry.title);
-            if (info) {
-                const seriesName = info.name;
-                if (!seriesMap.has(seriesName)) {
-                    const seriesId = generateId(seriesName + "_SERIES_GROUP");
-                    // Optimization: check ID immediately
-                    if (seriesId === id) {
-                        // We found the series, but we need to collect ALL episodes.
-                        // So we create it and continue loop to fill episodes.
-                        seriesMap.set(seriesName, {
-                            id: seriesId,
-                            title: seriesName,
-                            poster: entry.logo,
-                            group: entry.group,
-                            episodes: []
-                        });
-                    }
-                }
-                // If we have started tracking this series (because ID matched), add episode
-                // But wait, we need to handle the case where we don't know the ID matches until we generate it.
-                // Correct logic: We must group everything or filter smarter.
-            }
-        }
-    }
-
-    // optimized approach:
-    // 1. We know the ID we are looking for.
-    // 2. We scan entries. extract series name. Generate ID. matches? -> Found Target Series Name.
-    // 3. Then scan all entries again (or in same pass) to collect episodes for that Target Series Name.
 
     let targetSeriesName: string | null = null;
     let targetSeries: M3USeries | null = null;
 
-    // Pass 1: Find the series name
     for (const entry of entries) {
         if (!entry.group || !isVODGroup(entry.group)) continue;
         const info = parseSeriesInfo(entry.title);
         if (info) {
+            // Flagify inside parsing now
             const seriesId = generateId(info.name + "_SERIES_GROUP");
             if (seriesId === id) {
                 targetSeriesName = info.name;
@@ -535,13 +630,12 @@ export async function getM3USeriesById(id: number): Promise<M3USeries | undefine
                     group: entry.group,
                     episodes: []
                 };
-                break; // Found the name, now we can just filter
+                break;
             }
         }
     }
 
     if (targetSeries && targetSeriesName) {
-        // Pass 2: Collect all episodes
         for (const entry of entries) {
             if (!entry.group || !isVODGroup(entry.group)) continue;
             const info = parseSeriesInfo(entry.title);
@@ -550,7 +644,6 @@ export async function getM3USeriesById(id: number): Promise<M3USeries | undefine
             }
         }
 
-        // Sort episodes
         targetSeries.episodes.sort((a, b) => {
             const infoA = parseSeriesInfo(a.title);
             const infoB = parseSeriesInfo(b.title);
@@ -564,4 +657,3 @@ export async function getM3USeriesById(id: number): Promise<M3USeries | undefine
 
     return undefined;
 }
-

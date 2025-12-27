@@ -11,9 +11,11 @@ import { MediaItem } from '@/types/tmdb';
 interface LiveChannelPlayerProps {
     channel: M3UEntry;
     onClose: () => void;
+    onNext?: () => void;
+    onPrev?: () => void;
 }
 
-export default function LiveChannelPlayer({ channel, onClose }: LiveChannelPlayerProps) {
+export default function LiveChannelPlayer({ channel, onClose, onNext, onPrev }: LiveChannelPlayerProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [error, setError] = useState<string | null>(null);
     const hlsRef = useRef<Hls | null>(null);
@@ -49,16 +51,26 @@ export default function LiveChannelPlayer({ channel, onClose }: LiveChannelPlaye
     }, [channel.rawTitle]);
 
     useEffect(() => {
-        // Close on ESC key
-        const handleEscape = (e: KeyboardEvent) => {
+        // Close on ESC key and handle Zapping
+        const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 onClose();
+            } else if (e.key === 'ArrowUp') {
+                if (onPrev) {
+                    e.preventDefault();
+                    onPrev();
+                }
+            } else if (e.key === 'ArrowDown') {
+                if (onNext) {
+                    e.preventDefault();
+                    onNext();
+                }
             }
         };
 
-        window.addEventListener('keydown', handleEscape);
-        return () => window.removeEventListener('keydown', handleEscape);
-    }, [onClose]);
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose, onNext, onPrev]);
 
     useEffect(() => {
         const video = videoRef.current;
@@ -219,31 +231,31 @@ export default function LiveChannelPlayer({ channel, onClose }: LiveChannelPlaye
             <div className="absolute top-0 left-0 w-full p-8 z-50 bg-gradient-to-b from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                 <div className="max-w-4xl">
                     <h2 className="text-white font-bold text-3xl drop-shadow-md">
-                        {metadata ? (metadata.title || metadata.name) : channel.rawTitle}
+                        {metadata ? ((metadata as any).title || (metadata as any).name) : channel.rawTitle}
                     </h2>
 
                     {metadata && (
                         <div className="mt-2 flex items-start gap-4 animate-in fade-in slide-in-from-top-2 duration-700">
-                            {metadata.poster_path && (
+                            {(metadata as any).poster_path && (
                                 <img
-                                    src={`https://image.tmdb.org/t/p/w200${metadata.poster_path}`}
+                                    src={`https://image.tmdb.org/t/p/w200${(metadata as any).poster_path}`}
                                     alt="Poster"
                                     className="w-24 rounded shadow-lg hidden sm:block"
                                 />
                             )}
                             <div>
                                 <p className="text-gray-300 text-sm line-clamp-3 max-w-xl drop-shadow-sm">
-                                    {metadata.overview}
+                                    {(metadata as any).overview}
                                 </p>
                                 <div className="flex gap-2 mt-2">
-                                    {metadata.vote_average > 0 && (
+                                    {(metadata as any).vote_average > 0 && (
                                         <span className="text-[#46d369] font-bold text-sm">
-                                            {Math.round(metadata.vote_average * 10)}% Match
+                                            {Math.round((metadata as any).vote_average * 10)}% Match
                                         </span>
                                     )}
-                                    {metadata.release_date && (
+                                    {(metadata as any).release_date && (
                                         <span className="text-gray-400 text-sm">
-                                            {metadata.release_date.split('-')[0]}
+                                            {((metadata as any).release_date as string).split('-')[0]}
                                         </span>
                                     )}
                                 </div>

@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import MovieRow from "@/components/MovieRow";
+import HeroMovie from "@/components/HeroMovie";
 import { MediaItem } from "@/types/tmdb";
 
 interface MoviesClientProps {
@@ -19,6 +21,12 @@ interface MoviesClientProps {
 export default function MoviesClient({ groupedMovies }: MoviesClientProps) {
     const router = useRouter();
 
+    // Find the first available movie for the initial hero state
+    const firstMovie = groupedMovies.find(g => g.rows.length > 0)
+        ?.rows[0]?.movies[0] || null;
+
+    const [selectedMovie, setSelectedMovie] = useState<MediaItem | null>(firstMovie);
+
     const handleMovieClick = (movie: MediaItem) => {
         router.push(`/movie/${movie.id}`);
     };
@@ -26,8 +34,10 @@ export default function MoviesClient({ groupedMovies }: MoviesClientProps) {
     return (
         <div className="relative min-h-screen bg-[#141414]">
             <Navbar />
-            <main className="relative pl-4 pb-24 pt-24 lg:space-y-24 lg:pl-16">
-                <h1 className="text-3xl md:text-5xl font-bold text-white mb-8">Movies</h1>
+            <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
+                <HeroMovie movie={selectedMovie} />
+
+                <h1 className="text-3xl md:text-5xl font-bold text-white mb-8 mt-8">Movies</h1>
 
                 <div className="space-y-16">
                     {groupedMovies.map((group) => (
@@ -43,6 +53,7 @@ export default function MoviesClient({ groupedMovies }: MoviesClientProps) {
                                         movies={row.movies}
                                         categoryLink={row.categoryLink}
                                         onMovieClick={handleMovieClick}
+                                        onMovieFocus={setSelectedMovie}
                                     />
                                 ))}
                             </div>
