@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { FocusProvider } from "@/components/tv/FocusContext";
 import SessionProvider from "@/components/SessionProvider";
+import { ProfileProvider } from "@/context/ProfileContext";
+import { ProfileGuard } from "@/components/ProfileGuard";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,9 +39,13 @@ export default function RootLayout({
           Skip to main content
         </a>
         <SessionProvider>
-          <FocusProvider>
-            {children}
-          </FocusProvider>
+          <ProfileProvider>
+            <FocusProvider>
+              <ProfileGuard>
+                {children}
+              </ProfileGuard>
+            </FocusProvider>
+          </ProfileProvider>
         </SessionProvider>
       </body>
     </html>

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useFocusContext } from "@/components/tv/FocusContext";
 import { Focusable } from "@/components/tv/Focusable";
+import { useProfile } from "@/context/ProfileContext";
 
 export const AppSidebarMenu: React.FC = () => {
   const [focused, setFocused] = useState(false); // Visual expansion state
@@ -87,6 +88,9 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
   sidebarRef,
 }) => {
   const router = useRouter()
+  const { selectedProfile, clearProfile } = useProfile();
+
+  if (!selectedProfile) return null;
 
   return (
     <div
@@ -102,24 +106,22 @@ export const SidebarMenu: React.FC<SidebarMenuProps> = ({
       >
         <div className="flex items-center mb-4">
           <img
-            src="https://occ-0-2705-2706.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABfjwXqIYd3kCEU6KWsiHSHvkft8VhZg0yyD50a_pHXku4dz9VgxWwfA2ontwogStpj1NE9NJMt7sCpSKFEY2zmgqqQfcw1FMWwB9.png?r=229"
+            src={selectedProfile.avatar}
             alt="User Profile"
-            className="w-12 h-12 rounded-full mr-3"
+            className="w-12 h-12 rounded-md mr-3 object-cover"
           />
           <div>
-            <span className="text-white font-bold">Rachid</span>
-            <div className="text-sm text-gray-400 cursor-pointer hover:underline">Switch Profiles</div>
+            <span className="text-white font-bold">{selectedProfile.name}</span>
+            <div
+              onClick={() => clearProfile()}
+              className="text-xs text-gray-400 cursor-pointer hover:text-white transition-colors"
+            >
+              Switch Profiles
+            </div>
           </div>
         </div>
-        <div className="flex items-center">
-          <img
-            src="https://occ-0-2705-2706.1.nflxso.net/dnm/api/v6/vN7bi_My87NPKvsBoib006Llxzg/AAAABVTEUhowgYLWmAWhLf3T4LpDKKxcZ_2RQ8LxQX6O8P2cMTPrWRA55i83sngeLg0ltKmAE6fdZRj0sbs-jFmfjImayS4MPAiPkQ0f2Kwnll4ypLf4GeeBnVP1ojjVFFgmz0IKEQ9327tKXYT7BMk.png?r=9df"
-            alt="Kids Profile"
-            className="w-12 h-12 rounded-full mr-3"
-          />
-          <span className="text-white font-bold">Nizar</span>
-        </div>
       </div>
+
 
       {/* Menu List */}
       <nav className="flex mt-6">

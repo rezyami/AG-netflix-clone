@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { M3UEntry } from '@/lib/m3u';
 import LiveTVSidebar from './LiveTVSidebar';
 import ChannelListPane from './ChannelListPane';
@@ -43,7 +45,17 @@ export default function LiveTVMaster({ categories, initialCategory }: LiveTVMast
     return (
         <div className="h-screen w-screen bg-black flex flex-col text-white overflow-hidden select-none">
             {/* Minimal Navbar or Header */}
-            <div className="h-16 flex items-center px-12 z-20">
+            <div className="h-16 flex items-center px-12 z-20 gap-4">
+                <Link
+                    href="/"
+                    className="flex items-center gap-2 text-white/60 hover:text-white transition-colors group"
+                >
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                    <span className="text-sm font-medium">Home</span>
+                </Link>
+
+                <div className="h-6 w-px bg-white/10 mx-2" />
+
                 <h1 className="text-2xl font-black italic text-cyan-500 tracking-tighter">
                     IPTV <span className="text-white/20 mx-2">/</span> <span className="text-white font-bold not-italic tracking-normal text-xl">{selectedCategory}</span>
                 </h1>
