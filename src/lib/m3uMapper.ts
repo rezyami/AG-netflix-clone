@@ -1,5 +1,6 @@
-import { M3UEntry } from "./m3u";
+import { M3UEntry } from "@/types/m3u";
 import { MediaItem } from "@/types/tmdb";
+import { replaceLanguageWrapper } from "./languages";
 
 // Helper to generate a deterministic ID from a string
 export function generateId(str: string): number {
@@ -34,7 +35,7 @@ export function mapM3UToMediaItem(entry: M3UEntry): MediaItem {
 
     return {
         id: generateId(entry.title + entry.url),
-        title: entry.title,
+        title: replaceLanguageWrapper(entry.rawTitle),
         original_title: entry.rawTitle,
         overview: `Category: ${entry.group}`,
         poster_path: normalizeUrl(entry.logo),

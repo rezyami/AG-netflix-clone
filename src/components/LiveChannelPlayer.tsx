@@ -2,7 +2,8 @@
 
 import { X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import { M3UEntry } from '@/lib/m3u';
+import { M3UEntry } from '@/types/m3u';
+import { replaceLanguageWrapper } from '@/lib/languages';
 import Hls from 'hls.js';
 import { searchContent } from '@/actions/searchContent';
 import { MediaItem } from '@/types/tmdb';
@@ -239,7 +240,7 @@ export default function LiveChannelPlayer({ channel, onClose, onNext, onPrev }: 
             <div className="absolute top-0 left-0 w-full p-8 z-50 bg-gradient-to-b from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                 <div className="max-w-4xl">
                     <h2 className="text-white font-bold text-3xl drop-shadow-md">
-                        {metadata ? ((metadata as any).title || (metadata as any).name) : channel.rawTitle}
+                        {metadata ? ((metadata as any).title || (metadata as any).name) : replaceLanguageWrapper(channel.rawTitle)}
                     </h2>
 
                     {metadata && (

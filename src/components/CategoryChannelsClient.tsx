@@ -6,7 +6,7 @@ import Navbar from '@/components/Navbar';
 
 import { Focusable } from "./tv/Focusable";
 import LiveChannelPlayer from '@/components/LiveChannelPlayer';
-import { M3UEntry } from '@/lib/m3u';
+import { M3UEntry } from '@/types/m3u';
 import { ArrowLeft, Play, Search } from 'lucide-react';
 
 interface CategoryChannelsClientProps {

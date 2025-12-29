@@ -69,6 +69,7 @@ export default function MovieControls({ streamUrl, mediaItem }: MovieControlsPro
             {isPlaying && streamUrl && (
                 <VideoPlayer
                     src={streamUrl}
+                    title={mediaItem?.title || mediaItem?.name}
                     onClose={() => setIsPlaying(false)}
                 />
             )}

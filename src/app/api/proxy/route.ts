@@ -20,6 +20,8 @@ export async function GET(req: NextRequest) {
             },
             // Disable cache to ensure we get live segments correctly
             cache: 'no-store',
+            // @ts-ignore - Handle client abort
+            signal: req.signal,
         });
 
         if (!response.ok) {

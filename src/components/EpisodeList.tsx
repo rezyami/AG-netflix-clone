@@ -144,6 +144,7 @@ export default function EpisodeList({ episodes, seasonNumber, showName, showTrak
             {playingEpisode && (
                 <VideoPlayer
                     src={playingEpisode.url}
+                    title={playingEpisode.title}
                     onClose={() => setPlayingEpisode(null)}
                 />
             )}

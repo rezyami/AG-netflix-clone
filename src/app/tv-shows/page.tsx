@@ -1,4 +1,5 @@
 import { getGroupedTVSeries, getUniqueSeriesByCategory } from "@/lib/m3u";
+import { replaceLanguageWrapper } from "@/lib/languages";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 import TVShowsClient from "@/components/TVShowsClient";
 
@@ -41,7 +42,7 @@ export default async function TVShowsPage() {
                 }
             });
             return {
-                title: category,
+                title: replaceLanguageWrapper(category),
                 movies,
                 categoryLink: `/tv-shows/category/${encodeURIComponent(category)}`
             };

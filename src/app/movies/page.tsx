@@ -1,4 +1,5 @@
 import { getGroupedMovies, getVODAndSeriesByCategory } from "@/lib/m3u";
+import { replaceLanguageWrapper } from "@/lib/languages";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 import MoviesClient from "@/components/MoviesClient";
 
@@ -15,7 +16,7 @@ export default async function MoviesPage() {
             const movies = entries.map(mapM3UToMediaItem);
 
             return {
-                title: category,
+                title: replaceLanguageWrapper(category),
                 movies,
                 categoryLink: `/movies/category/${encodeURIComponent(category)}`
             };

@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { M3UEntry } from '@/lib/m3u';
+import { M3UEntry } from '@/types/m3u';
+import { replaceLanguageWrapper } from '@/lib/languages';
 import { Play } from 'lucide-react';
 import { useState } from 'react';
 import { Focusable } from "./tv/Focusable";
@@ -49,7 +50,7 @@ export default function LiveChannelCard({ channel, onClick }: LiveChannelCardPro
             {/* Channel Name */}
             <div className="p-3 bg-gray-900/90">
                 <h3 className="text-white text-sm font-medium line-clamp-2 text-center">
-                    {channel.rawTitle}
+                    {replaceLanguageWrapper(channel.rawTitle)}
                 </h3>
             </div>
         </Focusable>

@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { M3UEntry } from '@/lib/m3u';
+import { M3UEntry } from '@/types/m3u';
+import { replaceLanguageWrapper } from '@/lib/languages';
 import LiveTVSidebar from './LiveTVSidebar';
 import ChannelListPane from './ChannelListPane';
 import EPGPreviewPane from './EPGPreviewPane';
@@ -57,7 +58,7 @@ export default function LiveTVMaster({ categories, initialCategory }: LiveTVMast
                 <div className="h-6 w-px bg-white/10 mx-2" />
 
                 <h1 className="text-2xl font-black italic text-cyan-500 tracking-tighter">
-                    IPTV <span className="text-white/20 mx-2">/</span> <span className="text-white font-bold not-italic tracking-normal text-xl">{selectedCategory}</span>
+                    IPTV <span className="text-white/20 mx-2">/</span> <span className="text-white font-bold not-italic tracking-normal text-xl">{replaceLanguageWrapper(selectedCategory)}</span>
                 </h1>
             </div>
 

@@ -2,6 +2,7 @@
 
 import { Focusable } from "../tv/Focusable";
 import { List } from 'lucide-react';
+import { replaceLanguageWrapper } from '@/lib/languages';
 
 interface LiveTVSidebarProps {
     categories: { category: string; count: number }[];
@@ -30,7 +31,7 @@ export default function LiveTVSidebar({ categories, selectedCategory, onCategory
                         focusedClassName="bg-zinc-800 ring-2 ring-inset ring-white"
                     >
                         <div className="flex justify-between items-center text-sm">
-                            <span className="truncate pr-2">{cat.category}</span>
+                            <span className="truncate pr-2">{replaceLanguageWrapper(cat.category)}</span>
                             {/* <span className={`text-[10px] px-1.5 py-0.5 rounded ${selectedCategory === cat.category ? 'bg-black/20 text-black' : 'bg-zinc-800 text-zinc-500'}`}>
                                 {cat.count}
                             </span> */}

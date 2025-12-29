@@ -2,24 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { generateId } from "@/lib/m3uMapper";
 
-export interface M3UEntry {
-    title: string;
-    logo?: string;
-    group?: string;
-    url: string;
-    rawTitle: string;
-    epgId?: string;
-    currentProgram?: {
-        title: string;
-        description: string;
-        start: string;
-        end: string;
-        progress: number;
-    };
-    nextProgram?: {
-        title: string;
-    };
-}
+import { M3UEntry, M3USeries, SeriesInfo } from "@/types/m3u";
 
 let cachedEntries: M3UEntry[] | null = null;
 
@@ -330,80 +313,9 @@ export async function getVODAndSeriesByCategory(category: string): Promise<M3UEn
     return cachedGroupIndex?.get(category) || [];
 }
 
-// === LANGUAGE / FLAGS LOGIC ===
+import { LANGUAGE_FLAGS, getFlaggedLanguage, replaceLanguageWrapper } from "./languages";
 
-const LANGUAGE_FLAGS: Record<string, string> = {
-    'AR': '🇸🇦', 'ARABIC': '🇸🇦',
-    'FR': '🇫🇷', 'FRENCH': '🇫🇷',
-    'EN': '🇺🇸', 'ENGLISH': '🇺🇸',
-    'DE': '🇩🇪', 'GERMAN': '🇩🇪',
-    'ES': '🇪🇸', 'SPANISH': '🇪🇸',
-    'IT': '🇮🇹', 'ITALIAN': '🇮🇹', 'ITALY': '🇮🇹',
-    'TR': '🇹🇷', 'TURKISH': '🇹🇷',
-    'RU': '🇷🇺', 'RUSSIAN': '🇷🇺',
-    'PT': '🇵🇹', 'PORTUGUESE': '🇵🇹',
-    'NL': '🇳🇱', 'DUTCH': '🇳🇱',
-    'PL': '🇵🇱', 'POLISH': '🇵🇱',
-    'CH': '🇨🇳', 'CHINESE': '🇨🇳',
-    'UK': '🇬🇧',
-    'US': '🇺🇸',
-    'CA': '🇨🇦',
-    'IN': '🇮🇳', 'HINDI': '🇮🇳', 'INDIA': '🇮🇳',
-    'LATINO': '🇲🇽',
-    'EXYU': '🇧🇦',
-    'ALB': '🇦🇱', 'ALBANIA': '🇦🇱',
-    'BG': '🇧🇬', 'BULGARIAN': '🇧🇬',
-    'RO': '🇷🇴', 'ROMANIAN': '🇷🇴',
-    'MK': '🇲🇰', 'MACEDONIAN': '🇲🇰',
-    'GR': '🇬🇷', 'GREEK': '🇬🇷',
-    'ID': '🇮🇩', 'INDONESIA': '🇮🇩',
-    'JP': '🇯🇵', 'JAPAN': '🇯🇵', 'JAPANESE': '🇯🇵',
-    'KO': '🇰🇷', 'KOREA': '🇰🇷', 'KOREAN': '🇰🇷',
-    'VN': '🇻🇳', 'VIETNAM': '🇻🇳', 'VIETNAMESE': '🇻🇳',
-    'TH': '🇹🇭', 'THAILAND': '🇹🇭', 'THAI': '🇹🇭',
-    'MY': '🇲🇾', 'MALAYSIA': '🇲🇾', 'MALAY': '🇲🇾',
-    'IR': '🇮🇷', 'IRAN': '🇮🇷', 'PERSIAN': '🇮🇷', 'FA': '🇮🇷', 'FARSI': '🇮🇷', 'PR': '🇮🇷',
-    'SE': '🇸🇪', 'SWEDEN': '🇸🇪', 'SWEDISH': '🇸🇪',
-    'SC': '❄️', 'SCANDINAVIA': '❄️', 'SCANDINAVIAN': '❄️',
-};
-
-function getFlaggedLanguage(lang: string): string {
-    const key = lang.toUpperCase().trim();
-    if (LANGUAGE_FLAGS[key]) {
-        return `${LANGUAGE_FLAGS[key]} ${key}`;
-    }
-    return lang;
-}
-
-const SPACE_SEPARATOR_BLOCKLIST = new Set(['IT', 'IN', 'US', 'AT', 'TO', 'IS', 'ON', 'AN', 'WE', 'MY', 'HE', 'ME', 'AS', 'BY', 'OF', 'OR', 'SO', 'UP', 'ID', 'SE']);
-
-function replaceLanguageWrapper(text: string): string {
-    // 1. Check for standard "CODE - " or "CODE | " (Strong signal)
-    let match = text.match(/^([A-Z]{2,10})\s*[-|]\s*(.+)/i);
-    if (match) {
-        const langCode = match[1].toUpperCase();
-        const rest = match[2];
-        const flag = LANGUAGE_FLAGS[langCode];
-        if (flag) {
-            return `${flag} ${rest}`;
-        }
-    }
-
-    // 2. Check for "CODE " (Weak signal, space only)
-    // We only allow this for known flags that are NOT common words in the blocklist
-    match = text.match(/^([A-Z]{2,10})\s+(.+)/i);
-    if (match) {
-        const langCode = match[1].toUpperCase();
-        const rest = match[2]; // The rest of the title
-
-        // Check if valid flag and not blocked
-        if (LANGUAGE_FLAGS[langCode] && !SPACE_SEPARATOR_BLOCKLIST.has(langCode)) {
-            return `${LANGUAGE_FLAGS[langCode]} ${rest}`;
-        }
-    }
-
-    return text;
-}
+export { LANGUAGE_FLAGS, getFlaggedLanguage, replaceLanguageWrapper };
 
 // Get grouped Movies
 export async function getGroupedMovies(): Promise<{ language: string; categories: string[] }[]> {
@@ -505,21 +417,6 @@ export async function getM3UEntryById(id: number): Promise<M3UEntry | undefined>
     return undefined;
 }
 
-export interface SeriesInfo {
-    language?: string;
-    name: string;
-    cleanTitle: string;
-    season: number;
-    episode: number;
-}
-
-export interface M3USeries {
-    id: number;
-    title: string;
-    poster?: string;
-    group?: string;
-    episodes: M3UEntry[];
-}
 
 export function parseSeriesInfo(title: string): SeriesInfo | null {
     const match = title.match(/(.+?)\s+S(\d+)\s*[-_]?\s*E(\d+)/i);
@@ -552,7 +449,7 @@ export async function searchM3USeries(query: string): Promise<(M3UEntry | M3USer
 
     matchingEntries.forEach(entry => {
         const isSeriesGroup = entry.group && isVODGroup(entry.group);
-        const info = isSeriesGroup ? parseSeriesInfo(entry.title) : null;
+        const info = isSeriesGroup ? parseSeriesInfo(entry.rawTitle) : null;
 
         if (info) {
             const seriesName = info.name;
@@ -583,7 +480,7 @@ export async function getUniqueSeriesByCategory(category: string): Promise<(M3UE
     const uniqueItems: (M3UEntry | M3USeries)[] = [];
 
     entries.forEach(entry => {
-        const info = parseSeriesInfo(entry.title);
+        const info = parseSeriesInfo(entry.rawTitle);
         if (info) {
             const seriesName = info.name;
             if (!seriesMap.has(seriesName)) {

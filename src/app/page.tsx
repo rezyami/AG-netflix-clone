@@ -2,6 +2,7 @@
 import HomeClient from "@/components/HomeClient";
 import { tmdb } from "@/lib/tmdb";
 import { getVODAndSeriesCategories, getUniqueSeriesByCategory } from "@/lib/m3u";
+import { replaceLanguageWrapper } from "@/lib/languages";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +43,7 @@ export default async function Home() {
       });
 
       return {
-        title: category,
+        title: replaceLanguageWrapper(category),
         movies
       };
     };
