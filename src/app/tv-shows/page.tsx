@@ -1,6 +1,7 @@
 import { getGroupedTVSeries, getUniqueSeriesByCategory } from "@/lib/m3u";
 import { replaceLanguageWrapper } from "@/lib/languages";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
+import { enrichMediaItems } from "@/lib/tmdbBinder";
 import TVShowsClient from "@/components/TVShowsClient";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +20,7 @@ export default async function TVShowsPage() {
             // We need to map M3USeries to MediaItem too.
             // mapM3UToMediaItem expects M3UEntry, but we now have (M3UEntry | M3USeries).
             // We need to handle this type diff.
-            const movies = entries.map(entry => {
+            const basicMovies = entries.map(entry => {
                 if ('episodes' in entry) {
                     // It's a Series
                     return {
@@ -41,6 +42,13 @@ export default async function TVShowsPage() {
                     return mapM3UToMediaItem(entry);
                 }
             });
+
+            // Enrich first 10 items for visual quality
+            const itemsToEnrich = basicMovies.slice(0, 10);
+            const otherItems = basicMovies.slice(10);
+            const enrichedItems = await enrichMediaItems(itemsToEnrich, 5);
+            const movies = [...enrichedItems, ...otherItems];
+
             return {
                 title: replaceLanguageWrapper(category),
                 movies,

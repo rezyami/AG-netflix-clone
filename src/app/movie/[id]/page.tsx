@@ -5,6 +5,7 @@ import { tmdb } from "@/lib/tmdb";
 import Image from "next/image";
 import { findStream, getM3UEntryById, getVODAndSeriesCategories } from "@/lib/m3u";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
+import { enrichMediaItem } from "@/lib/tmdbBinder";
 import MovieControls from "@/components/MovieControls";
 import TraktActions from "@/components/TraktActions";
 
@@ -23,7 +24,8 @@ export default async function MovieDetailsPage({ params }: PageProps) {
     const fetchM3U = async () => {
         const m3uEntry = await getM3UEntryById(parseInt(id));
         if (m3uEntry) {
-            movie = mapM3UToMediaItem(m3uEntry);
+            const basicMovie = mapM3UToMediaItem(m3uEntry);
+            movie = await enrichMediaItem(basicMovie) as any;
             streamEntry = m3uEntry;
             if (!movie.runtime) movie.runtime = 0;
             if (!movie.release_date) movie.release_date = new Date().toISOString();

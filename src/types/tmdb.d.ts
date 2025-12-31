@@ -12,6 +12,8 @@ export interface Movie {
     genre_ids: number[];
     media_type: "movie";
     adult: boolean;
+    trailer_key?: string;
+    tmdb_id?: number;
 }
 
 export interface TVShow {
@@ -27,6 +29,8 @@ export interface TVShow {
     popularity: number;
     genre_ids: number[];
     media_type: "tv";
+    trailer_key?: string;
+    tmdb_id?: number;
 }
 
 export interface Person {

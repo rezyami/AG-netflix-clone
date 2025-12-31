@@ -31,10 +31,19 @@ export default function HeroMovie({ movie }: HeroMovieProps) {
             setTrailer(null);
             setShowVideo(false);
 
+            // Use pre-fetched trailer key if available (from enrichment)
+            if ((movie as any).trailer_key) {
+                setTrailer((movie as any).trailer_key);
+                timer = setTimeout(() => setShowVideo(true), 1500); // Faster start if we already have it
+                return;
+            }
+
             try {
                 // Safely access title
-                const movieTitle = (movie as Movie).title || (movie as TVShow).name;
-                const trailerUrl = await getTrailerForTitle(movieTitle, "movie");
+                const movieTitle = (movie as Movie).title || (movie as TVShow).name || (movie as any).original_title;
+                if (!movieTitle) return;
+
+                const trailerUrl = await getTrailerForTitle(movieTitle, movie.media_type as any);
 
                 if (trailerUrl) {
                     // Extract video ID from URL

@@ -7,6 +7,7 @@ import MovieControls from "@/components/MovieControls";
 import MovieRow from "@/components/MovieRow";
 import { findStream, getM3UEntryById, getM3USeriesById, parseSeriesInfo } from "@/lib/m3u";
 import { mapM3UToMediaItem, generateId } from "@/lib/m3uMapper";
+import { enrichMediaItem } from "@/lib/tmdbBinder";
 import TraktActions from "@/components/TraktActions";
 
 interface PageProps {
@@ -45,19 +46,25 @@ export default async function TVDetailsPage({ params }: PageProps) {
                 }
             }
 
-            show = {
+            const basicShow = {
                 id: m3uSeries.id,
                 name: m3uSeries.title,
                 original_name: cleanShowTitle, // Use clean title for TMDB searches
-                overview: `Series from M3U - ${m3uSeries.episodes.length} Episodes available.`,
-                poster_path: m3uSeries.poster, // Use logo
-                backdrop_path: m3uSeries.poster,
-                first_air_date: new Date().toISOString(),
-                vote_average: 0,
-                vote_count: 0,
+                media_type: "tv" as const
+            };
+
+            const enriched = await enrichMediaItem(basicShow as any) as any;
+
+            show = {
+                ...enriched,
+                id: m3uSeries.id, // Keep M3U ID
+                name: enriched.name || (enriched as any).title || m3uSeries.title,
+                overview: enriched.overview || `Series from M3U - ${m3uSeries.episodes.length} Episodes available.`,
+                poster_path: enriched.poster_path || m3uSeries.poster,
+                backdrop_path: enriched.backdrop_path || m3uSeries.poster,
                 seasons: [],
-                credits: { cast: [], crew: [] },
-                similar: { results: [] }
+                credits: enriched.credits || { cast: [], crew: [] },
+                similar: enriched.similar || { results: [] }
             };
 
             // Group episodes into seasons
@@ -105,11 +112,12 @@ export default async function TVDetailsPage({ params }: PageProps) {
             // Try single entry fallback
             const m3uEntry = await getM3UEntryById(numericId);
             if (m3uEntry) {
-                show = mapM3UToMediaItem(m3uEntry);
+                const basicShow = mapM3UToMediaItem(m3uEntry);
+                show = await enrichMediaItem({ ...basicShow, media_type: "tv" });
                 streamEntry = m3uEntry;
                 show.seasons = [];
-                show.credits = { cast: [], crew: [] };
-                show.similar = { results: [] };
+                if (!show.credits) show.credits = { cast: [], crew: [] };
+                if (!show.similar) show.similar = { results: [] };
                 if (!show.first_air_date) show.first_air_date = new Date().toISOString();
             } else {
                 throw error; // Rethrow

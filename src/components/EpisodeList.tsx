@@ -22,9 +22,10 @@ interface EpisodeListProps {
     seasonNumber: number;
     showName?: string;
     showTraktId?: number;
+    showTmdbId?: number;
 }
 
-export default function EpisodeList({ episodes, seasonNumber, showName, showTraktId }: EpisodeListProps) {
+export default function EpisodeList({ episodes, seasonNumber, showName, showTraktId, showTmdbId }: EpisodeListProps) {
     const { data: session } = useSession();
     const [playingEpisode, setPlayingEpisode] = useState<{ url: string; title: string } | null>(null);
     const [watchedEpisodes, setWatchedEpisodes] = useState<Set<number>>(new Set());
@@ -146,6 +147,10 @@ export default function EpisodeList({ episodes, seasonNumber, showName, showTrak
                     src={playingEpisode.url}
                     title={playingEpisode.title}
                     onClose={() => setPlayingEpisode(null)}
+                    tmdbId={showTmdbId}
+                    mediaType="tv"
+                    season={seasonNumber}
+                    episode={episodes.find(e => playingEpisode.title.includes('E' + e.episode_number.toString().padStart(2, '0')))?.episode_number}
                 />
             )}
         </>

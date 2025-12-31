@@ -21,12 +21,32 @@ export default function Hero({ movie }: HeroProps) {
 
     useEffect(() => {
         const fetchVideo = async () => {
+            if (!movie) return;
+
+            // Reset states when movie changes
+            setTrailer(null);
+            setShowVideo(false);
+
+            // 1. Use pre-fetched trailer key if available
+            const trailerKey = (movie as any).trailer_key;
+            if (trailerKey) {
+                setTrailer(trailerKey);
+                const timer = setTimeout(() => setShowVideo(true), 1500);
+                return () => clearTimeout(timer);
+            }
+
+            // 2. Fallback to fetching via TMDB ID
             try {
-                const videoKey = await getMovieTrailer(movie.media_type as "movie" | "tv", movie.id);
-                if (videoKey) {
-                    setTrailer(videoKey);
-                    const timer = setTimeout(() => setShowVideo(true), 2000);
-                    return () => clearTimeout(timer);
+                const targetId = (movie as any).tmdb_id || movie.id;
+
+                // Only attempt if it looks like a real TMDB ID (usually < 1,000,000, whereas our M3U hashes are large)
+                if (targetId && targetId < 5000000) {
+                    const videoKey = await getMovieTrailer(movie.media_type as "movie" | "tv", targetId);
+                    if (videoKey) {
+                        setTrailer(videoKey);
+                        const timer = setTimeout(() => setShowVideo(true), 2000);
+                        return () => clearTimeout(timer);
+                    }
                 }
             } catch (error) {
                 console.error("Failed to fetch video", error);

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import Hls from 'hls.js';
 import { cn } from '@/lib/utils';
 import { Button } from './Button';
+import { searchSubtitles, getDownloadLink } from '@/actions/subtitles';
 
 interface VideoPlayerProps {
     src: string;
@@ -12,9 +13,13 @@ interface VideoPlayerProps {
     onClose: () => void;
     onNext?: () => void;
     onPrev?: () => void;
+    tmdbId?: number;
+    mediaType?: "movie" | "tv";
+    season?: number;
+    episode?: number;
 }
 
-export default function VideoPlayer({ src, title, onClose, onNext, onPrev }: VideoPlayerProps) {
+export default function VideoPlayer({ src, title, onClose, onNext, onPrev, tmdbId, mediaType, season, episode }: VideoPlayerProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const hlsRef = useRef<Hls | null>(null);
@@ -33,8 +38,11 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev }: Vid
     const [showSubtitles, setShowSubtitles] = useState(false);
 
     const [subtitleTracks, setSubtitleTracks] = useState<any[]>([]);
+    const [externalSubtitleTracks, setExternalSubtitleTracks] = useState<{ label: string; src: string; lang: string }[]>([]);
     const [currentSubtitle, setCurrentSubtitle] = useState(-1);
+    const [currentExternalSubtitle, setCurrentExternalSubtitle] = useState(-1);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSearchingSubtitles, setIsSearchingSubtitles] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const playPromiseRef = useRef<Promise<void> | null>(null);
@@ -258,11 +266,64 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev }: Vid
 
     const handleSubtitleChange = (index: number) => {
         setCurrentSubtitle(index);
+        setCurrentExternalSubtitle(-1); // Clear external if internal selected
         if (hlsRef.current) {
             hlsRef.current.subtitleTrack = index;
         }
         setShowSubtitles(false);
     };
+
+    const handleExternalSubtitleChange = (index: number) => {
+        setCurrentExternalSubtitle(index);
+        setCurrentSubtitle(-1); // Disable HLS tracks if external selected
+        if (hlsRef.current) {
+            hlsRef.current.subtitleTrack = -1;
+        }
+        setShowSubtitles(false);
+    };
+
+    const fetchSubtitles = useCallback(async () => {
+        if (!tmdbId) return;
+
+        setIsSearchingSubtitles(true);
+        try {
+            const results = await searchSubtitles({
+                tmdb_id: mediaType === "movie" ? tmdbId : undefined,
+                parent_tmdb_id: mediaType === "tv" ? tmdbId : undefined,
+                season_number: season,
+                episode_number: episode,
+                language: "en" // Default to English for now
+            });
+
+            if (results?.data && results.data.length > 0) {
+                // Take top 5 subtitles
+                const top5 = results.data.slice(0, 5);
+                const tracks = await Promise.all(top5.map(async (sub: any) => {
+                    const downloadLink = await getDownloadLink(sub.attributes.files[0].file_id);
+                    if (downloadLink) {
+                        return {
+                            label: `${sub.attributes.language} - ${sub.attributes.release || 'Unknown'}`,
+                            src: `/api/subtitles/convert?url=${encodeURIComponent(downloadLink)}`,
+                            lang: sub.attributes.language
+                        };
+                    }
+                    return null;
+                }));
+
+                setExternalSubtitleTracks(tracks.filter(t => t !== null) as any);
+            }
+        } catch (error) {
+            console.error("Error fetching subtitles:", error);
+        } finally {
+            setIsSearchingSubtitles(false);
+        }
+    }, [tmdbId, mediaType]);
+
+    useEffect(() => {
+        if (tmdbId) {
+            fetchSubtitles();
+        }
+    }, [tmdbId, fetchSubtitles]);
 
     return (
         <div
@@ -276,7 +337,18 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev }: Vid
                 className="w-full h-full object-contain"
                 onClick={togglePlay}
                 playsInline
-            />
+            >
+                {externalSubtitleTracks.map((track, i) => (
+                    <track
+                        key={`external-${i}`}
+                        kind="subtitles"
+                        label={track.label}
+                        src={track.src}
+                        srcLang={track.lang}
+                        default={currentExternalSubtitle === i}
+                    />
+                ))}
+            </video>
 
             {/* Loading Spinner */}
             {isLoading && !error && (
@@ -394,26 +466,57 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev }: Vid
                             </button>
 
                             {showSubtitles && (
-                                <div className="absolute bottom-12 right-0 bg-black/90 border border-white/20 rounded-lg p-4 w-64 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-300">
+                                <div className="absolute bottom-12 right-0 bg-black/90 border border-white/20 rounded-lg p-4 w-72 backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-300 max-h-[60vh] overflow-y-auto custom-scrollbar">
                                     <h3 className="text-gray-400 text-sm font-bold mb-4 uppercase">Subtitles</h3>
-                                    <div className="space-y-2">
-                                        <button
-                                            onClick={() => handleSubtitleChange(-1)}
-                                            className="flex items-center justify-between w-full text-left p-2 hover:bg-white/10 rounded"
-                                        >
-                                            <span>Off</span>
-                                            {currentSubtitle === -1 && <Check className="w-4 h-4 text-netflix-red" />}
-                                        </button>
-                                        {subtitleTracks.map((track, i) => (
-                                            <button
-                                                key={i}
-                                                onClick={() => handleSubtitleChange(i)}
-                                                className="flex items-center justify-between w-full text-left p-2 hover:bg-white/10 rounded"
-                                            >
-                                                <span>{track.name || `Track ${i + 1}`}</span>
-                                                {currentSubtitle === i && <Check className="w-4 h-4 text-netflix-red" />}
-                                            </button>
-                                        ))}
+                                    <div className="space-y-4">
+                                        <div>
+                                            <div className="text-[10px] text-gray-500 font-bold mb-2 tracking-widest uppercase">Built-in</div>
+                                            <div className="space-y-1">
+                                                <button
+                                                    onClick={() => handleSubtitleChange(-1)}
+                                                    className="flex items-center justify-between w-full text-left p-2 hover:bg-white/10 rounded"
+                                                >
+                                                    <span>Off</span>
+                                                    {currentSubtitle === -1 && currentExternalSubtitle === -1 && <Check className="w-4 h-4 text-netflix-red" />}
+                                                </button>
+                                                {subtitleTracks.map((track, i) => (
+                                                    <button
+                                                        key={i}
+                                                        onClick={() => handleSubtitleChange(i)}
+                                                        className="flex items-center justify-between w-full text-left p-2 hover:bg-white/10 rounded"
+                                                    >
+                                                        <span>{track.name || `Track ${i + 1}`}</span>
+                                                        {currentSubtitle === i && <Check className="w-4 h-4 text-netflix-red" />}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {(isSearchingSubtitles || externalSubtitleTracks.length > 0) && (
+                                            <div>
+                                                <div className="text-[10px] text-gray-500 font-bold mb-2 tracking-widest uppercase flex items-center justify-between">
+                                                    <span>Online Subtitles</span>
+                                                    {isSearchingSubtitles && <div className="w-3 h-3 border-2 border-netflix-red border-t-transparent rounded-full animate-spin" />}
+                                                </div>
+                                                <div className="space-y-1">
+                                                    {externalSubtitleTracks.map((track, i) => (
+                                                        <button
+                                                            key={`ext-${i}`}
+                                                            onClick={() => handleExternalSubtitleChange(i)}
+                                                            className="flex items-center justify-between w-full text-left p-2 hover:bg-white/10 rounded"
+                                                        >
+                                                            <div className="flex flex-col">
+                                                                <span className="text-sm">{track.label}</span>
+                                                            </div>
+                                                            {currentExternalSubtitle === i && <Check className="w-4 h-4 text-netflix-red" />}
+                                                        </button>
+                                                    ))}
+                                                    {!isSearchingSubtitles && externalSubtitleTracks.length === 0 && (
+                                                        <div className="text-xs text-gray-600 p-2 italic">No online subtitles found</div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             )}

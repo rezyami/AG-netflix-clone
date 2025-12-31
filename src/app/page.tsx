@@ -4,6 +4,7 @@ import { tmdb } from "@/lib/tmdb";
 import { getVODAndSeriesCategories, getUniqueSeriesByCategory } from "@/lib/m3u";
 import { replaceLanguageWrapper } from "@/lib/languages";
 import { mapM3UToMediaItem } from "@/lib/m3uMapper";
+import { enrichMediaItem, enrichMediaItems } from "@/lib/tmdbBinder";
 
 export const dynamic = "force-dynamic";
 
@@ -65,22 +66,42 @@ export default async function Home() {
     const rowsPromise = categoriesToShow.map(cat => getM3URow(cat));
     const rows = await Promise.all(rowsPromise);
     const validRows = rows.filter(row => row.movies.length > 0);
+    // Enrich the first few rows (e.g. top 3 rows) to have posters/titles
+    const rowsToEnrich = 3;
+    const enrichedRows = await Promise.all(validRows.map(async (row, idx) => {
+      if (idx < rowsToEnrich) {
+        // Enrich first 10 items in each of the first few rows
+        const itemsToEnrich = row.movies.slice(0, 10);
+        const otherItems = row.movies.slice(10);
+        const enrichedItems = await enrichMediaItems(itemsToEnrich, 5);
+        return {
+          ...row,
+          movies: [...enrichedItems, ...otherItems]
+        };
+      }
+      return row;
+    }));
 
     // Pick a random movie from the first row for the Hero
-    const firstRowMovies = validRows[0]?.movies || [];
-    const randomHero = firstRowMovies.length > 0
+    const firstRowMovies = enrichedRows[0]?.movies || [];
+    let randomHero = firstRowMovies.length > 0
       ? firstRowMovies[Math.floor(Math.random() * firstRowMovies.length)]
       : null;
 
-    if (validRows.length === 0) {
+    // Further enrich the hero to get full details (like trailers)
+    if (randomHero) {
+      randomHero = await enrichMediaItem(randomHero);
+    }
+
+    if (enrichedRows.length === 0) {
       // Fallback if M3U logic fails to produce items (shouldn't happen if categories exist)
       return <div>No content available in M3U.</div>;
     }
 
     return (
       <HomeClient
-        heroMovie={randomHero || validRows[0].movies[0]}
-        rows={validRows}
+        heroMovie={randomHero || enrichedRows[0].movies[0]}
+        rows={enrichedRows}
       />
     );
   }

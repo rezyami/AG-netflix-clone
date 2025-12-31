@@ -77,6 +77,7 @@ export default function SeasonSelector({ tvId, seasons, showName, showTraktId }:
                     seasonNumber={activeSeason}
                     showName={showName}
                     showTraktId={showTraktId ?? undefined}
+                    showTmdbId={tvId}
                 />
             )}
         </div>

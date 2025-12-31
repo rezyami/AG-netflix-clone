@@ -69,8 +69,10 @@ export default function MovieControls({ streamUrl, mediaItem }: MovieControlsPro
             {isPlaying && streamUrl && (
                 <VideoPlayer
                     src={streamUrl}
-                    title={mediaItem?.title || mediaItem?.name}
+                    title={(mediaItem as any)?.title || (mediaItem as any)?.name}
                     onClose={() => setIsPlaying(false)}
+                    tmdbId={(mediaItem as any)?.tmdb_id || (typeof mediaItem?.id === 'number' && mediaItem.id < 5000000 ? mediaItem.id : undefined)}
+                    mediaType={mediaItem?.media_type as "movie" | "tv"}
                 />
             )}
         </>
