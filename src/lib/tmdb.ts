@@ -4,7 +4,35 @@ const BASE_URL = process.env.NEXT_PUBLIC_TMDB_BASE_URL || "https://api.themovied
 const API_KEY = process.env.TMDB_API_KEY;
 const ACCESS_TOKEN = process.env.TMDB_READ_ACCESS_TOKEN;
 
-async function fetchTMDB<T>(endpoint: string, params: Record<string, string> = {}): Promise<T> {
+class Semaphore {
+    private tasks: (() => void)[] = [];
+    private activeCount = 0;
+
+    constructor(private maxConcurrency: number) { }
+
+    async acquire() {
+        if (this.activeCount < this.maxConcurrency) {
+            this.activeCount++;
+            return;
+        }
+        await new Promise<void>(resolve => this.tasks.push(resolve));
+    }
+
+    release() {
+        this.activeCount--;
+        if (this.tasks.length > 0) {
+            this.activeCount++;
+            const nextTask = this.tasks.shift();
+            nextTask?.();
+        }
+    }
+}
+
+const tmdbSemaphore = new Semaphore(10); // Limit to 10 concurrent requests
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function fetchTMDB<T>(endpoint: string, params: Record<string, string> = {}, retries = 3, backoff = 1000, language?: string): Promise<T> {
     if (!BASE_URL) throw new Error("TMDB_BASE_URL is not defined");
 
     // During build, some vars might be missing. We allow it to fail silently or log a warning
@@ -13,37 +41,52 @@ async function fetchTMDB<T>(endpoint: string, params: Record<string, string> = {
         console.warn("⚠️ TMDB API Key or Access Token is missing. TMDB requests may fail.");
     }
 
-    const url = new URL(`${BASE_URL}${endpoint}`);
+    await tmdbSemaphore.acquire();
 
-    // Append query params
-    Object.entries(params).forEach(([key, value]) => {
-        url.searchParams.append(key, value);
-    });
+    try {
+        const url = new URL(`${BASE_URL}${endpoint}`);
 
-    // Default params
-    url.searchParams.append("language", "en-US");
-    if (API_KEY) {
-        url.searchParams.append("api_key", API_KEY);
+        // Append query params
+        Object.entries(params).forEach(([key, value]) => {
+            url.searchParams.append(key, value);
+        });
+
+        // Default params
+        if (!url.searchParams.has("language")) {
+            url.searchParams.append("language", language || "en-US");
+        }
+        if (API_KEY) {
+            url.searchParams.append("api_key", API_KEY);
+        }
+
+        const headers: HeadersInit = {
+            "Content-Type": "application/json",
+        };
+
+        if (ACCESS_TOKEN) {
+            headers["Authorization"] = `Bearer ${ACCESS_TOKEN}`;
+        }
+
+        const res = await fetch(url.toString(), {
+            headers,
+            next: { revalidate: 3600 }, // Cache for 1 hour
+        });
+
+        if (res.status === 429 && retries > 0) {
+            console.warn(`TMDB API 429 Error. Retrying in ${backoff}ms... (${retries} retries left)`);
+            await sleep(backoff);
+            tmdbSemaphore.release(); // Release before retrying to avoid deadlocks in some scenarios, though acquire is called again
+            return fetchTMDB<T>(endpoint, params, retries - 1, backoff * 2, language);
+        }
+
+        if (!res.ok) {
+            throw new Error(`TMDB API Error: ${res.status} ${res.statusText}`);
+        }
+
+        return res.json();
+    } finally {
+        tmdbSemaphore.release();
     }
-
-    const headers: HeadersInit = {
-        "Content-Type": "application/json",
-    };
-
-    if (ACCESS_TOKEN) {
-        headers["Authorization"] = `Bearer ${ACCESS_TOKEN}`;
-    }
-
-    const res = await fetch(url.toString(), {
-        headers,
-        next: { revalidate: 3600 }, // Cache for 1 hour
-    });
-
-    if (!res.ok) {
-        throw new Error(`TMDB API Error: ${res.status} ${res.statusText}`);
-    }
-
-    return res.json();
 }
 
 export const tmdb = {
@@ -84,10 +127,10 @@ export const tmdb = {
         });
     },
 
-    search: async (query: string) => {
+    search: async (query: string, language?: string) => {
         return fetchTMDB<PaginatedResponse<MediaItem>>("/search/multi", {
             query,
-        });
+        }, 3, 1000, language);
     },
 
     getSeason: async (tvId: number, seasonNumber: number) => {

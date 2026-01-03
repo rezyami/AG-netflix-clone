@@ -1,8 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import MovieRow from "@/components/MovieRow";
+import HeroMovie from "@/components/HeroMovie";
 import { MediaItem } from "@/types/tmdb";
 
 interface TVShowsClientProps {
@@ -19,22 +21,23 @@ interface TVShowsClientProps {
 export default function TVShowsClient({ groupedSeries }: TVShowsClientProps) {
     const router = useRouter();
 
+    // Find the first available series for the initial hero state
+    const firstSeries = groupedSeries.find(g => g.rows.length > 0)
+        ?.rows[0]?.movies[0] || null;
+
+    const [selectedSeries, setSelectedSeries] = useState<MediaItem | null>(firstSeries);
+
     const handleMovieClick = (movie: MediaItem) => {
-        // For M3U series, the media_type might default to movie in the mapper,
-        // but since we are in TV Shows route and these are SRS categories,
-        // we should treat them as TV.
-        // The m3uMapper sets media_type based on group name logic which might be imperfect,
-        // so we force 'tv' logic if needed or rely on the mapper correct detection.
-        // Check finding: m3uMapper sets media_type to "movie" by default unless changed.
-        // Let's assume we handle it as TV.
         router.push(`/tv/${movie.id}`);
     };
 
     return (
         <div className="relative min-h-screen bg-[#141414]">
             <Navbar />
-            <main className="relative pl-4 pb-24 pt-24 lg:space-y-24 lg:pl-16">
-                <h1 className="text-3xl md:text-5xl font-bold text-white mb-8">TV Shows</h1>
+            <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16">
+                <HeroMovie movie={selectedSeries} />
+
+                <h1 className="text-3xl md:text-5xl font-bold text-white mb-8 mt-8">TV Shows</h1>
 
                 <div className="space-y-16">
                     {groupedSeries.map((group) => (
@@ -50,6 +53,7 @@ export default function TVShowsClient({ groupedSeries }: TVShowsClientProps) {
                                         movies={row.movies}
                                         categoryLink={row.categoryLink}
                                         onMovieClick={handleMovieClick}
+                                        onMovieFocus={setSelectedSeries}
                                     />
                                 ))}
                             </div>

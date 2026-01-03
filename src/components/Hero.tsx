@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Play, Info, Volume2, VolumeX, Plus, Check } from "lucide-react";
+import { Play, Info, Volume2, VolumeX, Plus, Check, Star } from "lucide-react";
 import { Button } from "@/components/Button";
 import { MediaItem, Movie, TVShow } from "@/types/tmdb";
 import { getMovieTrailer } from "@/actions/getMovieTrailer";
 import { cn } from "@/lib/utils";
 import { toggleMyList, isInMyList } from "@/lib/myList";
+import { getGenreNames } from "@/lib/genres";
 
 interface HeroProps {
     movie: MediaItem;
@@ -81,6 +82,11 @@ export default function Hero({ movie }: HeroProps) {
     const title = (movie as Movie).title || (movie as TVShow).name;
     const backdrop = (movie as Movie | TVShow).backdrop_path;
     const overview = (movie as Movie).overview || (movie as TVShow).overview;
+    const isPerson = movie.media_type === 'person';
+    const releaseDate = !isPerson ? ((movie as Movie).release_date || (movie as TVShow).first_air_date) : null;
+    const year = releaseDate ? new Date(releaseDate).getFullYear() : null;
+    const rating = (!isPerson && movie.vote_average) ? Math.round(movie.vote_average * 10) : null;
+    const genres = !isPerson ? getGenreNames(movie.genre_ids || [], movie.media_type as any) : [];
 
     return (
         <div className="relative h-[56.25vw] min-h-[80vh] w-full overflow-hidden">
@@ -123,7 +129,32 @@ export default function Hero({ movie }: HeroProps) {
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white drop-shadow-2xl tracking-tight uppercase">
                     {title}
                 </h1>
-                <p className="text-base md:text-lg text-white drop-shadow-md line-clamp-3 font-medium text-shadow">
+
+                <div className="flex items-center gap-3 text-white text-sm md:text-base font-semibold">
+                    {rating && (
+                        <span className="text-green-400">
+                            {rating}% Match
+                        </span>
+                    )}
+                    {year && (
+                        <span>{year}</span>
+                    )}
+                    {movie.media_type === 'tv' && (
+                        <span className="border border-white/40 px-1.5 py-0.5 text-xs rounded uppercase">
+                            Series
+                        </span>
+                    )}
+                    {genres.length > 0 && (
+                        <div className="flex items-center gap-2">
+                            <span className="text-white/40">•</span>
+                            <span className="flex items-center gap-2">
+                                {genres.slice(0, 3).join(' • ')}
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                <p className="text-base md:text-lg text-white drop-shadow-md line-clamp-3 font-medium text-shadow max-w-lg">
                     {overview}
                 </p>
                 <div className="flex items-center gap-4">

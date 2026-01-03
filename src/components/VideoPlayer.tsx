@@ -36,6 +36,7 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev, tmdbI
     const [playbackRate, setPlaybackRate] = useState(1);
     const [showSettings, setShowSettings] = useState(false);
     const [showSubtitles, setShowSubtitles] = useState(false);
+    const [isSeeking, setIsSeeking] = useState(false);
 
     const [subtitleTracks, setSubtitleTracks] = useState<any[]>([]);
     const [externalSubtitleTracks, setExternalSubtitleTracks] = useState<{ label: string; src: string; lang: string }[]>([]);
@@ -46,6 +47,7 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev, tmdbI
     const [error, setError] = useState<string | null>(null);
 
     const playPromiseRef = useRef<Promise<void> | null>(null);
+    const seekingRef = useRef(false);
 
     const handleMouseMove = useCallback(() => {
         setShowControls(true);
@@ -200,23 +202,52 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev, tmdbI
         const video = videoRef.current;
         if (!video) return;
 
-        const updateProgress = () => setCurrentTime(video.currentTime);
+        const updateProgress = () => {
+            // Don't update currentTime if user is actively seeking
+            if (!seekingRef.current) {
+                setCurrentTime(video.currentTime);
+            }
+        };
         const updateDuration = () => setDuration(video.duration);
         const onPlay = () => setIsPlaying(true);
         const onPause = () => setIsPlaying(false);
+        const onSeeking = () => {
+            console.log('[onSeeking] Video element started seeking, currentTime:', videoRef.current?.currentTime);
+            seekingRef.current = true;
+            setIsSeeking(true);
+        };
+        const onSeeked = () => {
+            console.log('[onSeeked] Video element finished seeking, currentTime:', videoRef.current?.currentTime);
+            seekingRef.current = false;
+            setIsSeeking(false);
+            setCurrentTime(videoRef.current?.currentTime || 0);
+        };
 
         video.addEventListener('timeupdate', updateProgress);
         video.addEventListener('loadedmetadata', updateDuration);
         video.addEventListener('play', onPlay);
         video.addEventListener('pause', onPause);
+        video.addEventListener('seeking', onSeeking);
+        video.addEventListener('seeked', onSeeked);
 
         return () => {
             video.removeEventListener('timeupdate', updateProgress);
             video.removeEventListener('loadedmetadata', updateDuration);
             video.removeEventListener('play', onPlay);
             video.removeEventListener('pause', onPause);
+            video.removeEventListener('seeking', onSeeking);
+            video.removeEventListener('seeked', onSeeked);
         };
     }, []);
+
+    // Sync video element properties with state
+    useEffect(() => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        video.muted = isMuted;
+        video.volume = isMuted ? 0 : volume;
+    }, [isMuted, volume]);
 
     const togglePlay = () => {
         if (videoRef.current) {
@@ -234,12 +265,26 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev, tmdbI
         }
     };
 
+
     const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
         const time = Number(e.target.value);
-        if (videoRef.current) {
+        console.log('[handleSeek] Seeking to:', time, 'Duration:', duration, 'Current:', currentTime);
+        if (videoRef.current && !isNaN(duration) && duration > 0) {
+            console.log('[handleSeek] Setting video.currentTime to:', time);
             videoRef.current.currentTime = time;
-            setCurrentTime(time);
         }
+    };
+
+    const handleSeekStart = () => {
+        console.log('[handleSeekStart] User started seeking');
+        seekingRef.current = true;
+        setIsSeeking(true);
+    };
+
+    const handleSeekEnd = () => {
+        console.log('[handleSeekEnd] User finished seeking');
+        seekingRef.current = false;
+        setIsSeeking(false);
     };
 
     const toggleFullscreen = () => {
@@ -413,12 +458,20 @@ export default function VideoPlayer({ src, title, onClose, onNext, onPrev, tmdbI
                         <input
                             type="range"
                             min={0}
-                            max={duration || 100}
+                            max={duration && !isNaN(duration) && duration > 0 ? duration : 100}
                             value={currentTime}
+                            onInput={handleSeek}
                             onChange={handleSeek}
-                            className="absolute inset-0 w-full h-1 bg-gray-600 rounded-full appearance-none cursor-pointer accent-netflix-red"
+                            onMouseDown={handleSeekStart}
+                            onMouseUp={handleSeekEnd}
+                            onTouchStart={handleSeekStart}
+                            onTouchEnd={handleSeekEnd}
+                            disabled={!duration || isNaN(duration) || duration <= 0}
+                            className="absolute inset-0 w-full h-1 bg-gray-600 rounded-full appearance-none cursor-pointer accent-netflix-red disabled:cursor-not-allowed disabled:opacity-50"
                             style={{
-                                background: `linear-gradient(to right, #e50914 ${(currentTime / duration) * 100}%, #4b5563 0%)`
+                                background: duration && !isNaN(duration) && duration > 0
+                                    ? `linear-gradient(to right, #e50914 ${(currentTime / duration) * 100}%, #4b5563 0%)`
+                                    : '#4b5563'
                             }}
                         />
                         <div className="absolute right-0 -top-6 text-white text-sm font-medium">
