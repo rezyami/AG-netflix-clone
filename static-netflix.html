@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AG Netflix Clone - High Fidelity Prototype</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --color-netflix-red: #E50914;
+            --sidebar-width: 5rem;
+            --sidebar-expanded: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #141414;
+            color: #ffffff;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .text-netflix-red {
+            color: var(--color-netflix-red);
+        }
+
+        .bg-netflix-red {
+            background-color: var(--color-netflix-red);
+        }
+
+        /* Netflix Custom Styles */
+        .hero-gradient-r {
+            background: linear-gradient(90deg, #141414 0%, #141414 15%, rgba(20, 20, 20, 0) 100%);
+        }
+
+        .hero-gradient-t {
+            background: linear-gradient(0deg, #141414 0%, rgba(20, 20, 20, 0) 100%);
+        }
+
+        .sidebar-gradient {
+            background: linear-gradient(90deg, #000 0%, #000 15%, rgba(0, 0, 0, 0) 100%);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Animations from components */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-fade {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        .animate-slide {
+            animation: slideIn 0.5s ease-out forwards;
+        }
+
+        /* Row Scrolling */
+        .row-container {
+            scroll-behavior: smooth;
+        }
+
+        /* Card Focus/Hover match React logic */
+        .movie-card:hover {
+            z-index: 50;
+            transform: scale(1.1);
+        }
+
+        .trakt-auth-btn {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white overflow-x-hidden">
+
+    <!-- Section 1: Profiles View (React: Profiles.tsx) -->
+    <div id="profiles-view"
+        class="fixed inset-0 z-[100] bg-black flex items-center justify-center select-none overflow-hidden">
+        <!-- Dynamic Background Slider -->
+        <div id="profile-bg-slider" class="absolute inset-0 z-0">
+            <!-- Backgrounds will be injected here -->
+        </div>
+
+        <!-- Profiles Content -->
+        <div
+            class="relative z-10 w-full max-w-6xl px-12 flex flex-col items-center animate-in fade-in zoom-in-95 duration-1000">
+            <div class="mb-12 text-center">
+                <h1 class="text-netflix-red text-3xl font-black tracking-tighter mb-8">NETFLIX</h1>
+                <h2 id="profile-greeting" class="text-white text-5xl font-medium tracking-tight">Who's watching?</h2>
+            </div>
+
+            <div id="profiles-container" class="flex flex-wrap justify-center gap-8">
+                <!-- Profiles will be injected here -->
+            </div>
+
+            <div class="mt-20">
+                <button id="manage-profiles-btn" onclick="toggleManageMode()"
+                    class="px-8 py-2 border border-white/40 text-white/40 font-medium tracking-widest uppercase hover:border-white hover:text-white transition-all">
+                    Manage Profiles
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 2: App Shell (React: HomeClient.tsx + Navbar.tsx + SidebarMenu.tsx) -->
+    <div id="app-shell" class="hidden min-h-screen relative pl-4 lg:pl-20">
+
+        <!-- Sidebar Menu -->
+        <div id="sidebar"
+            class="fixed top-0 left-0 h-screen w-20 p-4 flex flex-col justify-between z-50 transition-all duration-700 bg-transparent group/sidebar hover:w-full hover:sidebar-gradient">
+            <div class="flex flex-col space-y-6 pt-10">
+                <!-- Profile Mini -->
+                <div
+                    class="opacity-0 -translate-x-8 transition-all duration-500 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 mb-4">
+                    <div class="flex items-center">
+                        <img id="sidebar-avatar" src="" class="w-12 h-12 rounded-md mr-3 object-cover">
+                        <div>
+                            <span id="sidebar-name" class="text-white font-bold block"></span>
+                            <div onclick="logout()" class="text-xs text-gray-400 cursor-pointer hover:text-white">Switch
+                                Profiles</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex flex-col space-y-4">
+                    <div onclick="navigate('search')"
+                        class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                        <i data-lucide="search" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                        <span
+                            class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">Search</span>
+                    </div>
+                    <div onclick="navigate('home')"
+                        class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                        <i data-lucide="home" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                        <span
+                            class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">Home</span>
+                    </div>
+                    <div onclick="navigate('new')"
+                        class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                        <i data-lucide="trending-up" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                        <span
+                            class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">New
+                            & Popular</span>
+                    </div>
+                    <div onclick="navigate('tv')"
+                        class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                        <i data-lucide="tv" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                        <span
+                            class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">TV
+                            Shows</span>
+                    </div>
+                    <div onclick="navigate('movies')"
+                        class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                        <i data-lucide="film" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                        <span
+                            class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">Movies</span>
+                    </div>
+                    <div onclick="navigate('mylist')"
+                        class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                        <i data-lucide="plus" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                        <span
+                            class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">My
+                            List</span>
+                    </div>
+                </nav>
+            </div>
+
+            <!-- Footer Sidebar -->
+            <div class="flex flex-col space-y-4 mb-10">
+                <div
+                    class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                    <i data-lucide="settings" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                    <span
+                        class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">Settings</span>
+                </div>
+                <div onclick="logout()"
+                    class="flex items-center px-3 py-2 rounded cursor-pointer group/item hover:bg-gray-800 transition-colors">
+                    <i data-lucide="log-out" class="w-6 h-6 text-gray-300 group-hover/item:text-white"></i>
+                    <span
+                        class="ml-6 text-gray-300 group-hover/item:text-white opacity-0 -translate-x-10 group-hover/sidebar:opacity-100 group-hover/sidebar:translate-x-0 transition-all duration-500 font-semibold whitespace-nowrap">Log
+                        Out</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Navbar -->
+        <nav id="navbar"
+            class="fixed top-0 inset-x-0 z-40 px-4 md:px-16 py-4 transition-colors duration-300 pl-24 md:pl-24 bg-gradient-to-b from-black/80 to-transparent">
+            <div class="flex items-center justify-between">
+                <div id="navbar-logo"
+                    class="text-2xl font-bold text-netflix-red opacity-0 transition-opacity duration-300 cursor-pointer"
+                    onclick="navigate('home')">
+                    NETFLIX
+                </div>
+                <div class="flex items-center gap-6">
+                    <button
+                        class="trakt-auth-btn px-4 py-1.5 rounded-sm flex items-center gap-2 text-xs font-bold uppercase tracking-wider hover:bg-white/20 transition-all">
+                        <img src="https://trakt.tv/assets/trakt-icon-red-9ae815779603f290547072a2bc8c5120a1734bc14f6b21588647b0ea77f52f36.svg"
+                            class="w-4 h-4">
+                        Connect Trakt
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main id="main-content" class="relative pb-24">
+            <!-- Dynamic Injection -->
+        </main>
+
+    </div>
+
+    <!-- Modals & Overlays -->
+    <div id="video-overlay" class="fixed inset-0 z-[200] bg-black hidden flex-col">
+        <button onclick="closePlayer()"
+            class="absolute top-8 left-8 z-50 text-white hover:scale-110 transition-transform"><i
+                data-lucide="arrow-left" class="w-10 h-10"></i></button>
+        <div class="flex-grow flex items-center justify-center relative">
+            <video id="player-video" class="w-full h-full" controls></video>
+            <div id="player-info"
+                class="absolute bottom-12 left-12 text-white p-6 bg-black/40 backdrop-blur-md rounded-lg border border-white/10 space-y-2">
+                <h2 id="player-title" class="text-4xl font-black italic uppercase italic tracking-tighter"></h2>
+                <div class="flex items-center gap-4 text-sm font-bold text-gray-300">
+                    <span class="text-green-400">98% Match</span>
+                    <span id="player-year"></span>
+                    <span class="border border-white/40 px-1 py-0.5 text-xs rounded uppercase">UHD</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // M3U Mock Data based on your file
+        const M3U_ITEMS = [
+            { id: 101, title: "Iron Man", year: 2008, media_type: 'movie', poster_path: "/78lPtwv72eTNqFW9COBYI0dWDJa.jpg", backdrop_path: "/cyecB7jSSTcuqcI7rnqP2YnfsQC.jpg", overview: "After being held captive in an Afghan cave, billionaire engineer Tony Stark creates a unique weaponized suit of armor to fight evil.", category: "VOD | EN - MARVEL" },
+            { id: 102, title: "Deadpool", year: 2016, media_type: 'movie', poster_path: "/fSRb7vyIP8rQpL0I47P3qUsEKX3.jpg", backdrop_path: "/En97vYabZ987fjMubH9pS9061f.jpg", overview: "The origin story of former Special Forces operative turned mercenary Wade Wilson.", category: "VOD | EN - MARVEL" },
+            { id: 103, title: "Ant-Man", year: 2015, media_type: 'movie', poster_path: "/rS97hUJ1otKTTripGwQ0ujbuIri.jpg", backdrop_path: "/7v9Xp06v8P2zP9vLvzK3Xj5v8o.jpg", overview: "Armed with the astonishing ability to shrink in scale but increase in strength, master thief Scott Lang must embrace his inner hero.", category: "VOD | EN - MARVEL" },
+            { id: 104, title: "Logan", year: 2017, media_type: 'movie', poster_path: "/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg", backdrop_path: "/A30971Z33xvR78Uu97O5v.jpg", overview: "In the near future, a weary Logan cares for an ailing Professor X in a hide out on the Mexican border.", category: "VOD | EN - MARVEL" },
+            { id: 105, title: "Stranger Things", year: 2016, media_type: 'tv', poster_path: "/x2LSRm21uTExHi78uS7ndyKy0mX.jpg", backdrop_path: "/56v2KjBlU4pCzSfsXoc3ZCDiDY7.jpg", overview: "When a young boy vanishes, a small town uncovers a mystery involving secret experiments and terrifying supernatural forces.", category: "SRS | EN - NETFLIX" },
+            { id: 106, title: "The Last Of Us", year: 2023, media_type: 'tv', poster_path: "/uKvH6Bv9ScOxyS68oWntR9sY9Of.jpg", backdrop_path: "/uDgykyS68oWntR9sY9Of.jpg", overview: "Twenty years after modern civilization has been destroyed, Joel, a hardened survivor, is hired to smuggle Ellie out of an oppressive quarantine zone.", category: "SRS | EN - HBO" },
+            { id: 107, title: "Toy Story", year: 1995, media_type: 'movie', poster_path: "/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg", backdrop_path: "/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg", overview: "Led by Woody, Andy's toys live happily in his room until Andy's birthday brings Buzz Lightyear onto the scene.", category: "VOD | AR - Animation" },
+            { id: 108, title: "Wall-E", year: 2008, media_type: 'movie', poster_path: "/Agc6lw8pb6BIGVeguvdjDT0p9Mb.jpg", backdrop_path: "/Agc6lw8pb6BIGVeguvdjDT0p9Mb.jpg", overview: "In the distant future, a small waste-collecting robot inadvertently embarks on a space journey.", category: "VOD | AR - Animation" },
+            { id: 109, title: "Aladdin", year: 1992, media_type: 'movie', poster_path: "/oakAd8syy7jNQ4ZoaAGCQkTqcOV.jpg", backdrop_path: "/v97vYabZ987fjMubH9pS9061f.jpg", overview: "A kindhearted street urchin and a power-hungry Grand Vizier vie for a magic lamp that has the power to make their deepest wishes come true.", category: "VOD | AR - Animation" }
+        ];
+
+        const PROFILES = [
+            { id: 1, name: "Rachid", avatar: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Netflix-avatar.png", isChildren: false },
+            { id: 2, name: "Kids", avatar: "https://occ-0-1068-1722.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABZ0E-pT_vTf3pP5A4uL3n2pG_4P2tXJmD2z0m_8fKq7L8D8WlP_T_fI_Z_X.png", isChildren: true }
+        ];
+
+        let selectedProfile = null;
+        let isManageMode = false;
+        let activeView = 'home';
+        let currentHeroMovie = M3U_ITEMS[0];
+        let myList = JSON.parse(localStorage.getItem('netflix-clone-my-list') || '[]');
+
+        // --- Profile Logic (Profiles.tsx) ---
+        function initProfiles() {
+            const container = document.getElementById('profiles-container');
+            container.innerHTML = PROFILES.map(profile => `
+                <div onclick="handleProfileClick(${profile.id})" class="group flex flex-col items-center gap-4 transition-transform hover:scale-110 cursor-pointer">
+                    <div class="relative w-40 h-40 rounded-md overflow-hidden ring-0 group-hover:ring-4 ring-white transition-all shadow-2xl">
+                        <img src="${profile.avatar}" class="w-full h-full object-cover ${isManageMode ? 'brightness-50' : ''}">
+                        ${isManageMode ? `
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="bg-black/50 rounded-full p-2 border-2 border-white/50">
+                                    <i data-lucide="edit-2" class="w-8 h-8 text-white"></i>
+                                </div>
+                            </div>
+                        ` : ''}
+                        ${profile.isChildren ? `
+                            <div class="absolute bottom-0 inset-x-0 flex items-center justify-center bg-black/40 py-1">
+                                <span class="text-white text-[10px] font-bold uppercase tracking-tighter bg-cyan-600 px-1.5 py-0.5 rounded">Kids</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                    <span class="text-gray-400 text-2xl font-medium group-hover:text-white transition-colors">${profile.name}</span>
+                </div>
+            `).join('') + `
+                <div class="group flex flex-col items-center gap-4 transition-transform hover:scale-110 cursor-pointer">
+                    <div class="w-40 h-40 rounded-md bg-white/5 flex items-center justify-center group-hover:bg-white/10 ring-0 group-hover:ring-4 ring-white transition-all border-2 border-dashed border-white/20">
+                        <i data-lucide="plus" class="w-16 h-16 text-white/40 group-hover:text-white"></i>
+                    </div>
+                    <span class="text-gray-400 text-2xl font-medium group-hover:text-white transition-colors">Add Profile</span>
+                </div>
+            `;
+
+            // Background Slider Mock (Profiles.tsx)
+            const bgSlider = document.getElementById('profile-bg-slider');
+            bgSlider.innerHTML = M3U_ITEMS.map((item, idx) => `
+                <div class="absolute inset-0 transition-opacity duration-[2000ms] ${idx === 0 ? 'opacity-30' : 'opacity-0'}" id="bg-slide-${idx}">
+                    <img src="https://image.tmdb.org/t/p/original${item.backdrop_path}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60"></div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+            startProfileBgRotation();
+        }
+
+        let bgIndex = 0;
+        function startProfileBgRotation() {
+            setInterval(() => {
+                document.getElementById(`bg-slide-${bgIndex}`).classList.replace('opacity-30', 'opacity-0');
+                bgIndex = (bgIndex + 1) % M3U_ITEMS.length;
+                document.getElementById(`bg-slide-${bgIndex}`).classList.replace('opacity-0', 'opacity-30');
+            }, 8000);
+        }
+
+        function toggleManageMode() {
+            isManageMode = !isManageMode;
+            const btn = document.getElementById('manage-profiles-btn');
+            const greeting = document.getElementById('profile-greeting');
+            if (isManageMode) {
+                btn.classList.add('bg-white', 'text-black', 'border-white');
+                greeting.innerText = "Manage Profiles";
+            } else {
+                btn.classList.remove('bg-white', 'text-black', 'border-white');
+                greeting.innerText = "Who's watching?";
+            }
+            initProfiles();
+        }
+
+        function handleProfileClick(id) {
+            if (isManageMode) return;
+            selectedProfile = PROFILES.find(p => p.id === id);
+            document.getElementById('profiles-view').classList.add('opacity-0');
+            setTimeout(() => {
+                document.getElementById('profiles-view').classList.add('hidden');
+                document.getElementById('app-shell').classList.remove('hidden');
+                document.getElementById('sidebar-avatar').src = selectedProfile.avatar;
+                document.getElementById('sidebar-name').innerText = selectedProfile.name;
+                renderApp();
+            }, 800);
+        }
+
+        // --- App Logic (HomeClient.tsx) ---
+        function renderApp() {
+            const main = document.getElementById('main-content');
+            let content = '';
+
+            if (activeView === 'home') {
+                content = renderHero(currentHeroMovie) + `
+                    <section class="md:space-y-16 -mt-32 relative z-10">
+                        ${renderContinueWatching()}
+                        ${renderListRow("Trending Now", M3U_ITEMS.slice(0, 6))}
+                        ${renderListRow("Trakt Recommended", M3U_ITEMS.slice(4, 9))}
+                        ${renderListRow("Marvel Cinematic Universe", M3U_ITEMS.filter(m => m.category.includes('MARVEL')))}
+                        ${renderListRow("Arabic Animation Specials", M3U_ITEMS.filter(m => m.category.includes('Animation')))}
+                    </section>
+                `;
+            } else if (activeView === 'movies') {
+                content = `<div class="pt-24 px-4 md:px-12"><h1 class="text-5xl font-black italic uppercase tracking-tighter mb-10 animate-slide">Movies</h1><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">${M3U_ITEMS.filter(i => i.media_type === 'movie').map(i => renderCard(i)).join('')}</div></div>`;
+            } else if (activeView === 'tv') {
+                content = `<div class="pt-24 px-4 md:px-12"><h1 class="text-5xl font-black italic uppercase tracking-tighter mb-10 animate-slide">TV Shows</h1><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">${M3U_ITEMS.filter(i => i.media_type === 'tv').map(i => renderCard(i)).join('')}</div></div>`;
+            } else if (activeView === 'mylist') {
+                const listData = M3U_ITEMS.filter(i => myList.some(m => m.id === i.id));
+                content = `<div class="pt-24 px-4 md:px-12"><h1 class="text-5xl font-black italic uppercase tracking-tighter mb-10 animate-slide">My List</h1><div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">${listData.map(i => renderCard(i)).join('')}</div></div>`;
+            } else if (activeView === 'search') {
+                content = `
+                    <div class="pt-24 px-4 md:px-12 animate-fade">
+                        <div class="flex items-center gap-4 bg-white/10 p-4 rounded-lg border border-white/10 mb-10">
+                            <i data-lucide="search" class="w-8 h-8 text-gray-400"></i>
+                            <input type="text" placeholder="Search for titles, categories..." class="bg-transparent border-none text-3xl outline-none w-full" oninput="handleGlobalSearch(this.value)">
+                        </div>
+                        <div id="search-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"></div>
+                    </div>
+                `;
+            }
+
+            main.innerHTML = content;
+            lucide.createIcons();
+            window.scrollTo({ top: 0, behavior: 'auto' });
+        }
+
+        function renderHero(movie) {
+            return `
+                <div class="relative h-[56.25vw] min-h-[80vh] w-full overflow-hidden animate-fade">
+                    <img src="https://image.tmdb.org/t/p/original${movie.backdrop_path}" class="absolute inset-0 w-full h-full object-cover">
+                    <div class="absolute inset-0 hero-gradient-r opacity-90"></div>
+                    <div class="absolute inset-0 hero-gradient-t opacity-90"></div>
+                    <div class="absolute bottom-[30%] left-4 md:left-16 max-w-xl space-y-6 z-10 animate-slide">
+                        <h1 class="text-4xl md:text-7xl lg:text-8xl font-black text-white italic tracking-tighter uppercase drop-shadow-2xl">${movie.title}</h1>
+                        <div class="flex items-center gap-3 text-white text-base font-bold">
+                            <span class="text-green-400">98% Match</span>
+                            <span>${movie.year}</span>
+                            <span class="border border-white/40 px-1.5 py-0.5 text-xs rounded uppercase">${movie.media_type === 'tv' ? 'Series' : 'Movie'}</span>
+                            <span class="text-white/40">•</span>
+                            <span class="flex items-center gap-2">Action • Adventure • Sci-Fi</span>
+                        </div>
+                        <p class="text-lg text-white font-medium max-w-lg drop-shadow-md line-clamp-3">${movie.overview}</p>
+                        <div class="flex items-center gap-4">
+                            <button onclick="playMovie(${movie.id})" class="flex items-center gap-3 bg-white text-black px-10 py-3 rounded-md font-black italic uppercase tracking-tighter text-xl hover:bg-gray-200 transition-colors">
+                                <i data-lucide="play" class="fill-current w-6 h-6"></i> Play
+                            </button>
+                            <button class="flex items-center gap-3 bg-gray-500/40 text-white px-10 py-3 rounded-md font-black italic uppercase tracking-tighter text-xl hover:bg-gray-500/30 backdrop-blur-md border border-white/10 transition-colors">
+                                <i data-lucide="info" class="w-6 h-6"></i> More Info
+                            </button>
+                            <button onclick="toggleMyList(${movie.id})" class="rounded-full border-2 border-white/30 p-3 text-white hover:bg-white/10 hover:border-white transition-all bg-black/20 backdrop-blur-sm">
+                                <i data-lucide="${isInList(movie.id) ? 'check' : 'plus'}" class="h-6 w-6"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Mute & Age -->
+                    <div class="absolute bottom-[35%] right-0 flex items-center gap-4 z-20">
+                        <button class="rounded-full border border-white/40 p-2 text-white bg-black/30 hover:bg-black/50 transition-all"><i data-lucide="volume-x" class="w-5 h-5"></i></button>
+                        <div class="bg-gray-500/30 border-l-4 border-white py-1 pl-3 pr-8 text-white backdrop-blur-sm font-black italic tracking-tighter">13+</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderContinueWatching() {
+            // Mock Continue Watching (React: ContinueWatching.tsx)
+            return `
+                <div class="space-y-4 px-4 md:px-12 mb-12">
+                    <h2 class="text-2xl font-black italic uppercase tracking-tighter text-gray-200">Continue Watching</h2>
+                    <div class="flex gap-4 overflow-x-auto no-scrollbar pb-6 pt-2">
+                        ${M3U_ITEMS.slice(0, 3).map((item, idx) => `
+                            <div class="group relative h-40 min-w-[120px] md:h-64 md:min-w-[180px] cursor-pointer transition-transform duration-200 hover:z-50 hover:scale-110" onclick="playMovie(${item.id})">
+                                <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" class="rounded-sm object-cover w-full h-full">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex flex-col justify-end p-2 md:p-4">
+                                    <h3 class="text-sm font-bold truncate">${item.title}</h3>
+                                    <div class="h-1 bg-white/20 rounded-full mt-2 overflow-hidden">
+                                        <div class="h-full bg-netflix-red w-[${50 + idx * 15}%]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderListRow(title, items) {
+            return `
+                <div class="space-y-4 px-4 md:px-12 mb-12">
+                    <h2 class="text-2xl font-black italic uppercase tracking-tighter text-gray-200 flex items-center gap-4 group/h cursor-pointer">
+                        ${title} <i data-lucide="chevron-right" class="w-6 h-6 opacity-0 group-hover/h:opacity-100 transition-all"></i>
+                    </h2>
+                    <div class="flex gap-4 overflow-x-auto no-scrollbar pb-6 pt-2 row-container">
+                        ${items.map(item => `<div class="w-40 md:w-56 lg:w-64 flex-none shrink-0">${renderCard(item)}</div>`).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCard(item) {
+            return `
+                <div class="group/card relative cursor-pointer" onclick="handleCardClick(${item.id})">
+                    <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" class="w-full aspect-[2/3] object-cover rounded shadow-lg transition-transform duration-300 group-hover/card:scale-110 group-hover/card:z-50">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent rounded pointer-events-none p-2 flex flex-col justify-end">
+                        <h4 class="text-xs font-bold whitespace-nowrap overflow-hidden text-ellipsis">${item.title}</h4>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Action Logic
+        function handleCardClick(id) {
+            const movie = M3U_ITEMS.find(i => i.id === id);
+            currentHeroMovie = movie;
+            activeView = 'home';
+            renderApp();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function playMovie(id) {
+            const movie = M3U_ITEMS.find(i => i.id === id);
+            const overlay = document.getElementById('video-overlay');
+            const video = document.getElementById('player-video');
+            document.getElementById('player-title').innerText = movie.title;
+            document.getElementById('player-year').innerText = movie.year;
+            overlay.classList.remove('hidden');
+            video.src = "https://raw.githubusercontent.com/intel-iot-devkit/sample-videos/master/free-h264-video-stream.mp4";
+            video.play();
+        }
+
+        function closePlayer() {
+            const overlay = document.getElementById('video-overlay');
+            const video = document.getElementById('player-video');
+            video.pause();
+            overlay.classList.add('hidden');
+        }
+
+        function navigate(view) {
+            activeView = view;
+            renderApp();
+        }
+
+        function logout() {
+            selectedProfile = null;
+            document.getElementById('app-shell').classList.add('hidden');
+            document.getElementById('profiles-view').classList.remove('hidden', 'opacity-0');
+        }
+
+        function toggleMyList(id) {
+            const movie = M3U_ITEMS.find(i => i.id === id);
+            if (isInList(id)) {
+                myList = myList.filter(m => m.id !== id);
+            } else {
+                myList.push(movie);
+            }
+            localStorage.setItem('netflix-clone-my-list', JSON.stringify(myList));
+            renderApp();
+        }
+
+        function isInList(id) {
+            return myList.some(m => m.id === id);
+        }
+
+        function handleGlobalSearch(val) {
+            const grid = document.getElementById('search-grid');
+            if (!val) { grid.innerHTML = ''; return; }
+            const results = M3U_ITEMS.filter(i => i.title.toLowerCase().includes(val.toLowerCase()) || i.category.toLowerCase().includes(val.toLowerCase()));
+            grid.innerHTML = results.map(i => renderCard(i)).join('');
+        }
+
+        // Transition logic for Navbar
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            const logo = document.getElementById('navbar-logo');
+            if (window.scrollY > 100) {
+                nav.classList.add('bg-black');
+                nav.classList.remove('bg-gradient-to-b');
+                logo.classList.replace('opacity-0', 'opacity-100');
+            } else {
+                nav.classList.remove('bg-black');
+                nav.classList.add('bg-gradient-to-b');
+                logo.classList.replace('opacity-100', 'opacity-0');
+            }
+        });
+
+        // Initialize
+        initProfiles();
+    </script>
+</body>
+
+</html>

@@ -31,23 +31,29 @@ function normalizeUrl(url: string | undefined): string | null {
 
 export function mapM3UToMediaItem(entry: M3UEntry): MediaItem {
     // Determine media type based on group or title
-    const isTV = entry.group?.toUpperCase().includes('SERIES') || entry.group?.toUpperCase().includes('SRS');
+    const isTV = entry.group?.toUpperCase().includes('SERIES') ||
+        entry.group?.toUpperCase().includes('SRS') ||
+        entry.group?.toUpperCase().includes('SHOWS');
+
+    const title = replaceLanguageWrapper(entry.rawTitle);
+    const date = new Date().toISOString();
 
     return {
         id: generateId(entry.title + entry.url),
-        title: replaceLanguageWrapper(entry.rawTitle),
+        title: title,
+        name: title,
         original_title: entry.rawTitle,
+        original_name: entry.rawTitle,
         overview: `Category: ${entry.group}`,
         poster_path: normalizeUrl(entry.logo),
-        backdrop_path: normalizeUrl(entry.logo), // Use logo as backdrop if available
-        release_date: new Date().toISOString(), // Placeholder
+        backdrop_path: normalizeUrl(entry.logo),
+        release_date: date,
+        first_air_date: date,
         vote_average: 0,
         vote_count: 0,
         popularity: 0,
         genre_ids: [],
-        media_type: "movie", // Default to movie for now, or "tv" if we can determine it
+        media_type: isTV ? "tv" : "movie",
         adult: false,
-        // Add custom property for video URL if needed by the player component
-        // For now, we are just mapping to MediaItem for display
-    } as MediaItem;
+    } as any;
 }

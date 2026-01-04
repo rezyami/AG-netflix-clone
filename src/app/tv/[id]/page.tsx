@@ -112,8 +112,14 @@ export default async function TVDetailsPage({ params }: PageProps) {
             // Try single entry fallback
             const m3uEntry = await getM3UEntryById(numericId);
             if (m3uEntry) {
-                const basicShow = mapM3UToMediaItem(m3uEntry);
-                show = await enrichMediaItem({ ...basicShow, media_type: "tv" });
+                const basicShow = mapM3UToMediaItem(m3uEntry) as any;
+                show = await enrichMediaItem({
+                    ...basicShow,
+                    media_type: "tv",
+                    name: basicShow.name || basicShow.title,
+                    original_name: basicShow.original_name || basicShow.original_title,
+                    first_air_date: basicShow.first_air_date || basicShow.release_date
+                } as any);
                 streamEntry = m3uEntry;
                 show.seasons = [];
                 if (!show.credits) show.credits = { cast: [], crew: [] };
