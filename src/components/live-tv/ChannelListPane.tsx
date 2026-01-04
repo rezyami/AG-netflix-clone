@@ -1,6 +1,6 @@
 'use client';
 
-import { M3UEntry } from "@/lib/m3u";
+import { M3UEntry } from "@/types/m3u";
 import { Focusable } from "../tv/Focusable";
 import { Play, Lock, History, Star } from "lucide-react";
 
