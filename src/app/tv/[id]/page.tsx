@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+export const dynamic = "force-dynamic";
 import CastList from "@/components/CastList";
 import { tmdb } from "@/lib/tmdb";
 import Image from "next/image";

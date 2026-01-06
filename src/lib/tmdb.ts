@@ -80,7 +80,11 @@ async function fetchTMDB<T>(endpoint: string, params: Record<string, string> = {
         }
 
         if (!res.ok) {
-            throw new Error(`TMDB API Error: ${res.status} ${res.statusText}`);
+            const errorText = await res.text();
+            if (res.status === 401 || res.status === 403) {
+                throw new Error(`TMDB AUTH ERROR: ${res.status}. Check if your TMDB_API_KEY or TMDB_READ_ACCESS_TOKEN is correctly set in Vercel environment variables.`);
+            }
+            throw new Error(`TMDB API Error: ${res.status} ${res.statusText} - ${errorText}`);
         }
 
         return res.json();

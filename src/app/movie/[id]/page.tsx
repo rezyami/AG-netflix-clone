@@ -1,4 +1,5 @@
 import Navbar from "@/components/Navbar";
+export const dynamic = "force-dynamic";
 import MovieRow from "@/components/MovieRow";
 import CastList from "@/components/CastList";
 import { tmdb } from "@/lib/tmdb";

@@ -1361852,5 +1361852,1739 @@
         "total_results": 99981
       }
     }
+  },
+  "- Along for the Ride -_movie": {
+    "tmdbId": 778106,
+    "mediaType": "movie",
+    "timestamp": 1767708211712,
+    "details": {
+      "adult": false,
+      "backdrop_path": "/rOunAU2rF7C0eU58X9VKHY79EIq.jpg",
+      "belongs_to_collection": null,
+      "budget": 0,
+      "genres": [
+        {
+          "id": 10749,
+          "name": "Romance"
+        },
+        {
+          "id": 18,
+          "name": "Drama"
+        }
+      ],
+      "homepage": "https://www.netflix.com/title/81074938",
+      "id": 778106,
+      "imdb_id": "tt14506528",
+      "origin_country": [
+        "US"
+      ],
+      "original_language": "en",
+      "original_title": "Along for the Ride",
+      "overview": "The summer before college, Auden meets the mysterious Eli, a fellow insomniac. While the seaside town of Colby sleeps, the two embark on nightly quests to help Auden experience the fun, carefree teen life she never knew she wanted.",
+      "popularity": 2.2329,
+      "poster_path": "/d5spmLeGR9kxBRQ6qxCFad1ljvT.jpg",
+      "production_companies": [
+        {
+          "id": 102118,
+          "logo_path": null,
+          "name": "Screen Arcade",
+          "origin_country": "US"
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "US",
+          "name": "United States of America"
+        }
+      ],
+      "release_date": "2022-05-06",
+      "revenue": 0,
+      "runtime": 106,
+      "spoken_languages": [
+        {
+          "english_name": "English",
+          "iso_639_1": "en",
+          "name": "English"
+        }
+      ],
+      "status": "Released",
+      "tagline": "Tomorrow begins tonight.",
+      "title": "Along for the Ride",
+      "video": false,
+      "vote_average": 6.689,
+      "vote_count": 367,
+      "videos": {
+        "results": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "name": "Official Trailer",
+            "key": "A1PTIxYrTVw",
+            "site": "YouTube",
+            "size": 1080,
+            "type": "Trailer",
+            "official": true,
+            "published_at": "2022-03-24T16:00:01.000Z",
+            "id": "623cc5db211ce5005c9b0ccc"
+          }
+        ]
+      },
+      "credits": {
+        "cast": [
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2675886,
+            "known_for_department": "Acting",
+            "name": "Emma Pasarow",
+            "original_name": "Emma Pasarow",
+            "popularity": 0.8681,
+            "profile_path": "/840h2OMXOgODePdaGPy07009tQS.jpg",
+            "cast_id": 1,
+            "character": "Auden West",
+            "credit_id": "60aa999bede1b00040e6fc08",
+            "order": 0
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2286570,
+            "known_for_department": "Acting",
+            "name": "Belmont Cameli",
+            "original_name": "Belmont Cameli",
+            "popularity": 1.4783,
+            "profile_path": "/yJwjcWwDdHkCeTLGgbKkSJdXXVc.jpg",
+            "cast_id": 2,
+            "character": "Eli Stock",
+            "credit_id": "60aa99b9957e6d0040f92ca9",
+            "order": 1
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 7517,
+            "known_for_department": "Acting",
+            "name": "Kate Bosworth",
+            "original_name": "Kate Bosworth",
+            "popularity": 5.0449,
+            "profile_path": "/ezaM2jsyrxXWVFN1SbH3UfAgZaG.jpg",
+            "cast_id": 3,
+            "character": "Heidi",
+            "credit_id": "60aa9a0f0398ab00578f6f93",
+            "order": 2
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 1533,
+            "known_for_department": "Acting",
+            "name": "Andie MacDowell",
+            "original_name": "Andie MacDowell",
+            "popularity": 4.3855,
+            "profile_path": "/akeheO4i3cR1HpSU8yu9HrLcsKm.jpg",
+            "cast_id": 4,
+            "character": "Dr. Victoria West",
+            "credit_id": "60aa9a287f2d4a005bb4ed08",
+            "order": 3
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 3006084,
+            "known_for_department": "Acting",
+            "name": "Laura Kariuki",
+            "original_name": "Laura Kariuki",
+            "popularity": 0.6948,
+            "profile_path": "/3TorJVR4saByc8j6g3VcRB0cmFI.jpg",
+            "cast_id": 5,
+            "character": "Maggie",
+            "credit_id": "60aa9a5d2dda890029f23b59",
+            "order": 4
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 20212,
+            "known_for_department": "Acting",
+            "name": "Dermot Mulroney",
+            "original_name": "Dermot Mulroney",
+            "popularity": 4.8684,
+            "profile_path": "/zemTC606JcuMgIGbJMYAocrS5Gm.jpg",
+            "cast_id": 6,
+            "character": "Robert West",
+            "credit_id": "60aa9a6f0398ab00405f0885",
+            "order": 5
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 134658,
+            "known_for_department": "Acting",
+            "name": "Genevieve Hannelius",
+            "original_name": "Genevieve Hannelius",
+            "popularity": 2.0573,
+            "profile_path": "/vtuJEtaX40XBH9wBw5EtW5xZKtr.jpg",
+            "cast_id": 7,
+            "character": "Leah",
+            "credit_id": "60aa9a9c9a64c10058c724da",
+            "order": 6
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2888849,
+            "known_for_department": "Acting",
+            "name": "Samia Finnerty",
+            "original_name": "Samia Finnerty",
+            "popularity": 1.4936,
+            "profile_path": "/sz4Y2FHRvu6BDwxV6YoIQfli9B6.jpg",
+            "cast_id": 8,
+            "character": "Esther",
+            "credit_id": "60aa9aaf58efd300784d7515",
+            "order": 7
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 1827358,
+            "known_for_department": "Acting",
+            "name": "Paul Karmiryan",
+            "original_name": "Paul Karmiryan",
+            "popularity": 1.261,
+            "profile_path": "/e9Ebaaw5HU0hx93vHgdbxZuuesj.jpg",
+            "cast_id": 9,
+            "character": "Adam",
+            "credit_id": "60aa9b25957e6d0040f92f2a",
+            "order": 8
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 1348591,
+            "known_for_department": "Acting",
+            "name": "Marcus Scribner",
+            "original_name": "Marcus Scribner",
+            "popularity": 1.2882,
+            "profile_path": "/mm7f9MssRDDAphGPp2OJE6Ial01.jpg",
+            "cast_id": 10,
+            "character": "Wallace",
+            "credit_id": "60aa9b419a64c10058c725a1",
+            "order": 9
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 1634120,
+            "known_for_department": "Acting",
+            "name": "Ricardo Hurtado",
+            "original_name": "Ricardo Hurtado",
+            "popularity": 0.8235,
+            "profile_path": "/jz8uatjwVN3lV1R0VqsPQLEclT9.jpg",
+            "cast_id": 11,
+            "character": "Jake Stock",
+            "credit_id": "60aa9b5a976a230029e8af02",
+            "order": 10
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 3266269,
+            "known_for_department": "Acting",
+            "name": "Sara Elizabeth Ezzell",
+            "original_name": "Sara Elizabeth Ezzell",
+            "popularity": 0.1481,
+            "profile_path": null,
+            "cast_id": 14,
+            "character": "Girl at Skatepark",
+            "credit_id": "61637c6da127e50042f5772c",
+            "order": 11
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 3266270,
+            "known_for_department": "Acting",
+            "name": "Clayton Frank",
+            "original_name": "Clayton Frank",
+            "popularity": 0.2829,
+            "profile_path": null,
+            "cast_id": 15,
+            "character": "Skatepark Teen",
+            "credit_id": "61637d147d41aa0061a67438",
+            "order": 12
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 3459390,
+            "known_for_department": "Acting",
+            "name": "Kelsey Rose Healey",
+            "original_name": "Kelsey Rose Healey",
+            "popularity": 2.0207,
+            "profile_path": "/f7lel4gSptxtIxoxyFc2YMqQSpi.jpg",
+            "cast_id": 19,
+            "character": "Valerie",
+            "credit_id": "62b60247383df200613e4603",
+            "order": 13
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 3615586,
+            "known_for_department": "Acting",
+            "name": "Anna Stadler",
+            "original_name": "Anna Stadler",
+            "popularity": 0.4133,
+            "profile_path": "/xYk4ZKVYNxKXt4jQ3d5ArfLq1gD.jpg",
+            "cast_id": 20,
+            "character": "Preppy Teen (uncredited)",
+            "credit_id": "62c744e3cf62cd0069716d03",
+            "order": 14
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 5225906,
+            "known_for_department": "Acting",
+            "name": "Hannah Michelle",
+            "original_name": "Hannah Michelle",
+            "popularity": 0.0528,
+            "profile_path": null,
+            "cast_id": 32,
+            "character": "Cala",
+            "credit_id": "67a3b3d22f44f82ad32fb773",
+            "order": 15
+          }
+        ],
+        "crew": [
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2109683,
+            "known_for_department": "Writing",
+            "name": "Sofia Alvarez",
+            "original_name": "Sofia Alvarez",
+            "popularity": 1.166,
+            "profile_path": null,
+            "credit_id": "60aa9d712dda890029f24037",
+            "department": "Directing",
+            "job": "Director"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2109683,
+            "known_for_department": "Writing",
+            "name": "Sofia Alvarez",
+            "original_name": "Sofia Alvarez",
+            "popularity": 1.166,
+            "profile_path": null,
+            "credit_id": "60aa9f5d2dda890058f888e1",
+            "department": "Writing",
+            "job": "Screenplay"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 1469571,
+            "known_for_department": "Writing",
+            "name": "Sarah Dessen",
+            "original_name": "Sarah Dessen",
+            "popularity": 0.764,
+            "profile_path": "/s7rGVuZkUbgubQCB7WpTJKYKkDZ.jpg",
+            "credit_id": "62654028d1a893709548d36e",
+            "department": "Writing",
+            "job": "Novel"
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 1180546,
+            "known_for_department": "Camera",
+            "name": "Luca Del Puppo",
+            "original_name": "Luca Del Puppo",
+            "popularity": 0.5732,
+            "profile_path": null,
+            "credit_id": "62b271889f51af0052da38f9",
+            "department": "Camera",
+            "job": "Director of Photography"
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 3597660,
+            "known_for_department": "Editing",
+            "name": "Justin Chan",
+            "original_name": "Justin Chan",
+            "popularity": 0.0596,
+            "profile_path": null,
+            "credit_id": "62b271a853f833006136bd6c",
+            "department": "Editing",
+            "job": "Editor"
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 2922749,
+            "known_for_department": "Editing",
+            "name": "Andrew Francis",
+            "original_name": "Andrew Francis",
+            "popularity": 0.3809,
+            "profile_path": null,
+            "credit_id": "66a7e83226d734c9f1297e81",
+            "department": "Editing",
+            "job": "Senior Colorist"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2178720,
+            "known_for_department": "Crew",
+            "name": "Holly Dowell",
+            "original_name": "Holly Dowell",
+            "popularity": 0.4799,
+            "profile_path": "/6A6zWKA9Kd918zytyXIfwbk8fJU.jpg",
+            "credit_id": "64cfc4fe549dda00c53f69b7",
+            "department": "Crew",
+            "job": "Stunts"
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 15220,
+            "known_for_department": "Production",
+            "name": "Eric Newman",
+            "original_name": "Eric Newman",
+            "popularity": 1.0418,
+            "profile_path": "/igKWW23mx3EYZVaqy9Yv7zo4bzR.jpg",
+            "credit_id": "67598b702d200c84f1912391",
+            "department": "Production",
+            "job": "Producer"
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 1539280,
+            "known_for_department": "Production",
+            "name": "Bryan Unkeless",
+            "original_name": "Bryan Unkeless",
+            "popularity": 0.4982,
+            "profile_path": "/exxDmaKXzYeoubx3qJ7pTa0xJ4x.jpg",
+            "credit_id": "67598b965c364c4a67ffdba3",
+            "department": "Production",
+            "job": "Producer"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 1099832,
+            "known_for_department": "Production",
+            "name": "Erika Hampson",
+            "original_name": "Erika Hampson",
+            "popularity": 1.8729,
+            "profile_path": "/fQ3iH69mqhwkRddk9Vl8YvtbGyA.jpg",
+            "credit_id": "67598ba72d200c84f19123a7",
+            "department": "Production",
+            "job": "Executive Producer"
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 1115249,
+            "known_for_department": "Production",
+            "name": "Siân McArthur",
+            "original_name": "Siân McArthur",
+            "popularity": 0.2786,
+            "profile_path": null,
+            "credit_id": "67598bb92d200c84f19123b8",
+            "department": "Production",
+            "job": "Executive Producer"
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 1440579,
+            "known_for_department": "Art",
+            "name": "Celine Diano",
+            "original_name": "Celine Diano",
+            "popularity": 2.1915,
+            "profile_path": null,
+            "credit_id": "67598bdf6c535886ee2f5a7f",
+            "department": "Art",
+            "job": "Production Design"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 1179842,
+            "known_for_department": "Costume & Make-Up",
+            "name": "Brenda Abbandandolo",
+            "original_name": "Brenda Abbandandolo",
+            "popularity": 0.2725,
+            "profile_path": "/mQOUUsrIlObQan0WFrBT2pzfHP3.jpg",
+            "credit_id": "67598bf15c364c4a67ffdbca",
+            "department": "Costume & Make-Up",
+            "job": "Costume Design"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 1024910,
+            "known_for_department": "Production",
+            "name": "Lindsay Graham Ahanonu",
+            "original_name": "Lindsay Graham Ahanonu",
+            "popularity": 0.2083,
+            "profile_path": null,
+            "credit_id": "67598c0a2d200c84f19123d9",
+            "department": "Production",
+            "job": "Casting"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 5914,
+            "known_for_department": "Production",
+            "name": "Mary Vernieu",
+            "original_name": "Mary Vernieu",
+            "popularity": 0.8187,
+            "profile_path": "/z37Cmn0MJdWCSC8ydkyoseiYUYk.jpg",
+            "credit_id": "67598c242d200c84f19123f1",
+            "department": "Production",
+            "job": "Casting"
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 1469571,
+            "known_for_department": "Writing",
+            "name": "Sarah Dessen",
+            "original_name": "Sarah Dessen",
+            "popularity": 0.764,
+            "profile_path": "/s7rGVuZkUbgubQCB7WpTJKYKkDZ.jpg",
+            "credit_id": "67598c3f6c535886ee2f5aa3",
+            "department": "Production",
+            "job": "Co-Producer"
+          }
+        ]
+      },
+      "similar": {
+        "page": 1,
+        "results": [
+          {
+            "adult": false,
+            "backdrop_path": "/xUMzKSiqm14Z9GPmIaNcbrnGYVS.jpg",
+            "genre_ids": [
+              35,
+              18,
+              10749
+            ],
+            "id": 38043,
+            "original_language": "en",
+            "original_title": "Shag",
+            "overview": "Summer of 1963. Carson is getting married to her boyfriend so her friends Melaina, Pudge and Luanne take her to Myrtle Beach for one last irresponsible weekend.",
+            "popularity": 3.2644,
+            "poster_path": "/gIxA8FkPBk0wJLkF4znqBdWD8HX.jpg",
+            "release_date": "1989-04-14",
+            "title": "Shag",
+            "video": false,
+            "vote_average": 6.119,
+            "vote_count": 59
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/oIoRJIWrYFuJUL5CYlAmkJAIRql.jpg",
+            "genre_ids": [
+              18
+            ],
+            "id": 38096,
+            "original_language": "en",
+            "original_title": "Last Summer",
+            "overview": "During summer vacation on Fire Island, three young people become very close. When an uncool girl tries to infiltrate the trio's newly found relationship, they construct an elaborate plot that has violent results.",
+            "popularity": 0.5122,
+            "poster_path": "/ajbvQYVVnYHixttt1Qgw0dd2mGA.jpg",
+            "release_date": "1969-06-10",
+            "title": "Last Summer",
+            "video": false,
+            "vote_average": 6.205,
+            "vote_count": 44
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/AreUk9O8RaLDHnoPtxEeOgTRPGM.jpg",
+            "genre_ids": [
+              10749,
+              18
+            ],
+            "id": 297743,
+            "original_language": "ko",
+            "original_title": "한여름의 판타지아",
+            "overview": "Reality and fantasy melds as a Korean documentary film director attempts to capture life in the small town of Gojo, Japan.",
+            "popularity": 0.412,
+            "poster_path": "/x2Yp4jHGJFMp2Nk7tWaCLsjNZX7.jpg",
+            "release_date": "2015-06-11",
+            "title": "A Midsummer's Fantasia",
+            "video": false,
+            "vote_average": 7.2,
+            "vote_count": 12
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/3p4JM3RdIINCyi1GKGjZgNYmvyN.jpg",
+            "genre_ids": [
+              18,
+              10751
+            ],
+            "id": 33091,
+            "original_language": "sv",
+            "original_title": "Flickan",
+            "overview": "Story of a ten-year-old girl left alone in her house in the summer of 1981.",
+            "popularity": 1.6896,
+            "poster_path": "/9ByfjzE1XVnyR3LHaonhTsJgm3w.jpg",
+            "release_date": "2009-02-10",
+            "title": "The Girl",
+            "video": false,
+            "vote_average": 6.3,
+            "vote_count": 40
+          },
+          {
+            "adult": false,
+            "backdrop_path": null,
+            "genre_ids": [
+              18
+            ],
+            "id": 1457096,
+            "original_language": "fr",
+            "original_title": "28 Degrés sous la lune",
+            "overview": "",
+            "popularity": 0.1435,
+            "poster_path": "/sHDpblnPEzWhh1KAlzndaemRr21.jpg",
+            "release_date": "2024-06-20",
+            "title": "28 Degrés sous la lune",
+            "video": false,
+            "vote_average": 0,
+            "vote_count": 0
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/jiyYIVcpfigO6wlhUQNDUOtefHS.jpg",
+            "genre_ids": [
+              35,
+              18,
+              10751
+            ],
+            "id": 34482,
+            "original_language": "en",
+            "original_title": "The Clique",
+            "overview": "A young girl tries to fit in with a clique of popular middle school girls after moving into the guest house of one of their homes.",
+            "popularity": 5.2485,
+            "poster_path": "/f8h9WF7l5vLWI6OU5nmIRKx6QJ0.jpg",
+            "release_date": "2008-11-11",
+            "title": "The Clique",
+            "video": false,
+            "vote_average": 5.902,
+            "vote_count": 173
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/or6DXSUr7vhqwjFgxP4MqghYr6U.jpg",
+            "genre_ids": [
+              12,
+              14,
+              10751,
+              18
+            ],
+            "id": 34584,
+            "original_language": "de",
+            "original_title": "Die unendliche Geschichte",
+            "overview": "While hiding from bullies in his school's attic, a young boy discovers the extraordinary land of Fantasia, through a magical book called The Neverending Story. The book tells the tale of Atreyu, a young warrior who, with the help of a luck dragon named Falkor, must save Fantasia from the destruction of The Nothing.",
+            "popularity": 7.2208,
+            "poster_path": "/ddYCa91iDXfJCxaqSYzwi2fjfnl.jpg",
+            "release_date": "1984-04-06",
+            "title": "The NeverEnding Story",
+            "video": false,
+            "vote_average": 7.207,
+            "vote_count": 4256
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/hU4OdICqRXj3JFnSJsrR0SJejZy.jpg",
+            "genre_ids": [
+              10749,
+              14,
+              18
+            ],
+            "id": 38117,
+            "original_language": "en",
+            "original_title": "Beastly",
+            "overview": "A modern-day take on the \"Beauty and the Beast\" tale where a New York teen is transformed into a hideous monster in order to find true love.",
+            "popularity": 2.8318,
+            "poster_path": "/uSAXWZsSD0pE4HYVUiDgusnEyyl.jpg",
+            "release_date": "2011-01-21",
+            "title": "Beastly",
+            "video": false,
+            "vote_average": 6.31,
+            "vote_count": 2837
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/elkQKsOyuupngaNB9O7z5ttPYAO.jpg",
+            "genre_ids": [
+              18
+            ],
+            "id": 486794,
+            "original_language": "en",
+            "original_title": "Kudzu",
+            "overview": "A young boy wrestles with a deepening sense of remorse after the sudden disappearance of his friend. When those close to him begin to question his involvement, he is forced to make a life-altering choice. Themes of friendship, guilt, and redemption are examined against the backdrop of a scorching summer in the rural South.",
+            "popularity": 0.9023,
+            "poster_path": "/fWld7tJhj7eZUWMtZzzu4HQCWPQ.jpg",
+            "release_date": "2017-11-11",
+            "title": "Kudzu",
+            "video": false,
+            "vote_average": 0,
+            "vote_count": 0
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/bAt0ilmt37IxSIn6TFGkdy4cf29.jpg",
+            "genre_ids": [
+              18,
+              53
+            ],
+            "id": 33766,
+            "original_language": "en",
+            "original_title": "Smooth Talk",
+            "overview": "Connie, the fifteen-year-old black sheep of her family, finds her summertime idyll of beach trips, mall hangouts, and innocent flirtations shattered by an encounter with a mysterious stranger.",
+            "popularity": 0.62,
+            "poster_path": "/tPfGFKRXD0sVOGhwjxPHadTa8Y1.jpg",
+            "release_date": "1985-09-21",
+            "title": "Smooth Talk",
+            "video": false,
+            "vote_average": 6.2,
+            "vote_count": 63
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/98MW3zxRdBzlnyLpAQvMdY0pe6G.jpg",
+            "genre_ids": [
+              10751,
+              35,
+              18,
+              10402,
+              10770
+            ],
+            "id": 37609,
+            "original_language": "en",
+            "original_title": "The Cheetah Girls 2",
+            "overview": "Best friends Galleria, Chanel, Dorinda, and Aqua, A.K.A. the girl band \"The Cheetahs,\" get the opportunity of a lifetime when they strut their way to Barcelona, Spain, to perform in an international music festival. Along the way, the \"amigas Cheetahs\" learn that, although their paths are not the same, they are lucky to have one another for the journey.",
+            "popularity": 1.2197,
+            "poster_path": "/cKLATvYcVUn6FfmgOU811TJgHWl.jpg",
+            "release_date": "2006-07-31",
+            "title": "The Cheetah Girls 2",
+            "video": false,
+            "vote_average": 6.296,
+            "vote_count": 411
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/pwA031hhUJbeHOArZ31B7pu0hmp.jpg",
+            "genre_ids": [
+              9648,
+              18,
+              80,
+              53
+            ],
+            "id": 293562,
+            "original_language": "en",
+            "original_title": "The Insomniac",
+            "overview": "John Figg has a great career and a gorgeous fiancée. When he inherits a nice house in a quiet neighborhood, he finally starts to feel like his life is coming together. Trouble arises, however, when John's house is burglarized, and the thieves steal one of his most prized possessions.",
+            "popularity": 0.3208,
+            "poster_path": "/ciyL3cWlYwYdImO8X9sZU6WEYZ.jpg",
+            "release_date": "2013-12-27",
+            "title": "The Insomniac",
+            "video": false,
+            "vote_average": 4.3,
+            "vote_count": 13
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/gRIOGqLYjMzOEo5vVVpZ60avE1k.jpg",
+            "genre_ids": [
+              18,
+              10749
+            ],
+            "id": 26035,
+            "original_language": "en",
+            "original_title": "According to Greta",
+            "overview": "Dumped on her grandparents for the summer by her indifferent mother, acerbic and self-destructive teenager Greta disrupts the elderly couple's staid life on the Jersey Shore. Eventually, a romance helps Greta face down her demons.",
+            "popularity": 0.7911,
+            "poster_path": "/aDq2E0zGXc9SwMHbTFjvyWK8cJa.jpg",
+            "release_date": "2009-11-25",
+            "title": "According to Greta",
+            "video": false,
+            "vote_average": 6.029,
+            "vote_count": 210
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/hmuYy2fqPkk69YVK80iHBZDiu90.jpg",
+            "genre_ids": [
+              18,
+              10749
+            ],
+            "id": 672816,
+            "original_language": "en",
+            "original_title": "Cicada",
+            "overview": "Ben is a young bisexual man. He comes out to the world and develops an intense relationship with Sam, a man of color struggling with deep wounds of his own. As the summer progresses and their intimacy grows, Ben's past crawls to the surface.",
+            "popularity": 2.0455,
+            "poster_path": "/f5arIUvT1fq2dHGUdFy4OHtMtdl.jpg",
+            "release_date": "2021-10-29",
+            "title": "Cicada",
+            "video": false,
+            "vote_average": 5.8,
+            "vote_count": 20
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/akvlTeB0LiNzw9U9YCAB8wwb5Qo.jpg",
+            "genre_ids": [
+              18
+            ],
+            "id": 1075175,
+            "original_language": "en",
+            "original_title": "How to Have Sex",
+            "overview": "Three British teenage girls go on a rites-of-passage holiday—drinking, clubbing and hooking up, in what should be the best summer of their lives.",
+            "popularity": 4.915,
+            "poster_path": "/yQyoFCBLGJH5HXESmJAzaiXw9zU.jpg",
+            "release_date": "2023-11-02",
+            "title": "How to Have Sex",
+            "video": false,
+            "vote_average": 6.21,
+            "vote_count": 455
+          },
+          {
+            "adult": false,
+            "backdrop_path": null,
+            "genre_ids": [
+              18,
+              10749
+            ],
+            "id": 305002,
+            "original_language": "de",
+            "original_title": "Ein Sommer in Portugal",
+            "overview": "Their 20th wedding anniversary is coming up and Liane and Ben want to celebrate it together in Lisbon. In the years of their marriage, the two have had little of each other. While Liane took care of the children and the household, architect Ben jetted around the world building luxury hotels. Now the children are out of the house and the couple want to spend more time together again. So much for the theory. In reality, Ben is stuck on a project in Morocco and can't pick up his wife at the airport in Lisbon. He has sent his friend, the Portuguese João, as a replacement. He takes his role very seriously and Liane obviously takes a liking to the new man at her side.",
+            "popularity": 0.7472,
+            "poster_path": "/ky7eMEhYKt0Qv1kVxzy5cdby1OY.jpg",
+            "release_date": "2013-09-29",
+            "title": "Ein Sommer in Portugal",
+            "video": false,
+            "vote_average": 2.667,
+            "vote_count": 3
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/oXZvhegted8WMsU5SlW4g4bSv3T.jpg",
+            "genre_ids": [
+              18
+            ],
+            "id": 882588,
+            "original_language": "en",
+            "original_title": "Bleach",
+            "overview": "Damien, a 16-year old swimmer, clashes with his Coach at practice. In parallel, Damien plays with his younger brother at a hotel waterslide, but his erratic behaviour shows something hidden beneath the surface. Bleach explores the confusing moments following trauma and abuse, and how big each small step can be.",
+            "popularity": 1.9492,
+            "poster_path": "/ml5eX1mitt8YuMjl8oAstzuzUw9.jpg",
+            "release_date": "2021-10-19",
+            "title": "Bleach",
+            "video": false,
+            "vote_average": 6,
+            "vote_count": 2
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/5AUkAvLeFmMaX3YaBrV8CnvcGEf.jpg",
+            "genre_ids": [
+              12,
+              10751,
+              10749
+            ],
+            "id": 39227,
+            "original_language": "en",
+            "original_title": "When in Rome",
+            "overview": "Teenage sisters Charli and Lola are on the verge of an experience beyond their wildest dreams! Pack your bags and jet off to Rome as the girls start their summer internship working for the legendary Derek Hanson - the totally cool international tycoon whose empire reaches from airlines to cutting-edge fashion. Amid the fabulous sights of this exciting city, the girls do their best to impress their boss, while still finding time to design their own line of very hip clothing, meet some very cute guys and turn their summer abroad into one awesome adventure they - and you - will never forget!",
+            "popularity": 0.767,
+            "poster_path": "/jjnk4BLLtvMI1eDzqTTqd6BGeFK.jpg",
+            "release_date": "2002-11-26",
+            "title": "When in Rome",
+            "video": false,
+            "vote_average": 5.965,
+            "vote_count": 333
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/tlSZ7z9rKsPaQ6mVOssU4FQ91WE.jpg",
+            "genre_ids": [
+              10749,
+              18
+            ],
+            "id": 457970,
+            "original_language": "cn",
+            "original_title": "夏日情未了",
+            "overview": "In this 1993 Hong Kong film, a boathand (Aaron Kwok) falls in love with a supermodel (Rosamund Kwan) he sees on a billboard.",
+            "popularity": 0.4638,
+            "poster_path": "/cmm0Mrx2S2oOXXTxK7RfgtZho6l.jpg",
+            "release_date": "1993-10-07",
+            "title": "Love is a Fairy Tale",
+            "video": false,
+            "vote_average": 6,
+            "vote_count": 1
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/wHzR9AzN9ePToQbCsz0ZZPpzWZp.jpg",
+            "genre_ids": [
+              18,
+              14,
+              27,
+              10749
+            ],
+            "id": 10075,
+            "original_language": "en",
+            "original_title": "Blood and Chocolate",
+            "overview": "A young teenage werewolf is torn between honoring her family's secret and her love for a man.",
+            "popularity": 1.1706,
+            "poster_path": "/mzNe2RAZi19Uk1eqj8fE9oPkP1d.jpg",
+            "release_date": "2007-01-26",
+            "title": "Blood and Chocolate",
+            "video": false,
+            "vote_average": 5.5,
+            "vote_count": 322
+          }
+        ],
+        "total_pages": 15356,
+        "total_results": 307107
+      }
+    }
+  },
+  "- Green Snake -_movie": {
+    "tmdbId": 795607,
+    "mediaType": "movie",
+    "timestamp": 1767708213716,
+    "details": {
+      "adult": false,
+      "backdrop_path": "/rhJgHS28BVc5o2rBWVwZa3aMJCF.jpg",
+      "belongs_to_collection": {
+        "id": 836546,
+        "name": "White Snake Collection",
+        "poster_path": "/hntMscVoyrxMNJJLzqL7ShlOzKA.jpg",
+        "backdrop_path": "/vYkfPSV3tzps2zZIHqX5QOH2lPE.jpg"
+      },
+      "budget": 0,
+      "genres": [
+        {
+          "id": 16,
+          "name": "Animation"
+        },
+        {
+          "id": 14,
+          "name": "Fantasy"
+        },
+        {
+          "id": 28,
+          "name": "Action"
+        },
+        {
+          "id": 12,
+          "name": "Adventure"
+        }
+      ],
+      "homepage": "https://www.netflix.com/title/81504698",
+      "id": 795607,
+      "imdb_id": "tt15000314",
+      "origin_country": [
+        "CN"
+      ],
+      "original_language": "zh",
+      "original_title": "白蛇2：青蛇劫起",
+      "overview": "While trying to free her sister from Fahai's clutches, Xiao Qing winds up in a dystopian city and meets a mysterious man who can't recall his past life.",
+      "popularity": 3.262,
+      "poster_path": "/1zs5zsQDP5KuWwxIg9EUULLFEV.jpg",
+      "production_companies": [
+        {
+          "id": 67089,
+          "logo_path": "/1wnxolUB5NHZARmeeZjVXKpGKaI.png",
+          "name": "Light Chaser Animation Studios",
+          "origin_country": "CN"
+        },
+        {
+          "id": 69484,
+          "logo_path": "/2xtmvbEse87LM7OJXVksv7DToZx.png",
+          "name": "Alibaba Pictures Group",
+          "origin_country": "CN"
+        }
+      ],
+      "production_countries": [
+        {
+          "iso_3166_1": "CN",
+          "name": "China"
+        }
+      ],
+      "release_date": "2021-07-23",
+      "revenue": 87212911,
+      "runtime": 132,
+      "spoken_languages": [
+        {
+          "english_name": "Mandarin",
+          "iso_639_1": "zh",
+          "name": "普通话"
+        }
+      ],
+      "status": "Released",
+      "tagline": "Dependence arises from the previous life.",
+      "title": "Green Snake",
+      "video": false,
+      "vote_average": 8.1,
+      "vote_count": 347,
+      "videos": {
+        "results": [
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "name": "White Snake 2: The Tribulation of the Green Snake (2021) 白蛇2：青蛇劫起 - Movie Trailer 3 - Far East Films",
+            "key": "kvwydcOAH2k",
+            "site": "YouTube",
+            "size": 1080,
+            "type": "Trailer",
+            "official": false,
+            "published_at": "2021-07-18T17:55:28.000Z",
+            "id": "61a8c472875d1a008b5915bd"
+          },
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "name": "White Snake 2: The Tribulation of the Green Snake (2021) 白蛇2：青蛇劫起 - Movie Trailer 2 - Far East Films",
+            "key": "e91Av7Prpvw",
+            "site": "YouTube",
+            "size": 1080,
+            "type": "Trailer",
+            "official": false,
+            "published_at": "2021-07-08T06:14:58.000Z",
+            "id": "61a8c4692495ab009198fb0c"
+          },
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "name": "White Snake 2: The Tribulation of the Green Snake (2021) 白蛇2：青蛇劫起 - Movie Trailer - Far East Films",
+            "key": "atyZQvSJLYo",
+            "site": "YouTube",
+            "size": 1080,
+            "type": "Trailer",
+            "official": false,
+            "published_at": "2021-06-09T08:31:46.000Z",
+            "id": "61a8c45d9a643500878663af"
+          },
+          {
+            "iso_639_1": "en",
+            "iso_3166_1": "US",
+            "name": "White Snake 2 | Official Trailer",
+            "key": "vT8qn_G0K7Y",
+            "site": "YouTube",
+            "size": 1080,
+            "type": "Teaser",
+            "official": true,
+            "published_at": "2021-05-11T05:17:11.000Z",
+            "id": "60bb2eedb04605007997c6f2"
+          }
+        ]
+      },
+      "credits": {
+        "cast": [
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2508433,
+            "known_for_department": "Acting",
+            "name": "Tang Xiaoxi",
+            "original_name": "唐小喜",
+            "popularity": 1.8579,
+            "profile_path": "/gsqR3dgkDYSmKUpHAF1XUPSLyS4.jpg",
+            "cast_id": 4,
+            "character": "Xiao Qing (voice)",
+            "credit_id": "61000bcf4e52ed00758113c5",
+            "order": 0
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 3174708,
+            "known_for_department": "Acting",
+            "name": "Zhang Fuzheng",
+            "original_name": "张福正",
+            "popularity": 1.828,
+            "profile_path": "/gB3NHNnG2WSC1SnjGQ36Z9qD8Rp.jpg",
+            "cast_id": 7,
+            "character": "Masked Man (voice)",
+            "credit_id": "61000d08568463002da89f5f",
+            "order": 1
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2199340,
+            "known_for_department": "Acting",
+            "name": "Wei Chao",
+            "original_name": "魏超",
+            "popularity": 1.5737,
+            "profile_path": "/aPYAEWrS1lb1UYwCFejIcJOOGSU.jpg",
+            "cast_id": 6,
+            "character": "Sima (voice)",
+            "credit_id": "61000c504e52ed00758114bd",
+            "order": 2
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2339332,
+            "known_for_department": "Acting",
+            "name": "Zhao Mingzhou",
+            "original_name": "趙銘洲",
+            "popularity": 1.4591,
+            "profile_path": "/pXUlknCuP3u5FIfC7DluQzsKWAz.jpg",
+            "cast_id": 9,
+            "character": "牛头帮主 (voice)",
+            "credit_id": "61031a188ee49c0046552181",
+            "order": 3
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2508434,
+            "known_for_department": "Acting",
+            "name": "Zheng Xiaopu",
+            "original_name": "Zheng Xiaopu",
+            "popularity": 1.0952,
+            "profile_path": "/gREy73I5Ds5jTS5yc0r8H9PVY9n.jpg",
+            "cast_id": 10,
+            "character": "宝青坊主(voice)",
+            "credit_id": "61031a3b8ee49c005e0e6d71",
+            "order": 4
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2508435,
+            "known_for_department": "Acting",
+            "name": "Ma Cheng",
+            "original_name": "Cheng Ma",
+            "popularity": 0.7745,
+            "profile_path": "/a6vob4kODHlktSWET3TtBCp8Z4t.jpg",
+            "cast_id": 11,
+            "character": "老狐狸宝青坊主 (voice)",
+            "credit_id": "61031d3a4f33ad007ecdb4fe",
+            "order": 5
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 3178033,
+            "known_for_department": "Acting",
+            "name": "Song Xuchen",
+            "original_name": "Song Xuchen",
+            "popularity": 0.2316,
+            "profile_path": "/b7NldVZg8OVhXWHTwnqBqph6ihv.jpg",
+            "cast_id": 12,
+            "character": "Fa Hai (voice)",
+            "credit_id": "61031d7e8ee49c005e0e7384",
+            "order": 6
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 3091125,
+            "known_for_department": "Acting",
+            "name": "Qiu Qiu",
+            "original_name": "Qiu Qiu",
+            "popularity": 1.0636,
+            "profile_path": "/g9eAyjW1gxEU4YQUOETP1zQVzDJ.jpg",
+            "cast_id": 13,
+            "character": "孙姐(voice)",
+            "credit_id": "61031e1d4f33ad002d8ceca8",
+            "order": 7
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 3340968,
+            "known_for_department": "Acting",
+            "name": "Zhang Kai",
+            "original_name": "Kai Zhang",
+            "popularity": 1.1217,
+            "profile_path": "/nrNXUQz0ATf3vTpVWjCYdYvwvNY.jpg",
+            "cast_id": 14,
+            "character": "(voice)",
+            "credit_id": "61b1386635c30a00607715e6",
+            "order": 8
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2104118,
+            "known_for_department": "Acting",
+            "name": "Xu Jiaqi",
+            "original_name": "徐佳琦",
+            "popularity": 1.5024,
+            "profile_path": "/1CzUSgTj3NPZ2WkT2j9c1fFzJGL.jpg",
+            "cast_id": 15,
+            "character": "(voice)",
+            "credit_id": "61b1388f1684f70061c1e71f",
+            "order": 9
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2720416,
+            "known_for_department": "Acting",
+            "name": "Shuai Guan",
+            "original_name": "关帅",
+            "popularity": 1.3625,
+            "profile_path": "/1rTmvuKnSKQs2DqDTKfWBWaIOmi.jpg",
+            "cast_id": 16,
+            "character": "(voice)",
+            "credit_id": "61b138adda9ef2001d35c28c",
+            "order": 10
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 2511705,
+            "known_for_department": "Acting",
+            "name": "Zhang Biyu",
+            "original_name": "Zhang Biyu",
+            "popularity": 1.394,
+            "profile_path": "/63ypypjXSLZfwSxO2y2nTzyM54m.jpg",
+            "cast_id": 17,
+            "character": "(voice)",
+            "credit_id": "61b1396c1e259a001a6d11c4",
+            "order": 11
+          },
+          {
+            "adult": false,
+            "gender": 1,
+            "id": 2844582,
+            "known_for_department": "Acting",
+            "name": "Zhang Zhe",
+            "original_name": "张喆",
+            "popularity": 1.6303,
+            "profile_path": "/lmOs5BVt0iHqHNBbhuFwNfjfDrL.jpg",
+            "cast_id": 8,
+            "character": "Blanca (voice)",
+            "credit_id": "610317f88d1b8e002a6995b8",
+            "order": 12
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2185754,
+            "known_for_department": "Acting",
+            "name": "Yang Tianxiang",
+            "original_name": "杨天翔",
+            "popularity": 2.4962,
+            "profile_path": "/jEwKu9VEtl0ecc6oA264U3iJV08.jpg",
+            "cast_id": 18,
+            "character": "(voice)",
+            "credit_id": "61b139809a64c1001c2fb89b",
+            "order": 13
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 1837238,
+            "known_for_department": "Acting",
+            "name": "Baomu Zhongyang",
+            "original_name": "宝木中阳",
+            "popularity": 1.4158,
+            "profile_path": "/ivP7HNs61U6LFWmqXE2zEUIbwph.jpg",
+            "cast_id": 19,
+            "character": "(voice)",
+            "credit_id": "61b139da7ac829001d1282c2",
+            "order": 14
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2207403,
+            "known_for_department": "Acting",
+            "name": "Lin Qiang",
+            "original_name": "林強",
+            "popularity": 1.9605,
+            "profile_path": "/SX5ckTBqf0GpZlpR9nnFOPTgzX.jpg",
+            "cast_id": 20,
+            "character": "(voice)",
+            "credit_id": "61b139e82866fa0061ba3b4e",
+            "order": 15
+          }
+        ],
+        "crew": [
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2217620,
+            "known_for_department": "Directing",
+            "name": "Amp Wong",
+            "original_name": "Amp Wong",
+            "popularity": 0.5433,
+            "profile_path": "/igbwZbS8ENmpbkMSP6fpXIZYtwE.jpg",
+            "credit_id": "6087bfa3bc2cb30040dec474",
+            "department": "Directing",
+            "job": "Director"
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 2257667,
+            "known_for_department": "Writing",
+            "name": "Damao",
+            "original_name": "Damao",
+            "popularity": 0.6975,
+            "profile_path": null,
+            "credit_id": "6087c011bc2cb30057f33a89",
+            "department": "Writing",
+            "job": "Writer"
+          },
+          {
+            "adult": false,
+            "gender": 0,
+            "id": 1665495,
+            "known_for_department": "Editing",
+            "name": "Cui Di",
+            "original_name": "Di Cui",
+            "popularity": 0.3413,
+            "profile_path": "/h1bvdl6YfGuU3DSREoa6bx3g30i.jpg",
+            "credit_id": "6087c10184448e0059f4aad8",
+            "department": "Production",
+            "job": "Producer"
+          },
+          {
+            "adult": false,
+            "gender": 2,
+            "id": 5028865,
+            "known_for_department": "Production",
+            "name": "Vincent Hsieh",
+            "original_name": "谢坤泽",
+            "popularity": 0.1907,
+            "profile_path": null,
+            "credit_id": "67206f819ff681d9e0a4c6f9",
+            "department": "Production",
+            "job": "Executive Producer"
+          }
+        ]
+      },
+      "similar": {
+        "page": 1,
+        "results": [
+          {
+            "adult": false,
+            "backdrop_path": "/zxIXvhF5PSZwQ9tvlLIzhcwi7IO.jpg",
+            "genre_ids": [
+              16,
+              12,
+              14,
+              35
+            ],
+            "id": 844075,
+            "original_language": "zh",
+            "original_title": "新神榜：杨戬",
+            "overview": "Fifteen hundred years after the war of gods, the heaven declined. Yang Jian, the God of Erlang, made a living by working as a catcher. One day, Yang Jian was ordered to hunt down a young man, his own nephew.",
+            "popularity": 1.9305,
+            "poster_path": "/tW5dFOemV4d7hxTcVI2bu4u0C9z.jpg",
+            "release_date": "2022-08-19",
+            "title": "New Gods: Yang Jian",
+            "video": false,
+            "vote_average": 7.46,
+            "vote_count": 87
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/xgDj56UWyeWQcxQ44f5A3RTWuSs.jpg",
+            "genre_ids": [
+              16,
+              35,
+              10751,
+              14
+            ],
+            "id": 2062,
+            "original_language": "en",
+            "original_title": "Ratatouille",
+            "overview": "Remy, a resident of Paris, has quite a sophisticated palate. He would love to become a chef so he can create and enjoy culinary masterpieces to his heart's delight. The only problem is, Remy is a rat. When he winds up in the sewer beneath one of Paris' finest restaurants, Remy finds himself ideally placed to realize his dream. He forms an unusual alliance with the restaurants rookie employee, and together they work through challenges stemming from Head Chef Skinner, Remy’s colony, and renowned food critic Anton Ego, who strikes fear in the hearts of chefs all throughout France.",
+            "popularity": 17.938,
+            "poster_path": "/t3vaWRPSf6WjDSamIkKDs1iQWna.jpg",
+            "release_date": "2007-06-28",
+            "title": "Ratatouille",
+            "video": false,
+            "vote_average": 7.835,
+            "vote_count": 18041
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/jmVIVi4rDJqinws8X1IShmOY0Cd.jpg",
+            "genre_ids": [
+              16,
+              14,
+              12
+            ],
+            "id": 844158,
+            "original_language": "zh",
+            "original_title": "俑之城",
+            "overview": "In the underground world, there are not only terracotta warriors and horses, but also a variety of bronze relics, resurrected bronze beasts and an underground creature called the \"Earth Horn\". The hero, Meng Yuan, is an odd-job figurine in the underground Qin tombs. He works with the mysterious girl Shi Yu to capture the Earth Horn and goes through dangerous situations, but unexpectedly discovers the mystery of the endless battle between the Earth Horn and the terracotta warriors",
+            "popularity": 0.8454,
+            "poster_path": "/48uip87WgekvqtoPGwuGPwxbCPm.jpg",
+            "release_date": "2021-07-09",
+            "title": "Realm of Terracotta",
+            "video": false,
+            "vote_average": 5.9,
+            "vote_count": 21
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/pe3oRebZOwhi6FFX0kA0jfPZhzX.jpg",
+            "genre_ids": [
+              16,
+              10751,
+              878
+            ],
+            "id": 1235424,
+            "original_language": "ja",
+            "original_title": "PUI PUI モルカー ザ・ムービー MOLMAX",
+            "overview": "The story begins with the emergence of the first high-tech molcar in Molcity, with drivers beginning to ride state-of-the-art AI-driven Molcars. Potato and friends get involved in a chase between a mysterious organization and a Molcar AI named Cannon, and are saved by a talented driver. Potato finds out that the driver is in search of his missing Molcar, and gets the idea to use Cannon's AI functionality to help with the search.",
+            "popularity": 0.6213,
+            "poster_path": "/hFaLQGnlY7REAG9WNMWyZaqcBeJ.jpg",
+            "release_date": "2024-11-29",
+            "title": "Pui Pui Molcar the Movie: MOLMAX",
+            "video": false,
+            "vote_average": 4.5,
+            "vote_count": 2
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/hzMFx0n62lZfLgdi6He5uzjBLx1.jpg",
+            "genre_ids": [
+              14,
+              28
+            ],
+            "id": 649314,
+            "original_language": "zh",
+            "original_title": "新封神姜子牙",
+            "overview": "Ruyi village people burned the forest and the fields, exhausted and fished, and the river god was sent to punish. I don’t know the Jiangzi tooth in the house, I mistakenly thought that the river god privately slaughtered the people, so he suppressed it and accidentally injured the villagers during the battle. Unexpectedly, this was in violation of the immortal rules. Jiang Ziya was punished for being bombarded by Tianlei for fifteen days.",
+            "popularity": 0.4708,
+            "poster_path": "/fTQJXjrG7Zqk5Xlmr0Lj9utd0Ya.jpg",
+            "release_date": "2019-11-03",
+            "title": "Legend of Jiang Ziya",
+            "video": false,
+            "vote_average": 8.5,
+            "vote_count": 2
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/stEEjazhyFxVeL8G0umSymkaSQX.jpg",
+            "genre_ids": [
+              16,
+              12,
+              10751,
+              10402
+            ],
+            "id": 1433457,
+            "original_language": "es",
+            "original_title": "Dreaming Big",
+            "overview": "",
+            "popularity": 0.6466,
+            "poster_path": "/nTkhtEX5kjUmZuzwX9gf7vj1G83.jpg",
+            "release_date": "2023-06-30",
+            "title": "Dreaming Big",
+            "video": false,
+            "vote_average": 0,
+            "vote_count": 0
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/iIl26f9PTOwjFthNwiODoaMekAM.jpg",
+            "genre_ids": [
+              16,
+              28,
+              878
+            ],
+            "id": 460790,
+            "original_language": "en",
+            "original_title": "Starship Troopers: Traitor of Mars",
+            "overview": "Federation trooper Johnny Rico is ordered to work with a group of new recruits on a satellite station on Mars, where giant bugs have decided to target their next attack.",
+            "popularity": 1.4408,
+            "poster_path": "/dzqEq8Jbvb5SYGoYPqLyIRrt6Cm.jpg",
+            "release_date": "2017-08-21",
+            "title": "Starship Troopers: Traitor of Mars",
+            "video": false,
+            "vote_average": 5.915,
+            "vote_count": 311
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/cw1VPYptt1697QPZXcw9YLsHQjN.jpg",
+            "genre_ids": [
+              16,
+              35,
+              14
+            ],
+            "id": 1237460,
+            "original_language": "zh",
+            "original_title": "黄貔：天降财神猫",
+            "overview": "",
+            "popularity": 0.1812,
+            "poster_path": "/oAvHkqi0x3eAg9Iuiqrk2oI1Duh.jpg",
+            "release_date": "2024-02-10",
+            "title": "Huang Pi:  God of Money",
+            "video": false,
+            "vote_average": 0,
+            "vote_count": 0
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/cvOpdYUIk3elPdOk7Y5esBzKeM.jpg",
+            "genre_ids": [
+              16,
+              35
+            ],
+            "id": 650270,
+            "original_language": "ja",
+            "original_title": "リョーマ！The Prince of Tennis 新生劇場版テニスの王子様",
+            "overview": "Inspired by his tennis champion father, Ryoma is determined to take his game to the next level and train in the US. But in the middle of an intense tennis battle to save his classmate Sakuno from dangerous villains, they somehow find themselves transported back to the past, just as Ryoma’s father is about to undertake his final championship match at the US Open – when he was mysteriously forced to retire.",
+            "popularity": 0.4807,
+            "poster_path": "/c2vONcT7dvhwtyhPbighDLWpZHJ.jpg",
+            "release_date": "2021-11-11",
+            "title": "Ryoma! The Prince of Tennis",
+            "video": false,
+            "vote_average": 5,
+            "vote_count": 10
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/3A7Nau6YBzD43gw4pC45Psp9Z0Q.jpg",
+            "genre_ids": [
+              16
+            ],
+            "id": 1239022,
+            "original_language": "zh",
+            "original_title": "良辰有梦",
+            "overview": "People go through their day to day lives through the city alongside their Pokémon as they all try to get home to reunite with their family for the New Year.",
+            "popularity": 0.243,
+            "poster_path": "/5ZRlhyra1sNA9TqjgxnmHgfqATi.jpg",
+            "release_date": "2024-02-12",
+            "title": "Pokémon Original Short Animation: Homecoming",
+            "video": false,
+            "vote_average": 10,
+            "vote_count": 1
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/tPaurpIUskVji5vwV0dhy9pq4Vs.jpg",
+            "genre_ids": [
+              10751,
+              16,
+              12,
+              35
+            ],
+            "id": 953,
+            "original_language": "en",
+            "original_title": "Madagascar",
+            "overview": "Four animal friends get a taste of the wild life when they break out of captivity at the Central Park Zoo and wash ashore on the island of Madagascar.",
+            "popularity": 14.538,
+            "poster_path": "/zMpJY5CJKUufG9OTw0In4eAFqPX.jpg",
+            "release_date": "2005-05-25",
+            "title": "Madagascar",
+            "video": false,
+            "vote_average": 6.918,
+            "vote_count": 11430
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/vgfoc68kjAk5Nkkgp41BNV1GNKb.jpg",
+            "genre_ids": [
+              16,
+              14,
+              12,
+              28
+            ],
+            "id": 1431009,
+            "original_language": "zh",
+            "original_title": "神印王座剧场版：伊莱克斯传奇",
+            "overview": "The legendary epic of Elekes, re - presenting the glorious path of the great Necromancer of the Undead Scourge, Elekes.",
+            "popularity": 1.0297,
+            "poster_path": "/phhFyKAnl8OH3Cf3TOxCoDwplF0.jpg",
+            "release_date": "2025-04-30",
+            "title": "Throne of Seal The Movie: The Crownless God",
+            "video": false,
+            "vote_average": 9,
+            "vote_count": 2
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/1KxyFpWUKmc9vgWQAXX30Mpbjkk.jpg",
+            "genre_ids": [
+              28,
+              878,
+              16
+            ],
+            "id": 1047091,
+            "original_language": "ja",
+            "original_title": "ゴジラ VS ガイガンレクス",
+            "overview": "When army of Gigans tries to invade and destroy the Earth, the only one who can stop them is Godzilla.",
+            "popularity": 4.3386,
+            "poster_path": "/kT0Dr1WMyOSAGoL6BCEIWcNqDHw.jpg",
+            "release_date": "2022-11-03",
+            "title": "Godzilla vs. Gigan Rex",
+            "video": false,
+            "vote_average": 8.769,
+            "vote_count": 13
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/6WajXfBdKs0cGgrqVCgdPuuxm1n.jpg",
+            "genre_ids": [
+              16,
+              14
+            ],
+            "id": 1233154,
+            "original_language": "zh",
+            "original_title": "八戒之天蓬下界",
+            "overview": "",
+            "popularity": 0.1531,
+            "poster_path": "/bI6j1vR03r6IYcrfBG7HRqXB8TC.jpg",
+            "release_date": "2024-02-10",
+            "title": "Ba Jie",
+            "video": false,
+            "vote_average": 0,
+            "vote_count": 0
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/kHxnvrXaWDiOsvjR7o6qYu15p7H.jpg",
+            "genre_ids": [
+              16,
+              10751
+            ],
+            "id": 15015,
+            "original_language": "en",
+            "original_title": "Barbie as Rapunzel",
+            "overview": "Barbie stars as Rapunzel, a young girl who is entrapped by a magical barrier by the wicked, Gothel. Rapunzel finds an escape where she finds a Prince and a feud between two kingdoms which goes back to the day she was kidnapped as a child.",
+            "popularity": 3.2383,
+            "poster_path": "/ysiGzuMSc0nFmmDPn9z7U7YSFYf.jpg",
+            "release_date": "2002-10-01",
+            "title": "Barbie as Rapunzel",
+            "video": false,
+            "vote_average": 7.014,
+            "vote_count": 1267
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/tonrulTmO9ZyZmsAsr5yr9ciE4c.jpg",
+            "genre_ids": [
+              16,
+              10751
+            ],
+            "id": 15016,
+            "original_language": "en",
+            "original_title": "Barbie of Swan Lake",
+            "overview": "Barbie as Odette, the young daughter of a baker, follows a unicorn into the Enchanted Forest and is transformed into a swan by an evil wizard intent on defeating the Fairy Queen.",
+            "popularity": 4.2598,
+            "poster_path": "/sLpCLVQWTU7BI4yAL6kIFM9J3eX.jpg",
+            "release_date": "2003-09-27",
+            "title": "Barbie of Swan Lake",
+            "video": false,
+            "vote_average": 7.029,
+            "vote_count": 1122
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/gjEiHrj8dSsgL25XbIxT9o5qO3u.jpg",
+            "genre_ids": [
+              16,
+              35,
+              28,
+              12,
+              10751,
+              14,
+              878
+            ],
+            "id": 1059572,
+            "original_language": "ja",
+            "original_title": "しん次元！クレヨンしんちゃんTHE MOVIE 超能力大決戦 ～とべとべ手巻き寿司～",
+            "overview": "40-years ago, there was a prophecy claiming that in the year of “20” and “23”, two emitting lights would come to the Earth from outer space. And the dark light with strong power will bring out a huge disaster. In the summer of 2023, as predicted, two mysterious lights approach Japan and descend on Kasukabe. The white light hits Shin-chan, which makes him get a superpower. Meanwhile, a man called Mitsuru Hiriya, has been bathed in dark light and has acquired psychic powers begins to run amok. A man who wants the destruction of the world, Hiriya VS A happy-go-lucky kindergarten child, Shinnosuke. A superpower battle is going to begin!",
+            "popularity": 3.4465,
+            "poster_path": "/a56Fm2YWrlnqlC3TIgDvCJdzlKI.jpg",
+            "release_date": "2023-08-04",
+            "title": "New Dimension! Crayon Shin-chan the Movie: Battle of Supernatural Powers ~Flying Sushi~",
+            "video": false,
+            "vote_average": 6.7,
+            "vote_count": 38
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/pA6Ekh6azs8kQer5OZQgjEn5Wry.jpg",
+            "genre_ids": [
+              16,
+              10751
+            ],
+            "id": 13283,
+            "original_language": "en",
+            "original_title": "Barbie as the Island Princess",
+            "overview": "Young Rosella is saved by a few kind animals after a shipwreck. Now called Ro, she learns to talk to animals. One day, she saves the life of a prince and returns to civilisation to discover her past.",
+            "popularity": 2.3855,
+            "poster_path": "/oguRPUFeHt0H0wO0He4ewTseMXo.jpg",
+            "release_date": "2007-09-17",
+            "title": "Barbie as the Island Princess",
+            "video": false,
+            "vote_average": 7.3,
+            "vote_count": 763
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/fr4rvbtATRrM7cruiVlbD2EJM2C.jpg",
+            "genre_ids": [
+              16,
+              10751
+            ],
+            "id": 13284,
+            "original_language": "en",
+            "original_title": "Barbie: Fairytopia",
+            "overview": "Elina is a flower fairy who discovers that her home of Magic Meadow has been overcome by a horrible malady that is killing the flowers and making the fairies unable to fly. With the help of Bibble, a puffball and a giant butterfly named Hue she attempts to find Azura, a Guardian Fairy. She's challenged along the way by the evil Laverna who wants to usurp the Enchantress, the ruler of Fairytopia.",
+            "popularity": 5.097,
+            "poster_path": "/a0VPQHpLNCWWmiXwjD7aJVRaH78.jpg",
+            "release_date": "2005-03-08",
+            "title": "Barbie: Fairytopia",
+            "video": true,
+            "vote_average": 6.8,
+            "vote_count": 750
+          },
+          {
+            "adult": false,
+            "backdrop_path": "/c2wkRgqYlWdT3yejyO8kdwgepSd.jpg",
+            "genre_ids": [
+              16,
+              10751,
+              12,
+              14
+            ],
+            "id": 13285,
+            "original_language": "en",
+            "original_title": "Barbie Fairytopia: Mermaidia",
+            "overview": "In this animated follow-up to Fairytopia, Elina enlists the help of a mermaid, Nori, to save her friend Nalu, a merman prince who has been captured by the wicked Laverna.",
+            "popularity": 4.5065,
+            "poster_path": "/uBCvRThFwjvwNQeS3Vy7xMPc0Rh.jpg",
+            "release_date": "2006-03-14",
+            "title": "Barbie Fairytopia: Mermaidia",
+            "video": false,
+            "vote_average": 6.9,
+            "vote_count": 726
+          }
+        ],
+        "total_pages": 7557,
+        "total_results": 151138
+      }
+    }
   }
 }
