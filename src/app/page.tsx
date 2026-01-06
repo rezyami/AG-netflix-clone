@@ -87,30 +87,38 @@ export default async function Home() {
     }
 
     // Fallback: TMDB Mode (Original Logic)
-    const trendingData = await tmdb.getTrending("all", "week");
-    const topRatedMovies = await tmdb.getTopRated("movie");
-    const topRatedSeries = await tmdb.getTopRated("tv");
+    let trendingData = { results: [] as any[] };
+    let topRatedMovies = { results: [] as any[] };
+    let topRatedSeries = { results: [] as any[] };
+
+    try { trendingData = await tmdb.getTrending("all", "week"); } catch (e) { console.error("Failed to fetch trending:", e); }
+    try { topRatedMovies = await tmdb.getTopRated("movie"); } catch (e) { console.error("Failed to fetch top movies:", e); }
+    try { topRatedSeries = await tmdb.getTopRated("tv"); } catch (e) { console.error("Failed to fetch top series:", e); }
 
     const rows = [
       {
         title: "Trending Now",
-        movies: trendingData.results
+        movies: trendingData?.results || []
       },
       {
         title: "Top 10 Movies",
-        movies: topRatedMovies.results.slice(0, 10)
+        movies: (topRatedMovies?.results || []).slice(0, 10)
       },
       {
         title: "Top 10 Series",
-        movies: topRatedSeries.results.slice(0, 10)
+        movies: (topRatedSeries?.results || []).slice(0, 10)
       }
     ];
 
     const validRows = rows.filter(row => row.movies.length > 0);
 
+    if (validRows.length === 0 && m3uCategories.length === 0) {
+      throw new Error("No content available. Please check your TMDB API Key and M3U URL configuration.");
+    }
+
     return (
       <HomeClient
-        heroMovie={trendingData.results[0]}
+        heroMovie={trendingData?.results?.[0] || topRatedMovies?.results?.[0]}
         rows={validRows}
       />
     );

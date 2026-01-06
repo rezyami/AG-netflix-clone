@@ -33,7 +33,8 @@ const tmdbSemaphore = new Semaphore(10); // Limit to 10 concurrent requests
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function fetchTMDB<T>(endpoint: string, params: Record<string, string> = {}, retries = 3, backoff = 1000, language?: string): Promise<T> {
-    if (!BASE_URL) throw new Error("TMDB_BASE_URL is not defined");
+    const cleanBaseUrl = BASE_URL.replace(/\/+$/, "");
+    const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
     // During build, some vars might be missing. We allow it to fail silently or log a warning
     // to prevent build crashes if these are purely for runtime.
@@ -44,7 +45,7 @@ async function fetchTMDB<T>(endpoint: string, params: Record<string, string> = {
     await tmdbSemaphore.acquire();
 
     try {
-        const url = new URL(`${BASE_URL}${endpoint}`);
+        const url = new URL(`${cleanBaseUrl}${cleanEndpoint}`);
 
         // Append query params
         Object.entries(params).forEach(([key, value]) => {
