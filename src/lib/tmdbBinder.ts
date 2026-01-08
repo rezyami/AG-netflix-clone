@@ -128,26 +128,28 @@ export async function enrichMediaItem(item: MediaItem): Promise<MediaItem> {
             if (match) {
                 const details = await tmdb.getDetails(match.media_type as any, match.id);
 
-                // Update cache
-                cache[cacheKey] = {
-                    tmdbId: match.id,
-                    mediaType: match.media_type as any,
-                    timestamp: Date.now(),
-                    details
-                };
-                saveCache();
+                if (details) {
+                    // Update cache
+                    cache[cacheKey] = {
+                        tmdbId: match.id,
+                        mediaType: match.media_type as any,
+                        timestamp: Date.now(),
+                        details
+                    };
+                    saveCache();
 
-                return {
-                    ...item,
-                    ...details,
-                    id: item.id, // Keep M3U ID
-                    tmdb_id: match.id, // Explicitly keep TMDB ID
-                    media_type: match.media_type as any,
-                    poster_path: details.poster_path ? `https://image.tmdb.org/t/p/w500${details.poster_path}` : (item as any).poster_path,
-                    backdrop_path: details.backdrop_path ? `https://image.tmdb.org/t/p/original${details.backdrop_path}` : (item as any).backdrop_path,
-                    // Store trailer if available
-                    trailer_key: details.videos?.results.find(v => v.type === "Trailer" && v.site === "YouTube")?.key
-                } as any;
+                    return {
+                        ...item,
+                        ...details,
+                        id: item.id, // Keep M3U ID
+                        tmdb_id: match.id, // Explicitly keep TMDB ID
+                        media_type: match.media_type as any,
+                        poster_path: details.poster_path ? `https://image.tmdb.org/t/p/w500${details.poster_path}` : (item as any).poster_path,
+                        backdrop_path: details.backdrop_path ? `https://image.tmdb.org/t/p/original${details.backdrop_path}` : (item as any).backdrop_path,
+                        // Store trailer if available
+                        trailer_key: details.videos?.results.find(v => v.type === "Trailer" && v.site === "YouTube")?.key
+                    } as any;
+                }
             }
         }
     } catch (error) {

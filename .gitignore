@@ -44,3 +44,8 @@ next-env.d.ts
 # m3u files
 src/m3u/tv_channels_F021502_plus.m3u
 src/m3u/playlist.m3u
+
+/src/generated/prisma
+
+# Prisma
+prisma/dev.db

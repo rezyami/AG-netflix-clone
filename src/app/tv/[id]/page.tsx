@@ -24,10 +24,17 @@ export default async function TVDetailsPage({ params }: PageProps) {
         const numericId = parseInt(id);
         if (isNaN(numericId)) throw new Error("Invalid ID");
         show = await tmdb.getDetails("tv", numericId);
-        streamEntry = await findStream(show.name);
-    } catch (error) {
+
+        if (show) {
+            streamEntry = await findStream(show.name);
+        } else {
+            console.log(`TMDB 404 for ID ${id}, triggering fallback...`);
+            // Trigger fallback by jumping to catch or just handling it here
+            throw new Error("TMDB_NOT_FOUND");
+        }
+    } catch (error: any) {
         // Fallback to M3U ID lookup
-        console.log(`TMDB lookup failed for ID ${id}, trying M3U lookup...`);
+        console.log(`Fallback triggered for ID ${id}...`);
         const numericId = parseInt(id);
 
         // Try to find if it's a Series Cluster first
@@ -126,10 +133,19 @@ export default async function TVDetailsPage({ params }: PageProps) {
                 if (!show.credits) show.credits = { cast: [], crew: [] };
                 if (!show.similar) show.similar = { results: [] };
                 if (!show.first_air_date) show.first_air_date = new Date().toISOString();
-            } else {
-                throw error; // Rethrow
             }
         }
+    }
+
+    // If no show data could be found after all attempts
+    if (!show) {
+        return (
+            <div className="min-h-screen bg-[#141414] text-white pt-24 px-4 text-center">
+                <Navbar />
+                <h1 className="text-2xl mb-4">TV Show Not Found</h1>
+                <p>The requested TV show could not be found in TMDB or your playlist.</p>
+            </div>
+        );
     }
 
     // Filter out season 0 (specials) and sort by season number

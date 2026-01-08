@@ -11,6 +11,7 @@ export async function getMovieTrailer(mediaType: "movie" | "tv", id: number) {
 
     try {
         const details = await tmdb.getDetails(mediaType, id);
+        if (!details || !details.videos) return null;
         const video = details.videos.results.find(
             (v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser")
         );

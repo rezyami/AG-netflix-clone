@@ -43,6 +43,7 @@ export default async function MovieDetailsPage({ params }: PageProps) {
             const numericId = parseInt(id);
             if (isNaN(numericId)) return false;
             movie = await tmdb.getDetails("movie", numericId);
+            if (!movie) return false;
             streamEntry = await findStream(movie.title);
             return true;
         } catch (e) {

@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import { generateId } from "@/lib/m3uMapper";
-
 import { M3UEntry, M3USeries, SeriesInfo } from "@/types/m3u";
+import { db } from "./db";
 
 let cachedEntries: M3UEntry[] | null = null;
 
@@ -13,11 +13,22 @@ const FETCH_TIMEOUT_MS = 30000; // 30 seconds
 let fetchPromise: Promise<void> | null = null;
 
 export async function ensureM3UFile(): Promise<string | null> {
-    const m3uUrl = process.env.IPTV_M3U_URL;
+    let m3uUrl = process.env.IPTV_M3U_URL;
+
+    // Fallback to database setting if not in process.env
+    if (!m3uUrl) {
+        try {
+            const setting = await db.globalSetting.findUnique({
+                where: { key: "IPTV_M3U_URL" }
+            });
+            if (setting) m3uUrl = setting.value;
+        } catch (e) {
+            console.error("Failed to fetch M3U URL from database", e);
+        }
+    }
 
     if (!m3uUrl) {
-        console.warn("⚠️ IPTV_M3U_URL is not set in environment variables. M3U features will be disabled.");
-        console.warn("Please add IPTV_M3U_URL to your Vercel project settings or .env file.");
+        console.warn("⚠️ IPTV_M3U_URL is not set in environment or database. M3U features will be disabled.");
         return null;
     }
 
@@ -160,10 +171,36 @@ function normalizeTitle(title: string): string {
 }
 
 export async function findStream(movieTitle: string): Promise<M3UEntry | undefined> {
+    const normalizedMovieTitle = normalizeTitle(movieTitle);
+
+    // 1. Try Database first (Fast & Efficient)
+    try {
+        const dbMatch = await db.m3UEntry.findFirst({
+            where: {
+                title: {
+                    contains: normalizedMovieTitle,
+                    mode: 'insensitive'
+                }
+            }
+        });
+
+        if (dbMatch) {
+            return {
+                title: dbMatch.title,
+                rawTitle: dbMatch.rawTitle,
+                url: dbMatch.url,
+                logo: dbMatch.logo || undefined,
+                group: dbMatch.group || undefined
+            };
+        }
+    } catch (e) {
+        console.warn("DB lookup failed, falling back to M3U file parsing", e);
+    }
+
+    // 2. Fallback to M3U file parsing (Old method)
     const m3uPath = await ensureM3UFile();
     if (!m3uPath) return undefined;
     const entries = parseM3U(m3uPath);
-    const normalizedMovieTitle = normalizeTitle(movieTitle);
 
     // Try exact match first
     const exactMatch = entries.find(entry => entry.title === normalizedMovieTitle);
@@ -174,12 +211,38 @@ export async function findStream(movieTitle: string): Promise<M3UEntry | undefin
 }
 
 export async function searchM3U(query: string): Promise<M3UEntry[]> {
+    const normalizedQuery = normalizeTitle(query);
+    if (!normalizedQuery) return [];
+
+    // 1. Try Database first
+    try {
+        const dbResults = await db.m3UEntry.findMany({
+            where: {
+                title: {
+                    contains: normalizedQuery,
+                    mode: 'insensitive'
+                }
+            },
+            take: 50
+        });
+
+        if (dbResults.length > 0) {
+            return dbResults.map(res => ({
+                title: res.title,
+                rawTitle: res.rawTitle,
+                url: res.url,
+                logo: res.logo || undefined,
+                group: res.group || undefined
+            }));
+        }
+    } catch (e) {
+        console.warn("DB search failed, falling back to M3U file", e);
+    }
+
+    // 2. Fallback to M3U file
     const m3uPath = await ensureM3UFile();
     if (!m3uPath) return [];
     const entries = parseM3U(m3uPath);
-    const normalizedQuery = normalizeTitle(query);
-
-    if (!normalizedQuery) return [];
 
     return entries.filter(entry => entry.title.includes(normalizedQuery));
 }
@@ -237,14 +300,41 @@ async function ensureDataLoaded() {
     cachedCategoriesLive = Array.from(liveCats).sort();
 }
 
-// Get all unique channel categories from M3U
+// Get all unique channel categories from DB/M3U
 export async function getAllChannelCategories(): Promise<string[]> {
-    await ensureDataLoaded();
-    return cachedCategoriesLive || [];
+    try {
+        const groups = await db.m3UEntry.groupBy({
+            by: ['group'],
+            where: { mediaType: 'live' },
+            orderBy: { group: 'asc' }
+        });
+        return groups.map(g => g.group).filter((g): g is string => !!g);
+    } catch (e) {
+        console.warn("DB categories lookup failed, falling back to cache", e);
+        await ensureDataLoaded();
+        return cachedCategoriesLive || [];
+    }
 }
 
 // Get all channels for a specific category
 export async function getChannelsByCategory(category: string): Promise<M3UEntry[]> {
+    try {
+        const entries = await db.m3UEntry.findMany({
+            where: { group: category, mediaType: 'live' }
+        });
+        if (entries.length > 0) {
+            return entries.map(res => enhanceWithMockEPG({
+                title: res.title,
+                rawTitle: res.rawTitle,
+                url: res.url,
+                logo: res.logo || undefined,
+                group: res.group || undefined
+            }));
+        }
+    } catch (e) {
+        console.warn("DB channels lookup failed", e);
+    }
+
     await ensureDataLoaded();
     const channels = cachedGroupIndex?.get(category) || [];
     return channels.map(enhanceWithMockEPG);
@@ -301,14 +391,41 @@ function isVODOrSeries(entry: M3UEntry): boolean {
     return isVODGroup(entry.group);
 }
 
-// Get all unique VOD/Series categories from M3U
+// Get all unique VOD/Series categories from DB/M3U
 export async function getVODAndSeriesCategories(): Promise<string[]> {
-    await ensureDataLoaded();
-    return cachedCategoriesVOD || [];
+    try {
+        const groups = await db.m3UEntry.groupBy({
+            by: ['group'],
+            where: { mediaType: { in: ['movie', 'tv'] } },
+            orderBy: { group: 'asc' }
+        });
+        return groups.map(g => g.group).filter((g): g is string => !!g);
+    } catch (e) {
+        console.warn("DB VOD categories failed", e);
+        await ensureDataLoaded();
+        return cachedCategoriesVOD || [];
+    }
 }
 
 // Get all VOD/Series items for a specific category
 export async function getVODAndSeriesByCategory(category: string): Promise<M3UEntry[]> {
+    try {
+        const entries = await db.m3UEntry.findMany({
+            where: { group: category, mediaType: { in: ['movie', 'tv'] } }
+        });
+        if (entries.length > 0) {
+            return entries.map(res => ({
+                title: res.title,
+                rawTitle: res.rawTitle,
+                url: res.url,
+                logo: res.logo || undefined,
+                group: res.group || undefined
+            }));
+        }
+    } catch (e) {
+        console.warn("DB VOD items failed", e);
+    }
+
     await ensureDataLoaded();
     return cachedGroupIndex?.get(category) || [];
 }

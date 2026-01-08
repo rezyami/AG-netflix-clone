@@ -1,0 +1,80 @@
+// prisma/schema.prisma
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  image         String?
+  profiles      Profile[]
+  createdAt     DateTime  @default(now())
+}
+
+model Profile {
+  id            String    @id @default(cuid())
+  name          String
+  avatar        String
+  language      String    @default("EN")
+  isChildren    Boolean   @default(false)
+  
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  myList        MyListItem[]
+  history       WatchHistory[]
+}
+
+model MyListItem {
+  id          String   @id @default(cuid())
+  tmdbId      Int
+  mediaType   String   // "movie" or "tv"
+  title       String
+  posterPath  String?
+  
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, tmdbId])
+}
+
+model WatchHistory {
+  id          String   @id @default(cuid())
+  tmdbId      Int
+  progress    Int      // Percentage 0-100
+  mediaType   String
+  
+  profileId   String
+  profile     Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}
+
+model M3UEntry {
+  id          String   @id @default(cuid())
+  title       String   // Normalized title for searching
+  rawTitle    String   // Original title from M3U
+  url         String   @unique
+  logo        String?
+  group       String?  // Category (e.g. "VOD | ARABIC")
+  mediaType   String   // "movie", "tv", or "live"
+  
+  // Link to TMDB metadata (optional)
+  tmdbId      Int?
+  overview    String?
+  backdrop    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([title])
+  @@index([group])
+}
+
+model GlobalSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}

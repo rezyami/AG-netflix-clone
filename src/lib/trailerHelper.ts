@@ -36,8 +36,10 @@ export async function getTrailerForTitle(
         const firstResult = filteredResults[0];
         const tmdbId = firstResult.id;
 
-        // Get details including videos
+        // Get the details including videos
         const details = await tmdb.getDetails(mediaType, tmdbId);
+
+        if (!details) return null;
 
         if (details.videos && details.videos.results) {
             // Find trailer
